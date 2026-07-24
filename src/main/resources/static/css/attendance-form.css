@@ -1,0 +1,30 @@
+<style>
+        body {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            min-height: 100vh;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .card-box {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            padding: 30px;
+            color: white;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+        }
+
+        .form-control, .form-select {
+            border-radius: 12px;
+            border: none;
+        }
+
+        label {
+            font-weight: 600;
+        }
+
+        .btn {
+            border-radius: 50px;
+            font-weight: 600;
+        }
+    </style>

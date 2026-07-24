@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Manager Dashboard - EMS</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link rel="stylesheet" th:href="@{/css/manager-dashboard.css}">
+</head>
+
+<body>
+
+<!-- NAVIGATION BAR -->
+<nav class="navbar navbar-custom d-flex justify-content-between align-items-center">
+    <div style="color: white; font-size: 22px; font-weight: bold;">
+        <a th:href="@{/manager/dashboard}" class="text-white text-decoration-none">
+            <i class="fa-solid fa-shield-halved me-2 text-warning"></i>EMS Manager Portal
+        </a>
+    </div>
+
+    <div class="d-flex align-items-center gap-3">
+        <span class="text-white-50">Welcome, <strong class="text-white" th:text="${managerName != null ? managerName : 'Manager'}">Admin</strong></span>
+        <a th:href="@{/auth/logout}" class="btn btn-danger btn-sm px-3 rounded-pill fw-bold">
+            <i class="fa-solid fa-right-from-bracket me-1"></i> Logout
+        </a>
+    </div>
+</nav>
+
+<!-- HEADER -->
+<div class="header">
+    <h1>Manager Console & Analytics</h1>
+    <p>Oversee team operations, approvals, timesheets, and department performance</p>
+</div>
+
+<!-- MAIN DASHBOARD CONTENT -->
+<div class="container mb-5">
+
+    <!-- SECTION 1: CORE MANAGEMENT -->
+    <h3 class="section-heading text-info"><i class="fa-solid fa-bars-progress me-2"></i>Core Administration</h3>
+    <div class="row g-4 mb-5">
+
+        <!-- Employees Card -->
+        <div class="col-md-3">
+            <div class="card-box">
+                <div>
+                    <div class="icon text-info"><i class="fa-solid fa-users"></i></div>
+                    <h4>Team Directory</h4>
+                    <p class="text-white-50 small">View and manage all employee profiles, roles, and status.</p>
+                </div>
+                <a th:href="@{/employees}" class="btn btn-light btn-custom mt-3">Manage Team</a>
+            </div>
+        </div>
+
+        <!-- Department Card -->
+        <div class="col-md-3">
+            <div class="card-box">
+                <div>
+                    <div class="icon text-primary"><i class="fa-solid fa-building"></i></div>
+                    <h4>Departments</h4>
+                    <p class="text-white-50 small">Track branches, department structures, and designations.</p>
+                </div>
+                <a th:href="@{/departments}" class="btn btn-light btn-custom mt-3">View Sectors</a>
+            </div>
+        </div>
+
+        <!-- Salary/Payroll Card -->
+        <div class="col-md-3">
+            <div class="card-box">
+                <div>
+                    <div class="icon text-success"><i class="fa-solid fa-sack-dollar"></i></div>
+                    <h4>Payroll / Salary</h4>
+                    <p class="text-white-50 small">Review financial distributions, bonuses, and salary slips.</p>
+                </div>
+                <a th:href="@{/salary}" class="btn btn-light btn-custom mt-3">Payroll Console</a>
+            </div>
+        </div>
+
+        <!-- Attendance Tracking Card -->
+        <div class="col-md-3">
+            <div class="card-box">
+                <div>
+                    <div class="icon text-warning"><i class="fa-solid fa-calendar-check"></i></div>
+                    <h4>Attendance Reports</h4>
+                    <p class="text-white-50 small">Monitor daily check-ins, late logs, and monthly summaries.</p>
+                </div>
+                <a th:href="@{/attendance}" class="btn btn-light btn-custom mt-3">Check Logs</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 2: MANAGER APPROVAL CONTROLS -->
+    <h3 class="section-heading text-warning"><i class="fa-solid fa-gavel me-2"></i>Review & Approvals Control</h3>
+    <div class="row g-4 mb-5">
+
+        <!-- Manage Leaves Card -->
+        <div class="col-md-4">
+            <div class="card-box card-leave-action">
+                <div>
+                    <div class="icon text-emerald-300"><i class="fa-solid fa-envelope-open-text"></i></div>
+                    <h4 class="text-success">Manage Leaves</h4>
+                    <p class="text-white-50 small">Approve or reject employee leave requests dynamically.</p>
+                </div>
+                <a th:href="@{/leave/manage}" class="btn btn-success btn-custom mt-3">Review Leave Requests</a>
+            </div>
+        </div>
+
+        <!-- Review Timesheets Card -->
+        <div class="col-md-4">
+            <div class="card-box card-manager-action">
+                <div>
+                    <div class="icon text-warning"><i class="fa-solid fa-list-check"></i></div>
+                    <h4 class="text-warning">Review Timesheets</h4>
+                    <p class="text-white-50 small">Verify employee logged hours, weekly logs, and target details.</p>
+                </div>
+                <a th:href="@{/timesheet/manage}" class="btn btn-warning btn-custom mt-3 text-dark fw-bold">Review Worklogs</a>
+            </div>
+        </div>
+
+        <!-- My Personal Profile Card -->
+        <div class="col-md-4">
+            <div class="card-box">
+                <div>
+                    <div class="icon text-light"><i class="fa-solid fa-user-gear"></i></div>
+                    <h4>My Profile</h4>
+                    <p class="text-white-50 small">View/Edit your personal, account, and qualification details.</p>
+                </div>
+                <a th:href="@{/manager/profile}" class="btn btn-light btn-custom mt-3">Open My Profile</a>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- SECTION 3: SYSTEMANALYTICS VISUALIZATION -->
+    <div class="chart-box">
+        <h4 class="text-center mb-4"><i class="fa-solid fa-chart-pie me-2 text-info"></i>Live Operations Analytics</h4>
+        <div style="position: relative; height:350px;">
+            <canvas id="managerAnalyticsChart"></canvas>
+        </div>
+    </div>
+
+</div>
+
+<!-- SCRIPT FOR GRAPH DATA -->
+<script>
+    const ctx = document.getElementById('managerAnalyticsChart').getContext('2d');
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Total Staff', 'Pending Leaves', 'Submitted Timesheets', 'Present Today'],
+            datasets: [{
+                label: 'System Matrix Count',
+                data: [45, 7, 32, 38], // 👉 In values ko Controller se dynamically append kar sakte hain
+                backgroundColor: [
+                    '#3ab0ff', // Total Staff - Sky Blue
+                    '#ff6b6b', // Pending Leaves - Red
+                    '#f9d371', // Timesheets - Yellow
+                    '#10b981'  // Present - Emerald Green
+                ],
+                borderWidth: 0,
+                borderRadius: 8,
+                barThickness: 45
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                x: {
+                    grid: { display: false },
+                    ticks: { color: 'rgba(255,255,255,0.7)' }
+                },
+                y: {
+                    beginAtZero: true,
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                    ticks: { color: 'rgba(255,255,255,0.7)' }
+                }
+            }
+        }
+    });
+</script>
+
+</body>
+</html>

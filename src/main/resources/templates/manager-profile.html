@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manager Profile</title>
+    <!-- Bootstrap 5.3.3 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome 6.5.0 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" th:href="@{/css/manager-profile.css}">
+</head>
+
+<body>
+
+<div class="container" style="max-width: 850px;">
+
+    <!-- HEADER SECTION -->
+    <div class="d-flex justify-content-between align-items-center mb-4 pt-2">
+        <h2 class="fs-3 m-0 fw-bold">
+            <i class="fa-solid fa-user-tie me-2 opacity-75"></i>Manager Profile Console
+        </h2>
+        <!-- Back to Manager Dashboard -->
+        <a th:href="@{/manager/dashboard}" class="btn btn-custom-dashboard rounded-pill px-4 fw-medium">
+            <i class="fa-solid fa-house me-15"></i> Dashboard
+        </a>
+    </div>
+
+    <!-- SUCCESS ALERT -->
+    <div th:if="${param.success}" class="alert alert-success bg-success text-white border-0 rounded-4 text-center py-3 mb-4 shadow">
+        <i class="fa-solid fa-circle-check me-2 fs-5"></i> Manager Profile Updated Successfully!
+    </div>
+
+    <!-- MAIN PROFILE CARD -->
+    <div class="profile-card">
+        <form th:action="@{/manager/profile/save}" th:object="${profile}" method="POST">
+
+            <!-- 1. MANAGEMENT & ROLE DETAILS -->
+            <h4 class="section-title text-info">
+                <i class="fa-solid fa-briefcase me-2 opacity-75"></i>Management & Core Role
+            </h4>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" th:field="*{fullName}" class="form-control" placeholder="Enter Full Name" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Manager ID / Employee ID</label>
+                    <input type="text" th:field="*{employeeId}" class="form-control" placeholder="MGR-XXXX" readonly>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Department</label>
+                    <input type="text" th:field="*{department}" class="form-control" placeholder="e.g. Technology / HR / Sales">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Reporting To (Authority)</label>
+                    <input type="text" th:field="*{reportingTo}" class="form-control" placeholder="e.g. VP / Director Name">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Total Team Size</label>
+                    <input type="number" th:field="*{teamSize}" class="form-control" placeholder="e.g. 12">
+                </div>
+            </div>
+
+            <!-- 2. CONTACT & PERSONAL DETAILS -->
+            <h4 class="section-title text-warning">
+                <i class="fa-solid fa-id-card me-2 opacity-75"></i>Personal Contact Information
+            </h4>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Official Phone Number</label>
+                    <input type="tel" th:field="*{phoneNumber}" class="form-control" placeholder="Enter Phone Number">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Date of Birth</label>
+                    <input type="date" th:field="*{dob}" class="form-control">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Gender</label>
+                    <select th:field="*{gender}" class="form-select">
+                        <option value="">Select Gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Managed Projects (Comma separated)</label>
+                    <input type="text" th:field="*{projects}" class="form-control" placeholder="e.g. Project Alpha, Web App Ems">
+                </div>
+            </div>
+
+            <!-- 3. BANK DETAILS FOR SALARY -->
+            <h4 class="section-title text-success">
+                <i class="fa-solid fa-building-columns me-2 opacity-75"></i>Bank Corporate Accounts
+            </h4>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Bank Name</label>
+                    <input type="text" th:field="*{bankName}" class="form-control" placeholder="e.g. SBI, HDFC">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Account Number</label>
+                    <input type="text" th:field="*{accountNumber}" class="form-control" placeholder="Account Number">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">IFSC Code</label>
+                    <input type="text" th:field="*{ifscCode}" class="form-control" placeholder="IFSC Code">
+                </div>
+            </div>
+
+            <!-- 4. ADDRESS DETAILS -->
+            <h4 class="section-title text-danger">
+                <i class="fa-solid fa-location-dot me-2 opacity-75"></i>Address Details
+            </h4>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Current Residence Address</label>
+                    <textarea th:field="*{currentAddress}" class="form-control" rows="3" placeholder="Current address..."></textarea>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Permanent Home Address</label>
+                    <textarea th:field="*{permanentAddress}" class="form-control" rows="3" placeholder="Permanent address..."></textarea>
+                </div>
+            </div>
+
+            <!-- SUBMIT ACTION -->
+            <div class="text-center mt-5">
+                <button type="submit" class="btn btn-submit-profile btn-lg shadow">
+                    <i class="fa-solid fa-square-check me-2"></i>Update Manager Profile
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

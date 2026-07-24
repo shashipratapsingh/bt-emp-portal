@@ -1,0 +1,337 @@
+    <style>
+        /* ----- global reset & base ----- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #f5f7fb;   /* very light background */
+            font-family: 'Inter', 'Segoe UI', Roboto, system-ui, sans-serif;
+            padding: 2rem 1rem;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ----- main card container ----- */
+        .salary-container {
+            background: #ffffff;
+            border-radius: 28px;          /* 20px+ rounded */
+            padding: 2rem 2rem 1.8rem;
+            max-width: 1150px;
+
+            margin: 0 auto;
+            margin-left: 200px;
+            box-shadow: 0 20px 40px -12px rgba(0, 20, 50, 0.12), 0 8px 24px -6px rgba(0, 0, 0, 0.02);
+            transition: box-shadow 0.25s ease;
+            width: 100%;
+        }
+
+        .salary-container:hover {
+            box-shadow: 0 28px 48px -16px rgba(0, 20, 50, 0.16);
+        }
+
+        /* ----- header / title row ----- */
+        .header-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem 0.75rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .page-title {
+            font-size: 1.9rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: #0b1e3a;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .page-title i {
+            color: #3b82f6;          /* subtle blue accent */
+            font-size: 2rem;
+        }
+
+        .record-badge {
+            background: #eef3fc;
+            color: #1b3b6f;
+            padding: 0.55rem 1.2rem;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            letter-spacing: 0.01em;
+            border: 1px solid rgba(59, 130, 246, 0.12);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.01);
+            white-space: nowrap;
+        }
+
+        .record-badge i {
+            color: #3b82f6;
+            font-size: 0.9rem;
+        }
+
+        hr.divider-light {
+            margin: 1rem 0 1.6rem 0;
+            border: 0;
+            height: 1px;
+            background: linear-gradient(90deg, #e6edf8, #d0ddea, #e6edf8);
+            opacity: 0.7;
+        }
+
+        /* ----- table wrapper (soft border + radius) ----- */
+        .table-responsive-custom {
+            border-radius: 20px;
+            border: 1px solid #e7edf6;
+            overflow: hidden;
+            background: #ffffff;
+            transition: border-color 0.2s;
+        }
+
+        .table-responsive-custom:hover {
+            border-color: #cdd9eb;
+        }
+
+        .custom-table {
+            margin-bottom: 0;
+            font-size: 0.95rem;
+        }
+
+        /* header – light blue-gray */
+        .custom-table thead {
+            background: #eef3fb;        /* very light blue-gray */
+        }
+
+        .custom-table thead th {
+            padding: 1rem 1.2rem;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            color: #1f3b68;
+            border-bottom: 1px solid #dae2ef;
+            background: #eef3fb;
+            white-space: nowrap;
+        }
+
+        /* table cells */
+        .custom-table td {
+            padding: 1rem 1.2rem;
+            vertical-align: middle;
+            border-bottom: 1px solid #eef3f9;
+            color: #1e2f4a;
+            background-color: #ffffff;
+        }
+
+        /* row hover effect – subtle */
+        .custom-table tbody tr {
+            transition: background-color 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .custom-table tbody tr:hover {
+            background-color: #f8faff;
+            box-shadow: inset 0 1px 0 #eef3fc;
+        }
+
+        /* employee id style */
+        .emp-id {
+            font-weight: 500;
+            color: #2660c0;
+            letter-spacing: 0.01em;
+        }
+
+        /* no data row */
+        .no-data-row td {
+            padding: 2.5rem 1rem;
+            color: #4e6b92;
+            font-weight: 500;
+            background: #fafcff;
+        }
+
+        /* ----- download button (rounded-pill, modern) ----- */
+        .download-btn {
+            background: #3b82f6;
+            border: none;
+            border-radius: 50px;          /* pill style */
+            padding: 0.45rem 1.6rem 0.45rem 1.4rem;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #ffffff;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.55rem;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            box-shadow: 0 4px 8px -2px rgba(59, 130, 246, 0.25);
+            letter-spacing: 0.01em;
+            border: 1px solid transparent;
+            line-height: 1.5;
+        }
+
+        .download-btn i {
+            font-size: 0.9rem;
+            transition: transform 0.2s ease;
+        }
+
+        .download-btn:hover {
+            background: #2563eb;
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 20px -10px rgba(59, 130, 246, 0.4);
+            border-color: #3b82f6;
+            text-decoration: none;
+        }
+
+        .download-btn:hover i {
+            transform: translateY(-1px);
+        }
+
+        .download-btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 6px 12px -6px rgba(59, 130, 246, 0.3);
+        }
+
+        /* footer note */
+        .footer-note {
+            margin-top: 2.2rem;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            font-size: 0.9rem;
+            color: #4d6a92;
+            letter-spacing: 0.01em;
+            padding-right: 0.2rem;
+        }
+
+        .footer-note i {
+            color: #3b82f6;
+            font-size: 0.9rem;
+        }
+
+        .footer-note .dot-sep {
+            margin: 0 0.2rem;
+            color: #a7bcd9;
+        }
+
+        /* ----- responsive adjustments ----- */
+        @media (max-width: 767.98px) {
+            body {
+                padding: 1rem 0.75rem;
+            }
+
+            .salary-container {
+                padding: 1.5rem 1rem 1.2rem;
+                border-radius: 24px;
+            }
+
+            .header-row {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.75rem;
+            }
+
+            .page-title {
+                font-size: 1.6rem;
+                justify-content: center;
+            }
+
+            .page-title i {
+                font-size: 1.7rem;
+            }
+
+            .record-badge {
+                justify-content: center;
+                font-size: 0.8rem;
+                padding: 0.4rem 1rem;
+                width: fit-content;
+                align-self: center;
+            }
+
+            .custom-table thead th,
+            .custom-table td {
+                padding: 0.7rem 0.6rem;
+                font-size: 0.8rem;
+            }
+
+            .custom-table thead th {
+                font-size: 0.7rem;
+                letter-spacing: 0.04em;
+            }
+
+            .download-btn {
+                padding: 0.3rem 1rem 0.3rem 0.9rem;
+                font-size: 0.75rem;
+                gap: 0.3rem;
+            }
+
+            .download-btn i {
+                font-size: 0.8rem;
+            }
+
+            .footer-note {
+                justify-content: center;
+                font-size: 0.8rem;
+                margin-top: 1.6rem;
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            .salary-container {
+                padding: 1rem 0.6rem 0.8rem;
+                border-radius: 20px;
+            }
+
+            .page-title {
+                font-size: 1.3rem;
+            }
+
+            .record-badge {
+                font-size: 0.7rem;
+                padding: 0.3rem 0.8rem;
+            }
+
+            .custom-table thead th,
+            .custom-table td {
+                padding: 0.5rem 0.4rem;
+                font-size: 0.7rem;
+            }
+
+            .download-btn {
+                font-size: 0.65rem;
+                padding: 0.2rem 0.7rem 0.2rem 0.6rem;
+                gap: 0.2rem;
+            }
+
+            .download-btn i {
+                font-size: 0.7rem;
+            }
+        }
+
+        /* tablet & small desktop fine-tuning */
+        @media (min-width: 768px) and (max-width: 991.98px) {
+            .salary-container {
+                padding: 1.8rem 1.5rem;
+            }
+            .page-title {
+                font-size: 1.7rem;
+            }
+        }
+
+        /* accessibility: focus-visible */
+        .download-btn:focus-visible {
+            outline: 3px solid #3b82f6;
+            outline-offset: 3px;
+            border-radius: 50px;
+        }
+    </style>

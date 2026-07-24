@@ -1,0 +1,121 @@
+<!-- ============================================================ -->
+<!-- NAVBAR FRAGMENT – Dark theme, matches sidebar                 -->
+<!-- ============================================================ -->
+<nav th:fragment="navbar" class="navbar navbar-expand-lg" style="background: #1e293b; padding: 0.6rem 1.5rem; box-shadow: 0 2px 12px rgba(0,0,0,0.3);">
+    <div class="container-fluid">
+        <!-- Toggle button for mobile -->
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+                aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation"
+                style="color: #94a3b8;">
+            <span class="navbar-toggler-icon" style="filter: invert(0.8);"></span>
+        </button>
+
+        <!-- Search (optional) – hidden on small screens -->
+        <div class="d-none d-md-block me-auto ms-3" style="width: 280px;">
+            <div class="input-group" style="background: #334155; border-radius: 30px; overflow: hidden;">
+                <span class="input-group-text bg-transparent border-0" style="color: #94a3b8;">
+                    <i class="fa-solid fa-search"></i>
+                </span>
+                <input type="text" class="form-control bg-transparent border-0" placeholder="Search..."
+                       style="color: #e2e8f0; font-size: 0.9rem; padding: 0.4rem 0;">
+            </div>
+        </div>
+
+        <!-- Right side: date, notifications, user -->
+        <div class="collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav ms-auto align-items-center">
+                <!-- Date -->
+                <li class="nav-item me-3 d-none d-sm-block">
+                    <span style="color: #94a3b8; font-size: 0.85rem;">
+                        <i class="fa-regular fa-calendar me-1"></i>
+                        <span th:text="${#temporals.format(#temporals.createNow(), 'EEE, dd MMM yyyy')}"></span>
+                    </span>
+                </li>
+
+                <!-- Notifications -->
+                <li class="nav-item me-2">
+                    <a class="nav-link position-relative" href="#" style="color: #94a3b8; padding: 0.3rem 0.6rem; transition: 0.2s;">
+                        <i class="fa-regular fa-bell" style="font-size: 1.3rem;"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.65rem; padding: 0.2rem 0.5rem;">
+                            3
+                            <span class="visually-hidden">notifications</span>
+                        </span>
+                    </a>
+                </li>
+
+                <!-- User dropdown -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown"
+                       role="button" data-bs-toggle="dropdown" aria-expanded="false"
+                       style="color: #e2e8f0; padding: 0.3rem 0.6rem; transition: 0.2s;">
+                        <span class="rounded-circle bg-primary d-flex align-items-center justify-content-center" style="width: 34px; height: 34px; background: #3b82f6 !important; color: #fff; font-weight: 600; font-size: 0.9rem;">
+                            <span th:text="${session.user != null ? session.user.name?.substring(0,1) : 'A'}">A</span>
+                        </span>
+                        <span class="ms-2 d-none d-sm-inline" style="font-weight: 500;">
+                            <span th:text="${session.user != null ? session.user.name : 'Admin'}">Admin</span>
+                        </span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" style="background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 0.5rem 0;">
+                        <li><a class="dropdown-item" href="/profile" style="color: #e2e8f0; padding: 0.5rem 1.2rem; transition: 0.15s;">
+                            <i class="fa-regular fa-user me-2" style="width: 18px;"></i> Profile
+                        </a></li>
+                        <li><a class="dropdown-item" href="/settings" style="color: #e2e8f0; padding: 0.5rem 1.2rem; transition: 0.15s;">
+                            <i class="fa-regular fa-gear me-2" style="width: 18px;"></i> Settings
+                        </a></li>
+                        <li><hr class="dropdown-divider" style="border-color: #334155;"></li>
+                        <li><a class="dropdown-item text-danger" href="/logout" style="padding: 0.5rem 1.2rem; transition: 0.15s;">
+                            <i class="fa-solid fa-right-from-bracket me-2" style="width: 18px;"></i> Logout
+                        </a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Styles for the navbar (overrides Bootstrap defaults) -->
+<style>
+    /* Navbar toggler icon fix for dark background */
+    .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.7%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    }
+
+    /* Dropdown items on hover */
+    .dropdown-item:hover {
+        background: #334155 !important;
+        color: #ffffff !important;
+    }
+
+    /* Notification bell hover */
+    .nav-link:hover {
+        color: #ffffff !important;
+    }
+
+    /* Search input placeholder color */
+    .form-control::placeholder {
+        color: #94a3b8;
+        opacity: 0.7;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        nav.navbar {
+            padding: 0.4rem 1rem;
+        }
+        .navbar-nav .nav-link {
+            padding: 0.5rem 0.6rem;
+        }
+        .dropdown-menu {
+            background: #1e293b !important;
+        }
+        .dropdown-item {
+            color: #e2e8f0 !important;
+        }
+        .dropdown-item:hover {
+            background: #334155 !important;
+        }
+    }
+</style>
+
+<!-- Bootstrap JS (required for dropdowns and toggler) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

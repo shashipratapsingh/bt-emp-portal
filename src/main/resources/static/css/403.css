@@ -1,0 +1,25 @@
+<style>
+        body {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            min-height: 100vh;
+            font-family: 'Segoe UI', sans-serif;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .error-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+            max-width: 500px;
+            width: 100%;
+        }
+        .error-icon {
+            font-size: 70px;
+            color: #ffc107; /* Warning yellow color */
+        }
+    </style>

@@ -1,0 +1,375 @@
+<!-- src/main/resources/templates/fragments/sidebar.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+
+<aside th:fragment="sidebar-component" class="sidebar">
+    <!-- ── GLOBAL SIDEBAR BRAND NEW UI CSS ── -->
+    <style>
+        .sidebar {
+            width: 260px;
+            min-width: 260px;
+            background-color: #1e293b !important;
+            color: #fff !important;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+            overflow-y: auto !important;
+            border-right: 1px solid #334155;
+            font-family: 'Inter', system-ui, sans-serif;
+
+
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+
+        /* Chrome, Safari, Opera के लिए स्क्रॉल बार छिपाना */
+        .sidebar::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+
+        .sidebar-brand {
+            padding: 24px 20px;
+            font-size: 18px;
+            font-weight: 700;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .sidebar-brand a {
+            color: #fff !important;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .sidebar-brand i {
+            color: #0ea5e9 !important;
+            font-size: 20px;
+        }
+
+        /* ── FIXED: PROFILE SECTION HORIZONTAL LAYOUT ── */
+        .profile-container-horizontal {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px 12px;
+            margin: 0 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .style-profile-wrapper {
+            position: relative;
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            flex-shrink: 0;
+        }
+        .style-profile-wrapper:hover #cameraOverlay {
+            opacity: 1 !important;
+        }
+        .style-profile-wrapper:hover #sidebarProfileImg {
+            opacity: 0.6;
+        }
+
+        /* FIXED: टेक्स्ट कटने से रोकने के लिए वर्ड-रैप और फ्लेक्स ग्रो */
+        .profile-info-block {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            text-align: left;
+            flex-grow: 1;
+            white-space: normal;
+            word-break: break-word;
+            max-width: 160px;
+        }
+
+        /* ── LIVE TIMER BADGE STYLE ── */
+        .live-timer-badge {
+            background: linear-gradient(135deg, #0284c7, #0369a1);
+            color: #ffffff;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            font-family: 'Courier New', Courier, monospace;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 5px rgba(14, 165, 233, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 6px;
+        }
+
+        .live-timer-badge i {
+            animation: blinker 1s linear infinite;
+        }
+        @keyframes blinker {
+            50% { opacity: 0; }
+        }
+
+        /* Nav Menus Reset */
+        .sidebar-menu {
+            list-style: none !important;
+            padding: 16px 12px !important;
+            margin: 0 !important;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .sidebar-menu li {
+            width: 100%;
+            margin-bottom: 0 !important;
+        }
+        .sidebar-menu li a,
+        .sidebar-menu .dropdown-trigger {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            color: #94a3b8 !important;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            background: transparent !important;
+            border: none !important;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            box-shadow: none !important;
+        }
+
+        .sidebar-menu li a i,
+        .sidebar-menu .dropdown-trigger i:first-child {
+            font-size: 16px;
+            width: 24px;
+            color: #64748b !important;
+            transition: color 0.2s;
+            margin-right: 4px !important;
+        }
+
+        /* Interactive Hover & Active states */
+        .sidebar-menu li a:hover,
+        .sidebar-menu .dropdown-trigger:hover {
+            color: #fff !important;
+            background-color: #334155 !important;
+        }
+        .sidebar-menu li a:hover i,
+        .sidebar-menu .dropdown-trigger:hover i:first-child {
+            color: #0ea5e9 !important;
+        }
+
+        .sidebar-menu li.active > a {
+            color: #fff !important;
+            background-color: #4f46e5 !important;
+        }
+        .sidebar-menu li.active > a i {
+            color: #fff !important;
+        }
+
+        /* Chevron Arrows Accordion Sync */
+        .sidebar-menu .dropdown-trigger {
+            justify-content: space-between;
+        }
+        .sidebar-menu .dropdown-trigger span {
+            flex-grow: 1;
+        }
+        .arrow-icon {
+            font-size: 11px !important;
+            transition: transform 0.2s ease;
+            margin-left: auto !important;
+            margin-right: 0 !important;
+            color: #64748b !important;
+        }
+        .dropdown-trigger[aria-expanded="true"] .arrow-icon {
+            transform: rotate(90deg);
+            color: #fff !important;
+        }
+
+        /* Clean Inner Dropdown Submenus */
+        .submenu {
+            list-style: none !important;
+            padding: 4px 0 4px 34px !important;
+            margin: 2px 0 6px 0 !important;
+            background-color: #111827 !important;
+            border-radius: 6px;
+        }
+        .submenu li a {
+            padding: 8px 12px !important;
+            font-size: 13.5px;
+            color: #94a3b8 !important;
+            background: transparent !important;
+        }
+        .submenu li a:hover {
+            color: #0ea5e9 !important;
+            background: transparent !important;
+        }
+    </style>
+
+    <div class="sidebar-brand">
+        <a th:href="@{/employee/dashboard}">
+            <i class="fa-solid fa-square-poll-horizontal"></i> BlueThink Inc.
+        </a>
+    </div>
+
+    <!-- PROFILE SECTION -->
+    <div class="profile-container-horizontal">
+        <!-- Photo Section -->
+        <div class="style-profile-wrapper" style="cursor: pointer;" onclick="document.getElementById('sidebarPhotoInput').click();" title="Click to change photo">
+            <img id="sidebarProfileImg"
+                 th:src="${loggedInEmpPhoto != null} ? @{/storage/photos/{filename}(filename=${loggedInEmpPhoto})} : 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'"
+                 class="rounded-circle border border-2 border-primary"
+                 style="width: 52px; height: 52px; object-fit: cover; transition: all 0.2s;"
+                 alt="Profile">
+
+            <div class="position-absolute top-0 start-0 w-100 h-100 rounded-circle d-flex align-items-center justify-content-center bg-dark bg-opacity-50 text-white opacity-0"
+                 id="cameraOverlay" style="transition: opacity 0.2s;">
+                <i class="fa-solid fa-camera" style="font-size: 11px;"></i>
+            </div>
+        </div>
+
+        <input type="file" id="sidebarPhotoInput" accept="image/*" style="display: none;" onchange="uploadSidebarPhoto(this)">
+
+        <!-- Info & Timer Section -->
+        <div class="profile-info-block">
+            <h6 class="text-white mb-1" style="font-size: 13px; font-weight: 600; line-height: 1.3;" th:text="${loggedInEmpName != null} ? ${loggedInEmpName} : 'Employee'">Employee Name</h6>
+            <span class="text-info mb-0" style="font-size: 11px; font-weight: 500; line-height: 1.2;" th:text="${loggedInEmpDesignation != null} ? ${loggedInEmpDesignation} : 'Software Engineer'">Software Engineer</span>
+            <small class="text-muted d-block mt-0.5" style="font-size: 10px; opacity: 0.7;" th:text="${loggedInEmpId != null} ? ${loggedInEmpId} : 'BT0000'">BT0000</small>
+
+            <!-- LIVE TIMER BADGE -->
+            <div class="live-timer-badge">
+                <i class="fa-solid fa-circle text-warning" style="font-size: 6px;"></i>
+                <span id="sidebarLiveTimer">00:00:00</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- LIST NAVIGATION -->
+    <ul class="sidebar-menu">
+        <li th:classappend="${currentPage == 'dashboard'} ? 'active'">
+            <a th:href="@{/employee/dashboard}"><i class="fa-solid fa-chart-simple"></i>Dashboard</a>
+        </li>
+        <!-- PROFILE MANAGEMENT -->
+        <li>
+            <button class="dropdown-trigger" type="button" data-bs-toggle="collapse" data-bs-target="#profileSubmenu" aria-expanded="false">
+                <i class="fa-solid fa-user"></i>
+                <span>Profile Management</span>
+                <i class="fa-solid fa-chevron-right arrow-icon"></i>
+            </button>
+            <div class="collapse" id="profileSubmenu">
+                <ul class="submenu">
+                    <li><a th:href="@{/employee/profile/view}">View Profile</a></li>
+                </ul>
+            </div>
+        </li>
+        <!-- SALARY -->
+        <li>
+            <button class="dropdown-trigger" type="button" data-bs-toggle="collapse" data-bs-target="#salarySubmenu" aria-expanded="false">
+                <i class="fa-solid fa-wallet"></i>
+                <span>Salary Management</span>
+                <i class="fa-solid fa-chevron-right arrow-icon"></i>
+            </button>
+            <div class="collapse" id="salarySubmenu">
+                <ul class="submenu">
+                    <li><a th:href="@{/employee/salary/salary-list(id=${loggedInEmpId})}">View Salary</a></li>
+                </ul>
+            </div>
+        </li>
+        <li th:classappend="${currentPage == 'leave'} ? 'active'">
+            <a th:href="@{/employee/leave/apply}"><i class="fa-solid fa-envelope-open"></i>Leave</a>
+        </li>
+        <li th:classappend="${currentPage == 'timesheet'} ? 'active'">
+            <a th:href="@{/employee/timesheet/log}"><i class="fa-solid fa-clock"></i>Timesheet</a>
+        </li>
+        <li th:classappend="${currentPage == 'wfh'} ? 'active'">
+            <a th:href="@{/employee/wfh/apply}"><i class="fa-solid fa-house-laptop"></i>Work From Home</a>
+        </li>
+        <li th:classappend="${currentPage == 'signoff'} ? 'active'">
+            <a th:href="@{/employee/attendance/signoff-logs}">
+                <i class="fa-solid fa-right-from-bracket text-danger"></i>
+                <span>Signoff Logs</span>
+            </a>
+        </li>
+        <li>
+            <button class="dropdown-trigger" type="button" data-bs-toggle="collapse" data-bs-target="#policySubmenu" aria-expanded="false">
+                <i class="fa-solid fa-shield-halved"></i>
+                <span>Policy</span>
+                <i class="fa-solid fa-chevron-right arrow-icon"></i>
+            </button>
+            <div class="collapse" id="policySubmenu">
+                <ul class="submenu">
+                    <li><a th:href="@{/employee/policy}">View Company Policy</a></li>
+                </ul>
+            </div>
+        </li>
+    </ul>
+
+    <!-- UPDATED: JAVASCRIPT CONNECTED WITH BACKEND -->
+    <script th:inline="javascript">
+        // FIXED: अब यह बैकएंड से आने वाले कुल सेकंड्स (backendTotalSeconds) को कलेक्ट करेगा
+        let totalSeconds = [[${backendTotalSeconds != null ? backendTotalSeconds : 0}]];
+        const timerElement = document.getElementById("sidebarLiveTimer");
+
+        // फ़ंक्शन जो स्क्रीन पर टाइम अपडेट करेगा
+        function updateTimerDisplay() {
+            let hrs = Math.floor(totalSeconds / 3600);
+            let mins = Math.floor((totalSeconds % 3600) / 60);
+            let secs = totalSeconds % 60;
+
+            hrs = hrs < 10 ? "0" + hrs : hrs;
+            mins = mins < 10 ? "0" + mins : mins;
+            secs = secs < 10 ? "0" + secs : secs;
+
+            timerElement.textContent = `${hrs}:${mins}:${secs}`;
+        }
+
+        // पेज लोड होते ही तुरंत सही टाइम दिखाएं (ताकि 00:00:00 न चमके)
+        updateTimerDisplay();
+
+        // हर एक सेकंड में टाइमर को आगे बढ़ाने के लिए
+        setInterval(() => {
+            totalSeconds++;
+            updateTimerDisplay();
+        }, 1000);
+
+        // PHOTO UPLOAD JAVASCRIPT
+        function uploadSidebarPhoto(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const formData = new FormData();
+                formData.append("photo", file);
+
+                const profileImg = document.getElementById("sidebarProfileImg");
+                profileImg.style.opacity = "0.4";
+
+                fetch("/employee/profile/upload-photo", {
+                    method: "POST",
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error("Upload failed");
+                    return response.text();
+                })
+                .then(fileName => {
+                    profileImg.src = "/storage/photos/" + fileName + "?t=" + new Date().getTime();
+                    profileImg.style.opacity = "1";
+                    alert("Profile photo updated successfully!");
+                })
+                .catch(error => {
+                    console.error(error);
+                    profileImg.style.opacity = "1";
+                    alert("Something went wrong.");
+                });
+            }
+        }
+    </script>
+</aside>
+
+</body>
+</html>

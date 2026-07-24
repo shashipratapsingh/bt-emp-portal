@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Salary Structures</title>
+    <!-- Bootstrap & Font Awesome (already used elsewhere) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* ----- Global reset & main content ----- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', system-ui, sans-serif; background: #f4f7fc; }
+
+        .main-content {
+            margin-left: 280px;
+            min-height: 100vh;
+            padding: 1.5rem 2rem;
+            background: #f4f7fc;
+        }
+        @media (max-width: 768px) {
+            .main-content { margin-left: 0; padding: 1rem; }
+        }
+
+        /* ----- Page header & breadcrumb ----- */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+        .page-header h4 {
+            font-weight: 600;
+            color: #1a2639;
+            font-size: 1.5rem;
+            margin: 0;
+        }
+        .page-header h4 i {
+            color: #2a6df4;
+            margin-right: 0.5rem;
+        }
+        .breadcrumb {
+            background: transparent;
+            padding: 0;
+            margin: 0.25rem 0 0 0;
+            font-size: 0.9rem;
+        }
+        .breadcrumb-item a {
+            color: #6b7a8f;
+            text-decoration: none;
+        }
+        .breadcrumb-item.active {
+            color: #1a2639;
+        }
+        .breadcrumb-item + .breadcrumb-item::before {
+            content: "›";
+            color: #6b7a8f;
+        }
+
+        /* ----- Card / form container (matching department page) ----- */
+        .content-card {
+            background: #ffffff;
+            border-radius: 12px;
+            border: 1px solid #e9edf4;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* ----- Table styling ----- */
+        .table-container {
+            overflow-x: auto;
+        }
+        .table {
+            margin-bottom: 0;
+            font-size: 0.9rem;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        .table thead th {
+            background: #f8fafc;
+            color: #4a5a72;
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #e9edf4;
+            padding: 0.75rem 0.5rem;
+            white-space: nowrap;
+        }
+        .table tbody td {
+            padding: 0.75rem 0.5rem;
+            vertical-align: middle;
+            border-bottom: 1px solid #e9edf4;
+        }
+        .table tbody tr:hover {
+            background: #f8faff;
+        }
+        .table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* ----- Status badge (match department page) ----- */
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            background: #e6f7ed;
+            color: #0d6832;
+        }
+        .status-badge.inactive {
+            background: #fde8e8;
+            color: #9b2c2c;
+        }
+        .status-badge.pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        /* ----- Action buttons (icon-only) ----- */
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            border: none;
+            background: transparent;
+            color: #6b7a8f;
+            transition: 0.2s;
+            font-size: 0.9rem;
+            text-decoration: none;
+            margin: 0 2px;
+        }
+        .action-btn:hover {
+            background: #e9edf4;
+            color: #1a2639;
+        }
+        .action-btn.view:hover {
+            background: #e3f2fd;
+            color: #0d47a1;
+        }
+        .action-btn.edit:hover {
+            background: #fff3e0;
+            color: #e65100;
+        }
+        .action-btn.delete:hover {
+            background: #fbe9e7;
+            color: #b71c1c;
+        }
+
+        /* ----- Empty state ----- */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+        }
+        .empty-state i {
+            font-size: 3rem;
+            color: #d5dbe6;
+            margin-bottom: 1rem;
+        }
+        .empty-state h5 {
+            color: #4a5a72;
+            font-weight: 600;
+        }
+        .empty-state p {
+            color: #6b7a8f;
+            font-size: 0.9rem;
+        }
+
+        /* ----- Footer info (like department page) ----- */
+        .table-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            padding: 0.75rem 0 0 0;
+            font-size: 0.85rem;
+            color: #6b7a8f;
+            border-top: 1px solid #e9edf4;
+            margin-top: 0.5rem;
+        }
+        .table-footer .pagination-info {
+            margin: 0;
+        }
+        .table-footer .pagination-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .table-footer .pagination-controls .page-btn {
+            padding: 0.25rem 0.75rem;
+            border: 1px solid #e9edf4;
+            border-radius: 6px;
+            background: #fff;
+            color: #1a2639;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: 0.2s;
+        }
+        .table-footer .pagination-controls .page-btn:hover {
+            background: #f8fafc;
+            border-color: #c5cdd8;
+        }
+        .table-footer .pagination-controls .page-btn.disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        /* Search bar (matching department page) */
+        .search-area {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 1rem;
+        }
+        .search-area .form-control {
+            width: 250px;
+            border-radius: 8px;
+            border: 1px solid #e9edf4;
+            padding: 0.4rem 1rem;
+            font-size: 0.9rem;
+        }
+        .search-area .form-control:focus {
+            border-color: #2a6df4;
+            box-shadow: 0 0 0 3px rgba(42,109,244,0.1);
+        }
+
+        /* Alert messages (if any) */
+        .alert {
+            border-radius: 10px;
+            font-size: 0.9rem;
+            border: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-header { flex-direction: column; align-items: flex-start; }
+            .search-area .form-control { width: 100%; }
+            .table-footer { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Include Sidebar -->
+<div th:replace="~{fragments/sidebar-admin :: sidebar-component}"></div>
+
+<!-- Main Content -->
+<div class="main-content">
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div>
+            <h4><i class="fa-solid fa-coins"></i> Salary Structures</h4>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/admin/dashboard">Dashboard</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Salary Structures</li>
+                </ol>
+            </nav>
+        </div>
+        <!-- Optional right-side buttons (like "Add Department") -->
+        <a href="/admin/employees/add" class="btn btn-primary btn-sm">
+            <i class="fa-solid fa-plus me-1"></i> Add Employee
+        </a>
+    </div>
+
+    <!-- Success / Error Messages -->
+    <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fa-regular fa-circle-check me-2"></i> <span th:text="${success}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fa-regular fa-circle-xmark me-2"></i> <span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <!-- Main Card -->
+    <div class="content-card">
+
+        <!-- Search / Filter (like department page) -->
+        <div class="search-area">
+            <div class="input-group" style="width: auto;">
+                <input type="text" class="form-control" placeholder="Search..." id="tableSearch"
+                       onkeyup="searchTable()">
+                <button class="btn btn-outline-secondary" type="button"><i class="fa-solid fa-search"></i></button>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-container">
+            <table class="table" id="salaryTable">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Employee</th>
+                    <th>Department</th>
+                    <th>Basic Salary</th>
+                    <th>Net Salary</th>
+                    <th>Effective From</th>
+                    <th>Status</th>
+                    <th style="text-align: center;">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- Loop through salaryStructures -->
+                <tr th:each="structure, stat : ${salaryStructures}">
+                    <td th:text="${stat.index + 1}">1</td>
+                    <td>
+                        <strong th:text="${structure.employee != null ? structure.employee.fullName : 'N/A'}">N/A</strong>
+                        <br>
+                        <small class="text-muted" th:text="${structure.employee != null ? structure.employee.id : ''}"></small>
+                    </td>
+                    <td th:text="${structure.employee != null and structure.employee.department != null ? structure.employee.department.departmentName : 'N/A'}">Department</td>
+                    <td th:text="'₹' + ${#numbers.formatDecimal(structure.basicSalary, 0, 2)}">₹0.00</td>
+                    <td>
+        <span class="fw-bold text-success" th:text="'₹' + ${#numbers.formatDecimal(
+            structure.basicSalary + structure.hra + structure.conveyance + structure.medicalAllowance + structure.specialAllowance + structure.otherAllowance
+            - (structure.pf + structure.esi + structure.professionalTax + structure.tds + structure.loanDeduction), 0, 2)
+        }">₹0.00</span>
+                    </td>
+                    <td th:text="${#temporals.format(structure.effectiveFrom, 'dd MMM yyyy')}">01 Jan 2024</td>
+                    <td>
+                        <!-- Status logic based on net salary > 0 -->
+                        <span class="status-badge" th:class="${(structure.basicSalary + structure.hra + structure.conveyance + structure.medicalAllowance + structure.specialAllowance + structure.otherAllowance
+            - (structure.pf + structure.esi + structure.professionalTax + structure.tds + structure.loanDeduction)) > 0 ? 'status-badge' : 'status-badge inactive'}">
+            <span th:text="${(structure.basicSalary + structure.hra + structure.conveyance + structure.medicalAllowance + structure.specialAllowance + structure.otherAllowance
+                - (structure.pf + structure.esi + structure.professionalTax + structure.tds + structure.loanDeduction)) > 0 ? 'Active' : 'Inactive'}">Active</span>
+        </span>
+                    </td>
+                    <td>
+                        <div class="d-flex justify-content-center">
+                            <a th:href="@{/admin/salary-structure/view/{id}(id=${structure.id})}" class="action-btn view" title="View">
+                                <i class="fa-regular fa-eye"></i>
+                            </a>
+                            <a th:href="@{/admin/salary-structure/edit/{id}(id=${structure.id})}" class="action-btn edit" title="Edit">
+                                <i class="fa-regular fa-pen-to-square"></i>
+                            </a>
+                            <a href="#" onclick="confirmDelete('Delete salary structure for ${structure.employee != null ? structure.employee.fullName : 'Employee'}?', '/admin/salary-structure/delete/${structure.id}?employeeId=${structure.employee != null ? structure.employee.id : ''}')" class="action-btn delete" title="Delete">
+                                <i class="fa-regular fa-trash-can"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                <!-- Empty state -->
+                <tr th:if="${salaryStructures == null or salaryStructures.isEmpty()}">
+                    <td colspan="8">
+                        <div class="empty-state">
+                            <i class="fa-regular fa-file-invoice"></i>
+                            <h5>No Salary Structures Found</h5>
+                            <p>Add an employee to create a salary structure.</p>
+                            <a href="/admin/employees/add" class="btn btn-primary btn-sm">
+                                <i class="fa-solid fa-plus me-1"></i> Add Employee
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Table Footer (pagination info) -->
+        <div class="table-footer">
+            <div class="pagination-info">
+                Showing <span th:text="${salaryStructures != null ? salaryStructures.size() : 0}">0</span> entries
+            </div>
+            <div class="pagination-controls">
+                <a href="#" class="page-btn disabled">Previous</a>
+                <a href="#" class="page-btn disabled">Next</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Extra footer (like the department page) -->
+    <div class="mt-4 text-muted small" style="border-top:1px solid #e9edf4; padding-top:0.75rem;">
+        <span>HRMS v2.0</span>
+        <span class="ms-3">Salary Management</span>
+        <span class="ms-3"><i class="fa-regular fa-circle-check text-success"></i> <span th:text="${salaryStructures != null ? salaryStructures.size() : 0}">0</span> Records</span>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fa-regular fa-trash-can text-danger me-2"></i> Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p id="deleteMessage">Are you sure you want to delete this salary structure?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <a href="#" id="deleteLink" class="btn btn-danger">Delete</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Delete confirmation
+    function confirmDelete(message, link) {
+        document.getElementById('deleteMessage').textContent = message;
+        document.getElementById('deleteLink').href = link;
+        new bootstrap.Modal(document.getElementById('deleteModal')).show();
+    }
+
+    // Simple search filter (client-side)
+    function searchTable() {
+        const input = document.getElementById('tableSearch');
+        const filter = input.value.toUpperCase();
+        const table = document.getElementById('salaryTable');
+        const rows = table.getElementsByTagName('tr');
+        for (let i = 1; i < rows.length; i++) {
+            const cells = rows[i].getElementsByTagName('td');
+            let found = false;
+            for (let j = 0; j < cells.length; j++) {
+                const cell = cells[j];
+                if (cell) {
+                    const text = cell.textContent || cell.innerText;
+                    if (text.toUpperCase().indexOf(filter) > -1) {
+                        found = true;
+                        break;
+                    }
+                }
+            }
+            rows[i].style.display = found ? '' : 'none';
+        }
+    }
+</script>
+
+</body>
+</html>

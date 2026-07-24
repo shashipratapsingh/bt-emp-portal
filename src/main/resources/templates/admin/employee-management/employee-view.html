@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle}">Employee Details</title>
+
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Google Font Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Sidebar CSS -->
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            font-family: 'Inter', sans-serif;
+            background: #f4f7fc;
+            height: 100%;
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        body {
+            display: flex;
+            flex-direction: row;
+        }
+
+        /* Main content - same as dashboard */
+        .main-content {
+            flex: 1;
+            padding: 1.5rem 2rem;
+            background: #f4f7fc;
+            min-height: 100vh;
+            margin-left: 280px;
+            width: calc(100% - 280px);
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 1rem;
+            }
+        }
+
+        /* Page Header - same as dashboard */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .page-header h4 {
+            font-weight: 600;
+            color: #1a2639;
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .page-header .breadcrumb {
+            background: transparent;
+            padding: 0;
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        .page-header .breadcrumb-item + .breadcrumb-item::before {
+            content: "›";
+        }
+
+        .page-header .breadcrumb-item a {
+            color: #6b7a8f;
+            text-decoration: none;
+        }
+
+        .page-header .breadcrumb-item.active {
+            color: #1a2639;
+        }
+
+        /* Card styles - same as dashboard */
+        .card-custom {
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid #e9edf4;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            padding: 1.5rem;
+        }
+
+        .card-custom .card-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #1a2639;
+            margin-bottom: 1rem;
+        }
+
+        .logout-btn {
+            color: #6b7a8f;
+            text-decoration: none;
+            padding: 0.4rem 1rem;
+            border-radius: 8px;
+            transition: 0.2s;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .logout-btn:hover {
+            background: #fde8e8;
+            color: #d94a4a;
+        }
+
+        .today-badge {
+            background: rgba(42, 109, 244, 0.1);
+            color: #2a6df4;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Profile Header */
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #e9edf4;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #e9edf4;
+        }
+
+        .profile-info h2 {
+            font-weight: 600;
+            color: #1a2639;
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .profile-info .user-id {
+            color: #2a6df4;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .profile-info .email {
+            color: #6b7a8f;
+            font-size: 0.9rem;
+        }
+
+        .profile-actions {
+            margin-left: auto;
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        /* Detail rows */
+        .detail-row {
+            display: flex;
+            padding: 0.6rem 0;
+            border-bottom: 1px solid #f4f7fc;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            width: 40%;
+            font-weight: 500;
+            color: #4a5a72;
+            font-size: 0.85rem;
+        }
+
+        .detail-value {
+            width: 60%;
+            color: #1a2639;
+            font-size: 0.9rem;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .status-badge.active {
+            background: #e6f7ed;
+            color: #0d6832;
+        }
+
+        .status-badge.inactive {
+            background: #fde8e8;
+            color: #9b2c2c;
+        }
+
+        .section-divider {
+            margin: 1.5rem 0 1rem;
+            border-top: 1px solid #e9edf4;
+        }
+
+        .section-title {
+            font-weight: 600;
+            color: #1a2639;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+
+        .section-title i {
+            color: #2a6df4;
+            margin-right: 0.5rem;
+        }
+
+        .btn-action {
+            border-radius: 6px;
+            transition: all 0.2s;
+            padding: 0.5rem 1.2rem;
+        }
+
+        .btn-action:hover {
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 768px) {
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            .profile-actions {
+                margin-left: 0;
+                width: 100%;
+                justify-content: center;
+            }
+            .detail-row {
+                flex-direction: column;
+                padding: 0.4rem 0;
+            }
+            .detail-label {
+                width: 100%;
+                font-size: 0.75rem;
+            }
+            .detail-value {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Include Sidebar (SAME AS ADD-DEPARTMENT) -->
+<div th:replace="~{fragments/sidebar-admin :: sidebar-component}"></div>
+
+<!-- ===== MAIN CONTENT ===== -->
+<div class="main-content">
+
+    <!-- Page Header - Same as add-department -->
+    <div class="page-header">
+        <div>
+            <h4>Employee Details</h4>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a th:href="@{/admin/dashboard}">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a th:href="@{/admin/employees/list}">Employee Management</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Employee Details</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="d-flex align-items-center gap-3">
+            <span class="today-badge">
+                <i class="fa-regular fa-calendar"></i> Today
+            </span>
+            <a th:href="@{/auth/logout}" class="logout-btn">
+                <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </a>
+        </div>
+    </div>
+
+    <!-- Employee Details Card -->
+    <div class="card-custom">
+
+        <!-- Profile Header -->
+        <div class="profile-header">
+            <div>
+                <img th:if="${employee.photo != null}"
+                     th:src="'/uploads/' + ${employee.photo}"
+                     class="profile-avatar" alt="Profile Photo">
+                <img th:unless="${employee.photo != null}"
+                     src="https://ui-avatars.com/api/?name=Employee&background=2a6df4&color=fff&size=120"
+                     class="profile-avatar" alt="Default Photo">
+            </div>
+            <div class="profile-info">
+                <h2 th:text="${employee.fullName}">John Doe</h2>
+                <div class="user-id">
+                    <i class="fa-regular fa-id-card me-1"></i>
+                    <span th:text="${employee.userId}">EMP-2024-001</span>
+                </div>
+                <div class="email">
+                    <i class="fa-regular fa-envelope me-1"></i>
+                    <span th:text="${employee.email}">john@example.com</span>
+                </div>
+                <div class="mt-2">
+                    <span class="status-badge"
+                          th:class="${employee.status == 'ACTIVE' ? 'active' : 'inactive'}"
+                          th:text="${employee.status != null ? employee.status : 'ACTIVE'}">ACTIVE</span>
+                </div>
+            </div>
+            <div class="profile-actions">
+                <a th:href="@{/admin/employees/edit/{id}(id=${employee.id})}"
+                   class="btn btn-primary btn-action">
+                    <i class="fa-solid fa-pen me-1"></i> Edit
+                </a>
+                <a th:href="@{/admin/employees/list}"
+                   class="btn btn-secondary btn-action">
+                    <i class="fa-solid fa-arrow-left me-1"></i> Back
+                </a>
+            </div>
+        </div>
+
+        <!-- Personal Information -->
+        <div class="section-title">
+            <i class="fa-regular fa-user"></i> Personal Information
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="detail-row">
+                    <div class="detail-label">Full Name</div>
+                    <div class="detail-value" th:text="${employee.fullName}">John Doe</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Date of Birth</div>
+                    <div class="detail-value" th:text="${employee.dob}">1990-01-01</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Gender</div>
+                    <div class="detail-value" th:text="${employee.gender}">Male</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Blood Group</div>
+                    <div class="detail-value" th:text="${employee.bloodGroup}">A+</div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="detail-row">
+                    <div class="detail-label">Email</div>
+                    <div class="detail-value" th:text="${employee.email}">john@example.com</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Phone Number</div>
+                    <div class="detail-value" th:text="${employee.phoneNumber}">1234567890</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Marital Status</div>
+                    <div class="detail-value" th:text="${employee.maritalStatus}">Single</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">User ID</div>
+                    <div class="detail-value" th:text="${employee.userId}">EMP-2024-001</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- Education Information -->
+        <div class="section-title">
+            <i class="fa-solid fa-graduation-cap"></i> Education Information
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="detail-row">
+                    <div class="detail-label">Field of Study</div>
+                    <div class="detail-value" th:text="${employee.fieldOfStudy}">Computer Science</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Highest Qualification</div>
+                    <div class="detail-value" th:text="${employee.highestQualification}">Bachelor's</div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="detail-row">
+                    <div class="detail-label">University</div>
+                    <div class="detail-value" th:text="${employee.university}">Harvard University</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Passing Year</div>
+                    <div class="detail-value" th:text="${employee.passingYear}">2020</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- Bank Information -->
+        <div class="section-title">
+            <i class="fa-solid fa-university"></i> Bank Information
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="detail-row">
+                    <div class="detail-label">Bank Name</div>
+                    <div class="detail-value" th:text="${employee.bankName}">HDFC Bank</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Account Number</div>
+                    <div class="detail-value" th:text="${employee.accountNumber}">1234567890</div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="detail-row">
+                    <div class="detail-label">Account Holder Name</div>
+                    <div class="detail-value" th:text="${employee.accountHolderName}">John Doe</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">IFSC Code</div>
+                    <div class="detail-value" th:text="${employee.ifscCode}">HDFC0001234</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- Address Information -->
+        <div class="section-title">
+            <i class="fa-solid fa-map-location-dot"></i> Address Information
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="detail-row">
+                    <div class="detail-label">Current Address</div>
+                    <div class="detail-value" th:text="${employee.currentAddress}">123 Main St, City</div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="detail-row">
+                    <div class="detail-label">Permanent Address</div>
+                    <div class="detail-value" th:text="${employee.permanentAddress}">456 Oak St, City</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- System Information -->
+        <div class="section-title">
+            <i class="fa-solid fa-circle-info"></i> System Information
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="detail-row">
+                    <div class="detail-label">Created At</div>
+                    <div class="detail-value" th:text="${employee.createdAt}">2024-01-01 10:00:00</div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="detail-row">
+                    <div class="detail-label">Updated At</div>
+                    <div class="detail-value" th:text="${employee.updatedAt}">2024-01-01 10:00:00</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="mt-4 pt-3 border-top d-flex justify-content-end gap-2">
+            <a th:href="@{/admin/employees/list}" class="btn btn-secondary">
+                <i class="fa-solid fa-arrow-left me-1"></i> Back to List
+            </a>
+            <a th:href="@{/admin/employees/edit/{id}(id=${employee.id})}" class="btn btn-primary">
+                <i class="fa-solid fa-pen me-1"></i> Edit Employee
+            </a>
+        </div>
+
+    </div>
+
+    <!-- Footer note - same as dashboard -->
+    <div class="mt-4 text-muted" style="font-size:0.75rem; border-top:1px solid #e9edf4; padding-top:1rem;">
+        <span>HRMS v2.0</span>
+        <span class="ms-3">Employee Details</span>
+    </div>
+
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Active menu highlighting - SAME AS ADD-DEPARTMENT -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Find all sidebar links
+        const sidebarLinks = document.querySelectorAll('.sidebar-menu a');
+        const currentPath = window.location.pathname;
+
+        sidebarLinks.forEach(link => {
+            const href = link.getAttribute('href');
+            if (href && currentPath.includes(href)) {
+                // Remove active class from all parent li
+                document.querySelectorAll('.sidebar-menu li').forEach(li => {
+                    li.classList.remove('active');
+                });
+                // Add active class to the parent li
+                link.closest('li').classList.add('active');
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

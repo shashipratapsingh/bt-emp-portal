@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Signoff Details</title>
+    <!-- Bootstrap and Font-Awesome CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <!-- Custom CSS for layout fix -->
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            background-color: #f8f9fa; /* Light grey background poore page ke liye */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Full screen flex wrapper */
+        .page-wrapper {
+            display: flex;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        /* Sidebar container handling (Aapke fragment ke wrap ke liye) */
+        .sidebar-container {
+            min-width: 260px; /* Sidebar ki standard width fix ki */
+            max-width: 260px;
+            background: #1e293b; /* Dark theme standard color agar fragment me background nahi hai */
+        }
+
+        /* Main content area handling */
+        .main-content {
+            flex-grow: 1;
+            background-color: #f8f9fa;
+            overflow-y: auto; /* Agar data lamba ho toh sirf content scroll ho, poora page nahi */
+            height: 100vh;
+        }
+
+        /* Custom styling for badges and table headers */
+        .table thead th {
+            letter-spacing: 0.5px;
+        }
+
+        .badge {
+            letter-spacing: 0.3px;
+            padding: 6px 12px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="page-wrapper">
+    <!-- Sidebar Fragment Box -->
+    <div class="sidebar-container">
+        <div th:replace="~{fragments/sidebar :: sidebar-component}"></div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="main-content p-4">
+        <div class="container-fluid bg-white rounded-3 border p-4 shadow-sm">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 class="fw-bold m-0 text-dark">
+                    <i class="fa-solid fa-clock-rotate-left text-primary me-2"></i>My Signoff & Attendance Logs
+                </h5>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle border" style="font-size: 14px;">
+                    <thead class="table-light text-muted" style="font-size: 12px; text-transform: uppercase;">
+                    <tr>
+                        <th style="width: 8%;">S.No.</th>
+                        <th>Login Time</th>
+                        <th>Logout Time</th>
+                        <th>Work Hours</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!-- Loop through attendance logs -->
+                    <tr th:each="log, stat : ${attendanceLogs}">
+                        <td class="fw-bold text-muted" th:text="${stat.count}">1</td>
+
+                        <!-- Agar aapka time normal String hai toh ye perfect hai, agar LocalDateTime hai toh #temporals use karein -->
+                        <td th:text="${log.loginTime != null ?
+                                        #temporals.format(log.loginTime,'dd MMM yyyy hh:mm a') : '-'}">
+                        </td>
+
+                        <td th:text="${log.logoutTime != null ?
+                            #temporals.format(log.logoutTime,'dd MMM yyyy hh:mm a') :
+                                        'Still Logged In'}">
+                        </td>
+                        <td>
+                            <span class="badge bg-success-subtle text-success fw-medium rounded-2"
+                                  th:text="${log.workingHours != null ? log.workingHours : 'In Progress...'}">
+                                9h 0m
+                            </span>
+                        </td>
+                    </tr>
+                    <!-- If list is empty -->
+                    <tr th:if="${#lists.isEmpty(attendanceLogs)}">
+                        <td colspan="4" class="text-center text-muted py-5">
+                            <i class="fa-regular fa-folder-open d-block fs-3 mb-2 text-secondary"></i>
+                            No logs found for your profile.
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Bootstrap Bundle with Popper (Zaroori hai dropdown/collapse ke liye) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</body>
+</html>

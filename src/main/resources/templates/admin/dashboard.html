@@ -1,0 +1,891 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HRMS Admin · Dashboard</title>
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Google Font Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            font-family: 'Inter', sans-serif;
+            background: #f4f7fc;
+            height: 100%;
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        body {
+            display: flex;
+            flex-direction: row;
+        }
+
+        /*!* ===== SIDEBAR STYLES ===== *!*/
+        /*.sidebar {*/
+        /*    width: 270px;*/
+        /*    min-width: 260px;*/
+        /*    background-color: #1e293b !important;*/
+        /*    color: #fff !important;*/
+        /*    position: fixed;*/
+        /*    height: 100vh;*/
+        /*    left: 0;*/
+        /*    top: 0;*/
+        /*    display: flex;*/
+        /*    flex-direction: column;*/
+        /*    z-index: 1000;*/
+        /*    overflow-y: auto !important;*/
+        /*    border-right: 1px solid #334155;*/
+        /*    font-family: 'Inter', system-ui, sans-serif;*/
+
+
+        /*    -ms-overflow-style: none;  !* IE and Edge *!*/
+        /*    scrollbar-width: none;  !* Firefox *!*/
+        /*}*/
+
+        /*!* Chrome, Safari, Opera के लिए स्क्रॉल बार छिपाना *!*/
+        /*.sidebar::-webkit-scrollbar {*/
+        /*    width: 0px;*/
+        /*    background: transparent;*/
+        /*}*/
+
+        /*.sidebar-brand {*/
+        /*    padding: 0 1.5rem 1.8rem 1.5rem;*/
+        /*    border-bottom: 1px solid rgba(255, 255, 255, 0.08);*/
+        /*    margin-bottom: 1.2rem;*/
+        /*}*/
+        /*.sidebar-brand a {*/
+        /*    padding-top: 27px;*/
+        /*    font-size: 1.3rem;*/
+        /*    font-weight: 700;*/
+        /*    color: #D1D5DB;*/
+        /*    text-decoration: none;*/
+        /*    display: flex;*/
+        /*    align-items: center;*/
+        /*    gap: 10px;*/
+        /*}*/
+        /*.sidebar-brand a i {*/
+        /*    font-size: 1.6rem;*/
+        /*    color: #60A5FA;*/
+        /*}*/
+
+        /*.sidebar-menu {*/
+        /*    list-style: none;*/
+        /*    padding: 0 0.75rem;*/
+        /*    margin: 0;*/
+        /*    flex: 1;*/
+        /*}*/
+        /*.sidebar-menu li {*/
+        /*    margin-bottom: 4px;*/
+        /*}*/
+
+        .menu-title {
+            color: #9CA3AF;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            padding: 1.2rem 1.5rem 0.5rem 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            margin-top: 1.2rem;
+            letter-spacing: 0.5px;
+        }
+        .menu-title:first-of-type {
+            border-top: none;
+            margin-top: 0.5rem;
+        }
+
+        /*.sidebar-menu li a,*/
+        /*.sidebar-menu li .dropdown-trigger {*/
+        /*    display: flex;*/
+        /*    align-items: center;*/
+        /*    gap: 14px;*/
+        /*    padding: 0.7rem 1rem;*/
+        /*    border-radius: 10px;*/
+        /*    font-weight: 500;*/
+        /*    font-size: 0.80rem;*/
+        /*    color: #D1D5DB;*/
+        /*    text-decoration: none;*/
+        /*    background: transparent;*/
+        /*    border: none;*/
+        /*    width: 100%;*/
+        /*    transition: background 0.25s, color 0.25s;*/
+        /*    cursor: pointer;*/
+        /*}*/
+        /*.sidebar-menu li a i,*/
+        /*.sidebar-menu li .dropdown-trigger i {*/
+        /*    width: 20px;*/
+        /*    font-size: 1.1rem;*/
+        /*    color: #9CA3AF;*/
+        /*    transition: color 0.25s;*/
+        /*}*/
+        /*.sidebar-menu li a span,*/
+        /*.sidebar-menu li .dropdown-trigger span {*/
+        /*    flex: 1;*/
+        /*    text-align: left;*/
+        /*}*/
+        /*.arrow-icon {*/
+        /*    font-size: 0.75rem;*/
+        /*    transition: transform 0.25s ease;*/
+        /*    color: #9CA3AF;*/
+        /*}*/
+
+        /*.sidebar-menu li a:hover,*/
+        /*.sidebar-menu li .dropdown-trigger:hover {*/
+        /*    background: #334155 !important;*/
+        /*    color: #FFFFFF;*/
+        /*}*/
+        /*.sidebar-menu li a:hover i,*/
+        /*.sidebar-menu li .dropdown-trigger:hover i {*/
+        /*    color: #334155 !important;*/
+        /*}*/
+        /*.sidebar-menu li a:hover .arrow-icon,*/
+        /*.sidebar-menu li .dropdown-trigger:hover .arrow-icon {*/
+        /*    color: #334155 !important;*/
+        /*}*/
+
+        /*.sidebar-menu li.active > a {*/
+        /*    background: #334155 !important;*/
+        /*    color: #FFFFFF;*/
+        /*}*/
+        /*.sidebar-menu li.active > a i {*/
+        /*    color: #334155 !important;*/
+        /*}*/
+
+        .submenu {
+            list-style: none;
+            padding-left: 1.8rem;
+            margin: 6px 0 6px 0;
+        }
+        .submenu li {
+            margin-bottom: 2px;
+        }
+        .submenu li a {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 1rem 0.5rem 0.5rem;
+            font-size: 0.7rem;
+            font-weight: 300;
+            color: #D1D5DB;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background 0.2s, color 0.2s;
+            gap: 8px;
+        }
+        .submenu li a::before {
+            content: "•";
+            font-size: 1.2rem;
+            color: #9CA3AF;
+            margin-right: 6px;
+        }
+        .submenu li a:hover {
+            background: #1E40AF;
+            color: #FFFFFF;
+        }
+        .submenu li a:hover::before {
+            color: #FFFFFF;
+        }
+        .submenu li.active-sub a {
+            background: #2563EB;
+            color: #FFFFFF;
+        }
+        .submenu li.active-sub a::before {
+            color: #FFFFFF;
+        }
+
+        .collapse {
+            transition: height 0.2s ease;
+        }
+
+        .dropdown-trigger[aria-expanded="true"] .arrow-icon {
+            transform: rotate(90deg);
+        }
+
+        .sidebar-footer {
+            padding: 1.5rem 1.5rem 0.2rem;
+            font-size: 0.7rem;
+            color: #D1D5DB;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            margin-top: 0.8rem;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                min-height: auto;
+                border-right: none;
+                border-bottom: 1px solid rgba(255,255,255,0.1);
+                position: relative;
+                left: 0;
+                top: 0;
+            }
+        }
+
+        /* ----- MAIN CONTENT ----- */
+        .main-content {
+            flex: 1;
+            padding: 1.5rem 2rem;
+            background: #f4f7fc;
+            min-height: 100vh;
+            margin-left: 280px;
+            width: calc(100% - 280px);
+        }
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .page-header h4 {
+            font-weight: 600;
+            color: #1a2639;
+            margin: 0;
+            font-size: 1.5rem;
+        }
+        .page-header .breadcrumb {
+            background: transparent;
+            padding: 0;
+            margin: 0;
+            font-size: 0.9rem;
+        }
+        .page-header .breadcrumb-item + .breadcrumb-item::before {
+            content: "›";
+        }
+        .page-header .breadcrumb-item a {
+            color: #6b7a8f;
+            text-decoration: none;
+        }
+        .page-header .breadcrumb-item.active {
+            color: #1a2639;
+        }
+
+        .stat-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 1.2rem 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            border: 1px solid #e9edf4;
+            transition: 0.2s;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .stat-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
+        .stat-card .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            color: #fff;
+            flex-shrink: 0;
+        }
+        .stat-card .stat-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1a2639;
+            line-height: 1.2;
+        }
+        .stat-card .stat-label {
+            font-size: 0.85rem;
+            color: #6b7a8f;
+            font-weight: 500;
+        }
+        .stat-card .stat-sub {
+            font-size: 0.75rem;
+            color: #8a9bb5;
+        }
+        .bg-soft-primary { background: #e6efff; color: #2a6df4; }
+        .bg-soft-success { background: #e3f5ec; color: #0f973d; }
+        .bg-soft-warning { background: #fef3e2; color: #e67e22; }
+        .bg-soft-danger { background: #fde8e8; color: #d94a4a; }
+        .bg-soft-info { background: #e3f0ff; color: #1a7fdb; }
+        .bg-soft-purple { background: #ede7f6; color: #7c3aed; }
+
+        .card-custom {
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid #e9edf4;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            padding: 1.2rem 1.5rem;
+            height: 100%;
+        }
+        .card-custom .card-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #1a2639;
+            margin-bottom: 1rem;
+        }
+        .dept-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f0f2f5;
+            font-size: 0.9rem;
+        }
+        .dept-item:last-child { border-bottom: none; }
+        .dept-item .dept-name { color: #3d4a5c; }
+        .dept-item .dept-stats { color: #6b7a8f; font-weight: 500; }
+
+        .recent-employee {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0.6rem 0;
+            border-bottom: 1px solid #f0f2f5;
+        }
+        .recent-employee:last-child { border-bottom: none; }
+        .recent-employee .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e6efff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: #2a6df4;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+        .recent-employee .emp-info { flex: 1; }
+        .recent-employee .emp-name { font-weight: 500; color: #1a2639; font-size: 0.9rem; }
+        .recent-employee .emp-role { font-size: 0.8rem; color: #6b7a8f; }
+
+        .status-badge {
+            padding: 0.2rem 0.7rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        .status-active { background: #e3f5ec; color: #0f973d; }
+        .status-notice { background: #fef3e2; color: #e67e22; }
+        .status-resigned { background: #fde8e8; color: #d94a4a; }
+        .status-terminated { background: #f1f3f5; color: #6b7a8f; }
+
+        .table-custom {
+            font-size: 0.9rem;
+        }
+        .table-custom thead th {
+            background: #f8fafc;
+            color: #4a5a72;
+            font-weight: 600;
+            border-bottom: 1px solid #e9edf4;
+            padding: 0.8rem 0.8rem;
+        }
+        .table-custom tbody td {
+            padding: 0.8rem 0.8rem;
+            vertical-align: middle;
+            border-bottom: 1px solid #f0f2f5;
+        }
+        .table-custom tbody tr:hover { background: #fafcff; }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f0f2f5;
+            font-size: 0.85rem;
+        }
+        .activity-item:last-child { border-bottom: none; }
+        .activity-item .activity-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .activity-item .activity-text { color: #3d4a5c; }
+        .activity-item .activity-text strong { color: #1a2639; }
+
+        .birthday-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0.4rem 0;
+            border-bottom: 1px solid #f0f2f5;
+            font-size: 0.9rem;
+        }
+        .birthday-item:last-child { border-bottom: none; }
+        .birthday-item .bday-icon {
+            color: #e67e22;
+            font-size: 1rem;
+            width: 20px;
+            flex-shrink: 0;
+        }
+        .birthday-item .bday-name { color: #1a2639; font-weight: 500; }
+        .birthday-item .bday-dept { color: #6b7a8f; font-size: 0.8rem; }
+
+        .view-all-link {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #2a6df4;
+            text-decoration: none;
+        }
+        .view-all-link:hover { text-decoration: underline; }
+
+        .progress-bar-custom {
+            height: 6px;
+            border-radius: 10px;
+            background: #e9edf4;
+            margin-top: 4px;
+        }
+        .progress-bar-custom .fill {
+            height: 100%;
+            border-radius: 10px;
+            background: #2a6df4;
+        }
+
+        .fw-500 { font-weight: 500; }
+
+        .logout-btn {
+            color: #6b7a8f;
+            text-decoration: none;
+            padding: 0.4rem 1rem;
+            border-radius: 8px;
+            transition: 0.2s;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .logout-btn:hover {
+            background: #fde8e8;
+            color: #d94a4a;
+        }
+
+        .today-badge {
+            background: rgba(42, 109, 244, 0.1);
+            color: #2a6df4;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Status section */
+        .status-item {
+            margin-bottom: 0.5rem;
+        }
+        .status-item:last-child { margin-bottom: 0; }
+        .status-item .status-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: #3d4a5c;
+        }
+        .status-item .status-label strong {
+            color: #1a2639;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Include Sidebar from fragments/sidebar-admin.html -->
+<div th:replace="~{fragments/sidebar-admin :: sidebar-component}"></div>
+
+<!-- ===== MAIN CONTENT ===== -->
+<div class="main-content">
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div>
+            <h4 th:text="'Hi, ' + (${loggedInUser} ?: 'Guest')">Hi, User</h4>
+
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Employee Management</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="d-flex align-items-center gap-3">
+            <span class="today-badge">
+                <i class="fa-regular fa-calendar"></i> Today
+            </span>
+            <a th:href="@{/auth/logout}" class="logout-btn">
+                <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </a>
+        </div>
+    </div>
+
+    <!-- Stats Row - 4 Cards -->
+    <div class="row g-3 mb-4">
+        <!-- Total Employees -->
+        <div class="col-xl-3 col-lg-6 col-md-6">
+            <div class="stat-card">
+                <div>
+                    <div class="stat-number" th:text="${totalEmployees != null ? totalEmployees : 150}">150</div>
+                    <div class="stat-label">Total Employees</div>
+                    <div class="stat-sub">
+                        <i class="fa-regular fa-circle-check text-success"></i>
+                        <span th:text="${activeEmployees != null ? activeEmployees : 120}">120</span> active
+                    </div>
+                </div>
+                <div class="stat-icon bg-soft-primary"><i class="fa-solid fa-users"></i></div>
+            </div>
+        </div>
+        <!-- New Joiners -->
+        <div class="col-xl-3 col-lg-6 col-md-6">
+            <div class="stat-card">
+                <div>
+                    <div class="stat-number" th:text="${newJoinees != null ? newJoinees : 12}">12</div>
+                    <div class="stat-label">New Joiners</div>
+                    <div class="stat-sub">This month</div>
+                </div>
+                <div class="stat-icon bg-soft-success"><i class="fa-solid fa-user-plus"></i></div>
+            </div>
+        </div>
+        <!-- Departments -->
+        <div class="col-xl-3 col-lg-6 col-md-6">
+            <div class="stat-card">
+                <div>
+                    <div class="stat-number" th:text="${vacancies != null ? vacancies : 18}">18</div>
+                    <div class="stat-label">Departments</div>
+                    <div class="stat-sub">
+                        <span th:text="${pendingLeaves != null ? pendingLeaves : 11}">11</span> require attention
+                    </div>
+                </div>
+                <div class="stat-icon bg-soft-warning"><i class="fa-solid fa-building"></i></div>
+            </div>
+        </div>
+        <!-- Pending Approvals -->
+        <div class="col-xl-3 col-lg-6 col-md-6">
+            <div class="stat-card">
+                <div>
+                    <div class="stat-number" th:text="${pendingLeaves != null ? pendingLeaves : 11}">11</div>
+                    <div class="stat-label">Pending Approvals</div>
+                    <div class="stat-sub">Requires attention</div>
+                </div>
+                <div class="stat-icon bg-soft-danger"><i class="fa-solid fa-clock"></i></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Row: Department + Recent Employees + Status -->
+    <div class="row g-3 mb-4">
+        <!-- Employees by Department -->
+        <div class="col-xl-5 col-lg-6">
+            <div class="card-custom">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div class="card-title">Employees by Department</div>
+                    <a href="#" class="view-all-link">View all</a>
+                </div>
+                <div th:each="dept : ${departmentStats}" class="dept-item">
+                    <span class="dept-name" th:text="${dept.name}">Information Technology</span>
+                    <span class="dept-stats" th:text="${dept.count} + ' (' + ${dept.percentage} + '%)'">45 (30%)</span>
+                </div>
+                <!-- Static fallback if no data -->
+                <div th:if="${departmentStats == null}">
+                    <div class="dept-item"><span class="dept-name">Information Technology</span><span class="dept-stats">45 (30%)</span></div>
+                    <div class="dept-item"><span class="dept-name">Human Resources</span><span class="dept-stats">20 (13.3%)</span></div>
+                    <div class="dept-item"><span class="dept-name">Finance</span><span class="dept-stats">15 (10%)</span></div>
+                    <div class="dept-item"><span class="dept-name">Marketing</span><span class="dept-stats">25 (16.7%)</span></div>
+                    <div class="dept-item"><span class="dept-name">Operations</span><span class="dept-stats">30 (20%)</span></div>
+                    <div class="dept-item"><span class="dept-name">Sales</span><span class="dept-stats">15 (10%)</span></div>
+                    <div class="dept-item"><span class="dept-name">Others</span><span class="dept-stats">5 (3.3%)</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Employees -->
+        <div class="col-xl-4 col-lg-6">
+            <div class="card-custom">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div class="card-title">Recent Employees</div>
+                    <a href="#" class="view-all-link">View all</a>
+                </div>
+                <div th:each="emp : ${recentEmployees}" class="recent-employee">
+                    <div class="avatar" th:text="${#strings.substring(emp.name, 0, 1)} + ${#strings.substring(emp.name.split(' ')[1], 0, 1)}">PS</div>
+                    <div class="emp-info">
+                        <div class="emp-name" th:text="${emp.name}">Priya Sharma</div>
+                        <div class="emp-role" th:text="${emp.designation}">HR Executive</div>
+                    </div>
+                </div>
+                <!-- Static fallback -->
+                <div th:if="${recentEmployees == null}">
+                    <div class="recent-employee">
+                        <div class="avatar">PS</div>
+                        <div class="emp-info"><div class="emp-name">Priya Sharma</div><div class="emp-role">HR Executive</div></div>
+                    </div>
+                    <div class="recent-employee">
+                        <div class="avatar">RP</div>
+                        <div class="emp-info"><div class="emp-name">Rohan Patel</div><div class="emp-role">Software Engineer</div></div>
+                    </div>
+                    <div class="recent-employee">
+                        <div class="avatar">NS</div>
+                        <div class="emp-info"><div class="emp-name">Neha Singh</div><div class="emp-role">Accountant</div></div>
+                    </div>
+                    <div class="recent-employee">
+                        <div class="avatar">AP</div>
+                        <div class="emp-info"><div class="emp-name">Amit Patel</div><div class="emp-role">Marketing Executive</div></div>
+                    </div>
+                    <div class="recent-employee">
+                        <div class="avatar">SV</div>
+                        <div class="emp-info"><div class="emp-name">Sneh Verma</div><div class="emp-role">UI/UX Designer</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Employee Status -->
+        <div class="col-xl-3 col-lg-12">
+            <div class="card-custom">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div class="card-title">Employee Status</div>
+                    <a href="#" class="view-all-link">View all</a>
+                </div>
+                <div th:each="status : ${employeeStatus}" class="status-item">
+                    <div class="status-label">
+                        <span th:text="${status.name}">Active</span>
+                        <span><strong th:text="${status.count}">120</strong> (<span th:text="${status.percentage}">80</span>%)</span>
+                    </div>
+                    <div class="progress-bar-custom">
+                        <div class="fill" th:style="'width:' + ${status.percentage} + '%'"></div>
+                    </div>
+                </div>
+                <!-- Static fallback -->
+                <div th:if="${employeeStatus == null}">
+                    <div class="status-item">
+                        <div class="status-label"><span>Active</span><span><strong>120</strong> (80%)</span></div>
+                        <div class="progress-bar-custom"><div class="fill" style="width:80%"></div></div>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-label"><span>On Notice Period</span><span><strong>10</strong> (6.7%)</span></div>
+                        <div class="progress-bar-custom"><div class="fill" style="width:6.7%; background:#e67e22"></div></div>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-label"><span>Resigned</span><span><strong>8</strong> (5.3%)</span></div>
+                        <div class="progress-bar-custom"><div class="fill" style="width:5.3%; background:#d94a4a"></div></div>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-label"><span>Terminated</span><span><strong>5</strong> (3.3%)</span></div>
+                        <div class="progress-bar-custom"><div class="fill" style="width:3.3%; background:#6b7a8f"></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Employee Directory Table -->
+    <div class="card-custom mb-4">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+            <div class="card-title mb-0">Employee Directory</div>
+            <div class="d-flex gap-2 flex-wrap">
+                <div class="input-group input-group-sm" style="width:220px;">
+                    <span class="input-group-text bg-white border-end-0"><i class="fa-solid fa-search text-muted"></i></span>
+                    <input type="text" class="form-control form-control-sm border-start-0" placeholder="Search by name, email or ID...">
+                </div>
+                <select class="form-select form-select-sm" style="width:120px;"><option>All Departments</option></select>
+                <select class="form-select form-select-sm" style="width:120px;"><option>All Designation</option></select>
+                <select class="form-select form-select-sm" style="width:120px;"><option>All Status</option></select>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-custom">
+                <thead>
+                <tr>
+                    <th>Employee ID</th>
+                    <th>Employee Name</th>
+                    <th>Department</th>
+                    <th>Designation</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="emp : ${employeeList}">
+                    <td><span class="fw-500" th:text="${emp.employeeId}">EMP001</span></td>
+                    <td th:text="${emp.name}">Rahul Sharma</td>
+                    <td th:text="${emp.department}">IT</td>
+                    <td th:text="${emp.designation}">Software Engineer</td>
+                    <td th:text="${emp.email}">rahul.sharma@email.com</td>
+                    <td th:text="${emp.phone}">9876543210</td>
+                    <td>
+                            <span class="status-badge"
+                                  th:classappend="${emp.status == 'Active' ? 'status-active' : emp.status == 'On Notice' ? 'status-notice' : emp.status == 'Resigned' ? 'status-resigned' : 'status-terminated'}"
+                                  th:text="${emp.status}">Active</span>
+                    </td>
+                    <td>
+                        <a href="#" class="text-primary me-2"><i class="fa-regular fa-eye"></i></a>
+                        <a href="#" class="text-secondary"><i class="fa-regular fa-pen-to-square"></i></a>
+                    </td>
+                </tr>
+                <!-- Static fallback rows -->
+                <tr th:if="${employeeList == null}">
+                    <td><span class="fw-500">EMP001</span></td>
+                    <td>Rahul Sharma</td>
+                    <td>IT</td>
+                    <td>Software Engineer</td>
+                    <td>rahul.sharma@email.com</td>
+                    <td>9876543210</td>
+                    <td><span class="status-badge status-active">Active</span></td>
+                    <td><a href="#" class="text-primary me-2"><i class="fa-regular fa-eye"></i></a><a href="#" class="text-secondary"><i class="fa-regular fa-pen-to-square"></i></a></td>
+                </tr>
+                <tr th:if="${employeeList == null}">
+                    <td><span class="fw-500">EMP002</span></td>
+                    <td>Neha Singh</td>
+                    <td>Finance</td>
+                    <td>Accountant</td>
+                    <td>neha.singh@email.com</td>
+                    <td>9876543211</td>
+                    <td><span class="status-badge status-active">Active</span></td>
+                    <td><a href="#" class="text-primary me-2"><i class="fa-regular fa-eye"></i></a><a href="#" class="text-secondary"><i class="fa-regular fa-pen-to-square"></i></a></td>
+                </tr>
+                <tr th:if="${employeeList == null}">
+                    <td><span class="fw-500">EMP003</span></td>
+                    <td>Amit Patel</td>
+                    <td>Marketing</td>
+                    <td>Marketing Executive</td>
+                    <td>amit.patel@email.com</td>
+                    <td>9876543212</td>
+                    <td><span class="status-badge status-notice">On Notice</span></td>
+                    <td><a href="#" class="text-primary me-2"><i class="fa-regular fa-eye"></i></a><a href="#" class="text-secondary"><i class="fa-regular fa-pen-to-square"></i></a></td>
+                </tr>
+                <tr th:if="${employeeList == null}">
+                    <td><span class="fw-500">EMP004</span></td>
+                    <td>Pooja Verma</td>
+                    <td>HR</td>
+                    <td>HR Executive</td>
+                    <td>pooja.verma@email.com</td>
+                    <td>9876543213</td>
+                    <td><span class="status-badge status-active">Active</span></td>
+                    <td><a href="#" class="text-primary me-2"><i class="fa-regular fa-eye"></i></a><a href="#" class="text-secondary"><i class="fa-regular fa-pen-to-square"></i></a></td>
+                </tr>
+                <tr th:if="${employeeList == null}">
+                    <td><span class="fw-500">EMP005</span></td>
+                    <td>Vikram Singh</td>
+                    <td>IT</td>
+                    <td>Team Lead</td>
+                    <td>vikram.singh@email.com</td>
+                    <td>9876543214</td>
+                    <td><span class="status-badge status-active">Active</span></td>
+                    <td><a href="#" class="text-primary me-2"><i class="fa-regular fa-eye"></i></a><a href="#" class="text-secondary"><i class="fa-regular fa-pen-to-square"></i></a></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap gap-2">
+            <span class="text-muted" style="font-size:0.85rem;">Showing 1 to 5 of <span th:text="${totalEmployees != null ? totalEmployees : 150}">150</span> entries</span>
+            <nav>
+                <ul class="pagination pagination-sm mb-0">
+                    <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Bottom Row: Upcoming Birthdays + Recent Activities -->
+    <div class="row g-3">
+        <div class="col-xl-4 col-lg-6">
+            <div class="card-custom">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div class="card-title">Upcoming Birthdays</div>
+                    <a href="#" class="view-all-link">View all</a>
+                </div>
+                <div th:each="birthday : ${upcomingBirthdays}" class="birthday-item">
+                    <span class="bday-icon"><i class="fa-solid fa-cake-candles"></i></span>
+                    <span class="bday-name" th:text="${birthday.name}">Rahul Sharma</span>
+                    <span class="bday-dept ms-auto" th:text="${birthday.department}">IT Department</span>
+                    <span class="text-muted" style="font-size:0.8rem;" th:text="${birthday.dateOfBirth }">25 May</span>
+                </div>
+                <!-- Static fallback -->
+                <div th:if="${upcomingBirthdays == null}">
+                    <div class="birthday-item">
+                        <span class="bday-icon"><i class="fa-solid fa-cake-candles"></i></span>
+                        <span class="bday-name">Rahul Sharma</span>
+                        <span class="bday-dept ms-auto">IT Department</span>
+                        <span class="text-muted" style="font-size:0.8rem;">25 May</span>
+                    </div>
+                    <div class="birthday-item">
+                        <span class="bday-icon"><i class="fa-solid fa-cake-candles"></i></span>
+                        <span class="bday-name">Neha Singh</span>
+                        <span class="bday-dept ms-auto">Finance Department</span>
+                        <span class="text-muted" style="font-size:0.8rem;">28 May</span>
+                    </div>
+                    <div class="birthday-item">
+                        <span class="bday-icon"><i class="fa-solid fa-cake-candles"></i></span>
+                        <span class="bday-name">Amit Patel</span>
+                        <span class="bday-dept ms-auto">Marketing Department</span>
+                        <span class="text-muted" style="font-size:0.8rem;">30 May</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-8 col-lg-6">
+            <div class="card-custom">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div class="card-title">Recent Activities</div>
+                    <a href="#" class="view-all-link">View all</a>
+                </div>
+                <div th:each="activity : ${recentActivities}" class="activity-item">
+                    <span class="activity-dot" th:style="'background:' + ${activity.color}"></span>
+                    <span class="activity-text" th:utext="${activity.text}"><strong>Priya Sharma</strong> has been added as new employee</span>
+                    <span class="text-muted ms-auto" style="font-size:0.75rem;" th:text="${activity.time}">2 min ago</span>
+                </div>
+                <!-- Static fallback -->
+                <div th:if="${recentActivities == null}">
+                    <div class="activity-item">
+                        <span class="activity-dot" style="background:#2a6df4;"></span>
+                        <span class="activity-text"><strong>Priya Sharma</strong> has been added as new employee</span>
+                        <span class="text-muted ms-auto" style="font-size:0.75rem;">2 min ago</span>
+                    </div>
+                    <div class="activity-item">
+                        <span class="activity-dot" style="background:#e67e22;"></span>
+                        <span class="activity-text"><strong>Neha Singh</strong> applied for leave</span>
+                        <span class="text-muted ms-auto" style="font-size:0.75rem;">15 min ago</span>
+                    </div>
+                    <div class="activity-item">
+                        <span class="activity-dot" style="background:#0f973d;"></span>
+                        <span class="activity-text"><strong>Amit Kumar</strong> WFH request approved</span>
+                        <span class="text-muted ms-auto" style="font-size:0.75rem;">1 hour ago</span>
+                    </div>
+                    <div class="activity-item">
+                        <span class="activity-dot" style="background:#2a6df4;"></span>
+                        <span class="activity-text"><strong>Pooja Verma</strong> document uploaded</span>
+                        <span class="text-muted ms-auto" style="font-size:0.75rem;">3 hours ago</span>
+                    </div>
+                    <div class="activity-item">
+                        <span class="activity-dot" style="background:#8a9bb5;"></span>
+                        <span class="activity-text"><strong>Rohan Patel</strong>'s profile has been updated</span>
+                        <span class="text-muted ms-auto" style="font-size:0.75rem;">5 hours ago</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer note -->
+    <div class="mt-4 text-muted" style="font-size:0.75rem; border-top:1px solid #e9edf4; padding-top:1rem;">
+        <span>1024 | 1.4 MB</span>
+        <span class="ms-3">91%</span>
+    </div>
+
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

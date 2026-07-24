@@ -1,0 +1,51 @@
+<style>
+        body {
+            background: linear-gradient(135deg, #eef2f7, #dbe9ff);
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .card {
+            border-radius: 18px;
+            border: none;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0d6efd, #6610f2);
+            color: white;
+            padding: 18px;
+            border-radius: 18px 18px 0 0;
+        }
+
+        .table thead {
+            background: #212529;
+            color: white;
+        }
+
+        .table tbody tr:hover {
+            background: #f1f5ff;
+            transition: 0.2s;
+        }
+
+        .btn {
+            border-radius: 8px;
+        }
+
+        .search-box {
+            border-radius: 10px;
+        }
+
+        .card-shadow {
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        }
+
+        .badge-soft {
+            padding: 6px 10px;
+            border-radius: 10px;
+        }
+
+        .top-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+    </style>

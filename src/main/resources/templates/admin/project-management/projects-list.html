@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project List</title>
+
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Google Font Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Sidebar CSS -->
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+
+    <style>
+        /* ---- Global Reset & Base ---- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            font-family: 'Inter', sans-serif;
+            background: #f4f7fc;
+            height: 100%;
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        body {
+            display: flex;
+            flex-direction: row;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 1.5rem 2rem;
+            background: #f4f7fc;
+            min-height: 100vh;
+            margin-left: 280px;
+            width: calc(100% - 280px);
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 1rem;
+            }
+        }
+
+        /* ---- Page Header ---- */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .page-header h4 {
+            font-weight: 600;
+            color: #1a2639;
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .page-header .breadcrumb {
+            background: transparent;
+            padding: 0;
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        .page-header .breadcrumb-item + .breadcrumb-item::before {
+            content: "›";
+        }
+
+        .page-header .breadcrumb-item a {
+            color: #6b7a8f;
+            text-decoration: none;
+        }
+
+        .page-header .breadcrumb-item.active {
+            color: #1a2639;
+        }
+
+        .today-badge {
+            background: rgba(42, 109, 244, 0.1);
+            color: #2a6df4;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .logout-btn {
+            color: #6b7a8f;
+            text-decoration: none;
+            padding: 0.4rem 1rem;
+            border-radius: 8px;
+            transition: 0.2s;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .logout-btn:hover {
+            background: #fde8e8;
+            color: #d94a4a;
+        }
+
+        /* ---- Search / Filter Bar ---- */
+        .filter-bar {
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid #e9edf4;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .filter-bar .search-box {
+            flex: 1;
+            min-width: 200px;
+            position: relative;
+        }
+
+        .filter-bar .search-box input {
+            width: 100%;
+            padding: 0.5rem 1rem 0.5rem 2.5rem;
+            border: 1px solid #e9edf4;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: border-color 0.2s;
+        }
+
+        .filter-bar .search-box input:focus {
+            border-color: #2a6df4;
+            box-shadow: 0 0 0 3px rgba(42, 109, 244, 0.1);
+            outline: none;
+        }
+
+        .filter-bar .search-box i {
+            position: absolute;
+            left: 0.8rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6b7a8f;
+        }
+
+        .filter-bar .filter-select {
+            min-width: 150px;
+        }
+
+        .filter-bar .filter-select select {
+            width: 100%;
+            padding: 0.5rem 1rem;
+            border: 1px solid #e9edf4;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            background: #fff;
+        }
+
+        .filter-bar .btn-add {
+            background: #2a6df4;
+            color: #fff;
+            border: none;
+            padding: 0.5rem 1.2rem;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+
+        .filter-bar .btn-add:hover {
+            background: #1a5cdb;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(42, 109, 244, 0.3);
+        }
+
+        /* ---- Table Container ---- */
+        .table-container {
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid #e9edf4;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            padding: 0;
+            overflow-x: auto;
+        }
+
+        .table {
+            margin-bottom: 0;
+            font-size: 0.9rem;
+        }
+
+        .table thead th {
+            background: #f8fafc;
+            color: #4a5a72;
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #e9edf4;
+            padding: 0.75rem 0.5rem;
+            white-space: nowrap;
+        }
+
+        .table tbody td {
+            padding: 0.75rem 0.5rem;
+            vertical-align: middle;
+            border-bottom: 1px solid #e9edf4;
+        }
+
+        .table tbody tr:hover {
+            background: #f8faff;
+        }
+
+        /* ---- Badges & Tags ---- */
+        .project-type-badge {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .project-type-badge.c2c {
+            background: #e8f0fe;
+            color: #1a73e8;
+        }
+
+        .project-type-badge.individual {
+            background: #fce4ec;
+            color: #c62828;
+        }
+
+        .project-type-badge.team {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .employee-tag {
+            display: inline-block;
+            background: #f0f4ff;
+            color: #2a6df4;
+            padding: 0.1rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            margin: 0.1rem;
+        }
+
+        .cost-amount {
+            font-weight: 600;
+            color: #1a2639;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .status-badge.active {
+            background: #e6f7ed;
+            color: #0d6832;
+        }
+
+        .status-badge.completed {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status-badge.in-progress {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-badge.on-hold {
+            background: #fde8e8;
+            color: #9b2c2c;
+        }
+
+        .status-badge.cancelled {
+            background: #e2e3e5;
+            color: #383d41;
+        }
+
+        /* ---- Action Buttons ---- */
+        .action-buttons {
+            display: flex;
+            gap: 0.3rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            font-weight: 500;
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .btn-info {
+            background: #17a2b8;
+            color: #fff;
+        }
+
+        .btn-info:hover {
+            background: #138496;
+        }
+
+        .btn-secondary {
+            background: #e9edf4;
+            color: #4a5a72;
+        }
+
+        .btn-secondary:hover {
+            background: #d5dbe6;
+            color: #1a2639;
+        }
+
+        .btn-danger {
+            background: #d94a4a;
+            color: #fff;
+        }
+
+        .btn-danger:hover {
+            background: #b33a3a;
+        }
+
+        /* ---- Pagination ---- */
+        .pagination-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            border-top: 1px solid #e9edf4;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .pagination-wrapper .info {
+            color: #6b7a8f;
+            font-size: 0.85rem;
+        }
+
+        .pagination .page-item.active .page-link {
+            background: #2a6df4;
+            border-color: #2a6df4;
+            color: #fff;
+        }
+
+        .pagination .page-link {
+            color: #2a6df4;
+            border: 1px solid #e9edf4;
+            padding: 0.4rem 0.8rem;
+            font-size: 0.85rem;
+        }
+
+        .pagination .page-link:hover {
+            background: #f0f4ff;
+            border-color: #2a6df4;
+        }
+
+        /* ---- Footer ---- */
+        .footer-note {
+            margin-top: 1.5rem;
+            font-size: 0.75rem;
+            color: #6b7a8f;
+            border-top: 1px solid #e9edf4;
+            padding-top: 1rem;
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-note i {
+            color: #2a6df4;
+        }
+
+        /* ---- Responsive ---- */
+        @media (max-width: 768px) {
+            .filter-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .filter-bar .search-box {
+                min-width: auto;
+            }
+            .pagination-wrapper {
+                flex-direction: column;
+                align-items: center;
+            }
+            .action-buttons {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Include Sidebar (fragments are at the root) -->
+<div th:replace="~{fragments/sidebar-admin :: sidebar-component}"></div>
+
+<!-- ===== MAIN CONTENT ===== -->
+<div class="main-content">
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div>
+            <h4><i class="fa-solid fa-list-ul text-primary me-2"></i>Project List</h4>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a th:href="@{/admin/dashboard}">Dashboard</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Project List</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="d-flex align-items-center gap-3">
+            <span class="today-badge">
+                <i class="fa-regular fa-calendar"></i> Today
+            </span>
+            <a th:href="@{/auth/logout}" class="logout-btn">
+                <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </a>
+        </div>
+    </div>
+
+    <!-- Alert Messages -->
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fa-solid fa-check-circle me-2"></i> <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fa-solid fa-exclamation-circle me-2"></i> <span th:text="${errorMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <!-- ===== SEARCH / FILTER BAR ===== -->
+    <div class="filter-bar">
+        <div class="search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="searchInput" placeholder="Search by project, client, employee..." onkeyup="filterTable()">
+        </div>
+
+        <div class="filter-select">
+            <select id="statusFilter" class="form-select" onchange="filterTable()">
+                <option value="">All Status</option>
+                <option value="ACTIVE">Active</option>
+                <option value="IN_PROGRESS">In Progress</option>
+                <option value="ON_HOLD">On Hold</option>
+                <option value="COMPLETED">Completed</option>
+                <option value="CANCELLED">Cancelled</option>
+            </select>
+        </div>
+
+        <div class="filter-select">
+            <select id="typeFilter" class="form-select" onchange="filterTable()">
+                <option value="">All Types</option>
+                <option value="C2C">C2C</option>
+                <option value="INDIVIDUAL">Individual</option>
+                <option value="TEAM">Team</option>
+            </select>
+        </div>
+
+        <a th:href="@{/admin/projects/add}" class="btn-add">
+            <i class="fa-solid fa-plus me-1"></i> Add New Project
+        </a>
+    </div>
+
+    <!-- ===== PROJECT TABLE ===== -->
+    <div class="table-container">
+        <table class="table table-hover" id="projectTable">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Project Name</th>
+                <th>Client</th>
+                <th>Region</th>
+                <th>Assigned To</th>
+                <th>Type</th>
+                <th>Cost (₹)</th>
+                <th>Onboarding Date</th>
+                <th>Status</th>
+                <th style="text-align: center;">Actions</th>
+            </tr>
+            </thead>
+            <tbody id="tableBody">
+            <!-- Thymeleaf will populate rows -->
+            <tr th:each="proj, iter : ${projects}">
+                <td th:text="${iter.index + 1}">1</td>
+                <td>
+                    <strong th:text="${proj.projectName != null ? proj.projectName : 'N/A'}">Project Alpha</strong>
+                    <div th:if="${proj.description != null and proj.description != ''}" class="text-muted" style="font-size:0.7rem;">
+                        <i class="fa-regular fa-file-lines"></i>
+                        <span th:text="${proj.description}">Brief description</span>
+                    </div>
+                </td>
+                <td th:text="${proj.clientName != null ? proj.clientName : 'N/A'}">Client Name</td>
+                <td th:text="${proj.clientRegion != null ? proj.clientRegion : 'N/A'}">Region</td>
+                <td>
+                        <span class="employee-tag"
+                              th:text="${proj.assignedEmployeeName != null ? proj.assignedEmployeeName : 'Unassigned'}">
+                            John Doe
+                        </span>
+                </td>
+                <td>
+                        <span class="project-type-badge"
+                              th:class="${proj.projectType == 'C2C' ? 'c2c' :
+                                        (proj.projectType == 'INDIVIDUAL' ? 'individual' : 'team')}"
+                              th:text="${proj.projectType != null ? proj.projectType : 'N/A'}">
+                            C2C
+                        </span>
+                </td>
+                <td>
+                        <span class="cost-amount"
+                              th:text="${proj.totalCost != null ? #numbers.formatDecimal(proj.totalCost, 0, 'COMMA', 2, 'POINT') : '0.00'}">
+                            0.00
+                        </span>
+                </td>
+                <td>
+                        <span th:text="${proj.onboardingDate != null ? #temporals.format(proj.onboardingDate, 'dd MMM yyyy') : 'N/A'}">
+                            01 Jan 2024
+                        </span>
+                </td>
+                <td>
+                        <span class="status-badge"
+                              th:class="${proj.status == 'ACTIVE' ? 'active' :
+                                        (proj.status == 'COMPLETED' ? 'completed' :
+                                        (proj.status == 'IN_PROGRESS' ? 'in-progress' :
+                                        (proj.status == 'ON_HOLD' ? 'on-hold' : 'cancelled')))}"
+                              th:text="${proj.status != null ? proj.status : 'ACTIVE'}">
+                            ACTIVE
+                        </span>
+                </td>
+                <td style="text-align: center;">
+                    <div class="action-buttons">
+                        <a th:href="@{/admin/projects/view/{id}(id=${proj.id})}"
+                           class="btn btn-sm btn-info" title="View">
+                            <i class="fa-solid fa-eye"></i>
+                        </a>
+                        <a th:href="@{/admin/projects/edit/{id}(id=${proj.id})}"
+                           class="btn btn-sm btn-secondary" title="Edit">
+                            <i class="fa-solid fa-pen"></i>
+                        </a>
+                        <a th:href="@{/admin/projects/delete/{id}(id=${proj.id})}"
+                           class="btn btn-sm btn-danger" title="Delete"
+                           onclick="return confirm('Are you sure you want to delete this project?')">
+                            <i class="fa-solid fa-trash"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            <tr th:if="${projects == null or projects.isEmpty()}">
+                <td colspan="10" class="text-center py-4">
+                    <i class="fa-regular fa-folder-open fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">No projects found</p>
+                    <p class="text-muted" style="font-size:0.85rem;">
+                        <a th:href="@{/admin/projects/add}" class="text-primary">Add your first project</a>
+                    </p>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <!-- Pagination (Static Example – server‑side pagination can be added) -->
+        <div class="pagination-wrapper">
+            <div class="info">
+                Showing <span id="rowStart">1</span> – <span id="rowEnd">10</span> of <span id="totalRows">0</span> projects
+            </div>
+            <nav aria-label="Page navigation">
+                <ul class="pagination pagination-sm mb-0" id="paginationControls">
+                    <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer-note">
+        <span><i class="fa-regular fa-circle-check text-success"></i> HRMS v2.0</span>
+        <span><i class="fa-regular fa-list"></i> Project Management</span>
+        <span><i class="fa-regular fa-folder-open"></i> <span th:text="${projects != null ? projects.size() : 0}">0</span> Projects</span>
+    </div>
+
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- ===== CLIENT‑SIDE FILTER SCRIPT ===== -->
+<script>
+    /**
+     * Filter the table rows based on search input and select filters.
+     * This works on the current DOM – perfect for small to medium datasets.
+     */
+    function filterTable() {
+        const input = document.getElementById('searchInput');
+        const searchTerm = input.value.toLowerCase().trim();
+
+        const statusFilter = document.getElementById('statusFilter');
+        const statusValue = statusFilter.value.toUpperCase();
+
+        const typeFilter = document.getElementById('typeFilter');
+        const typeValue = typeFilter.value.toUpperCase();
+
+        const table = document.getElementById('projectTable');
+        const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+
+        let visibleCount = 0;
+
+        for (let row of rows) {
+            // Skip the "no projects" row
+            if (row.cells.length === 1 && row.cells[0].colSpan === 10) continue;
+
+            const cells = row.getElementsByTagName('td');
+            if (cells.length === 0) continue;
+
+            // Get column values (indices: 1=Project Name, 2=Client, 3=Region, 4=Assigned, 5=Type, 8=Status)
+            const projectName = cells[1]?.innerText.toLowerCase() || '';
+            const client = cells[2]?.innerText.toLowerCase() || '';
+            const assigned = cells[4]?.innerText.toLowerCase() || '';
+            const type = cells[5]?.innerText.toUpperCase() || '';
+            const status = cells[8]?.innerText.toUpperCase() || '';
+
+            // Match search
+            const matchesSearch = !searchTerm ||
+                projectName.includes(searchTerm) ||
+                client.includes(searchTerm) ||
+                assigned.includes(searchTerm);
+
+            // Match status filter
+            const matchesStatus = !statusValue || status === statusValue;
+
+            // Match type filter
+            const matchesType = !typeValue || type === typeValue;
+
+            if (matchesSearch && matchesStatus && matchesType) {
+                row.style.display = '';
+                visibleCount++;
+            } else {
+                row.style.display = 'none';
+            }
+        }
+
+        // Update pagination info (simplified)
+        const total = visibleCount;
+        document.getElementById('totalRows').innerText = total;
+        document.getElementById('rowEnd').innerText = Math.min(10, total);
+        document.getElementById('rowStart').innerText = total > 0 ? 1 : 0;
+    }
+
+    // Run filter on page load to update counts
+    document.addEventListener('DOMContentLoaded', filterTable);
+</script>
+
+</body>
+</html>

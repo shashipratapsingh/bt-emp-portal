@@ -1,0 +1,5 @@
+  <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; background-color: #f5f7fa;}
+        .card { background: white; padding: 30px; display: inline-block; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .highlight { font-weight: bold; color: #4a90e2; font-size: 18px; }
+    </style>

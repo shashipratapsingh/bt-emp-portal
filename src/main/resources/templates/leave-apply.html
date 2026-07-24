@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apply Leave</title>
+
+    <!-- Bootstrap 5.3.3 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome 6.5.0 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FullCalendar v6 -->
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" th:href="@{/css/leave-apply.css}">
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+    <!-- SIDEBAR -->
+    <aside th:replace="~{fragments/sidebar :: sidebar-component}"></aside>
+
+    <!-- MAIN INTERFACE WRAPPER -->
+    <div class="main-content">
+
+        <!-- CONTENT BODY -->
+        <main class="content-body">
+            <div class="container-fluid" style="max-width: 1200px; padding: 0;">
+
+                <!-- HEADER SECTION -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="fs-4 m-0 fw-bold tracking-tight text-slate-900">
+                        Leave Management Portal
+                    </h2>
+                    <a th:href="@{/employee/dashboard}" class="btn btn-custom-dashboard rounded-pill px-4 fw-medium">
+                        <i class="fa-solid fa-arrow-left me-2"></i> Back to Dashboard
+                    </a>
+                </div>
+
+                <!-- SUCCESS ALERT -->
+                <div th:if="${param.success}" class="alert alert-success rounded-3 text-center py-3 mb-4 shadow-sm">
+                    <i class="fa-solid fa-circle-check me-2 fs-5 align-middle"></i> Leave applied successfully!
+                </div>
+
+                <!-- TWO COLUMN: Form + History -->
+                <div class="row items-stretch">
+                    <!-- Column 1: Leave Application Form -->
+                    <div class="col-xl-5 col-lg-6 mb-4">
+                        <div class="section-card">
+                            <h4 class="section-title">
+                                <i class="fa-solid fa-paper-plane me-2 opacity-75"></i>Apply for Leave
+                            </h4>
+
+                            <form th:action="@{/leave/submit}" th:object="${leaveRequest}" method="post">
+                                <div class="mb-3">
+                                    <label class="form-label" for="leaveType">Leave Type</label>
+                                    <select id="leaveType" th:field="*{leaveType}" class="form-select" required>
+                                        <option value="" disabled selected>Select Leave Type</option>
+                                        <option value="Sick Leave">Sick Leave</option>
+                                        <option value="Casual Leave">Casual Leave</option>
+                                        <option value="Short Leave">Short Leave</option>
+                                        <option value="Half Day">Half Day</option>
+                                        <option value="Full Day">Full Day</option>
+                                    </select>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label" for="startDate">Start Date</label>
+                                        <input type="date" id="startDate" th:field="*{startDate}" class="form-control" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label" for="endDate">End Date</label>
+                                        <input type="date" id="endDate" th:field="*{endDate}" class="form-control" required>
+                                    </div>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label" for="reason">Reason / Description</label>
+                                    <textarea id="reason" th:field="*{reason}" class="form-control" rows="3" placeholder="Please provide a brief reason..." required></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-submit-profile w-100 shadow-sm">
+                                    <i class="fa-solid fa-circle-check me-2"></i>Submit Application
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Column 2: Leave History Table -->
+                    <div class="col-xl-7 col-lg-6 mb-4">
+                        <div class="section-card">
+                            <h4 class="section-title">
+                                <i class="fa-solid fa-clock-rotate-left me-2 opacity-75"></i>My Leave History
+                            </h4>
+
+                            <div class="table-responsive-custom">
+                                <table id="historyTable" class="table table-hover align-middle">
+                                    <thead>
+                                    <tr>
+                                        <th>Type</th>
+                                        <th>From</th>
+                                        <th>To</th>
+                                        <th>Status</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="leave : ${myLeaves}">
+                                        <td th:text="${leave.leaveType}" class="fw-medium text-dark"></td>
+                                        <td th:text="${leave.startDate}"></td>
+                                        <td th:text="${leave.endDate}"></td>
+                                        <td>
+                                            <span th:text="${leave.status}"
+                                                  th:class="${leave.status == 'APPROVED' ? 'badge badge-success-clean' : (leave.status == 'REJECTED' ? 'badge badge-danger-clean' : 'badge badge-warning-clean')}">
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr th:if="${#lists.isEmpty(myLeaves)}">
+                                        <td colspan="4" class="text-center py-4 text-muted">No leave history found.</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CALENDAR SECTION (Full Width) -->
+                <div class="section-card">
+                    <h4 class="section-title">
+                        <i class="fa-solid fa-calendar-days me-2 opacity-75"></i>Attendance Calendar
+                    </h4>
+
+                    <!-- Legend -->
+                    <div class="calendar-legend">
+                        <span class="legend-item"><span class="legend-swatch swatch-present"></span> Present</span>
+                        <span class="legend-item"><span class="legend-swatch swatch-absent"></span> Absent</span>
+                        <span class="legend-item"><span class="legend-swatch swatch-leave"></span> Leave</span>
+                        <span class="legend-item"><span class="legend-swatch swatch-holiday"></span> Holiday</span>
+                        <span class="legend-item"><span class="legend-swatch swatch-weekend"></span> Weekend</span>
+                    </div>
+
+                    <!-- HIDDEN EMPLOYEE ID - CRITICAL FOR API CALLS -->
+                    <input type="hidden"
+                           id="employeeId"
+                           th:value="${employeeId}">
+
+                    <!-- FullCalendar container -->
+                    <div id="fullcalendar-container"></div>
+                </div>
+
+            </div>
+
+            <!-- FOOTER -->
+            <footer class="mt-5 pt-4 text-center text-muted border-top" style="font-size: 12px;">
+                <p class="mb-0">Copyright &copy; 2026 Bluethink IT Consulting Pvt. Ltd. All rights reserved.</p>
+            </footer>
+        </main>
+    </div>
+</div>
+
+<!-- Bootstrap JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- FullCalendar v6 JS -->
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+
+<!-- CALENDAR SCRIPT - Loads data from REST API -->
+<script>
+    let calendar;
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+        const calendarEl =
+            document.getElementById('fullcalendar-container');
+
+        calendar = new FullCalendar.Calendar(calendarEl, {
+
+            initialView: 'dayGridMonth',
+
+            height: 'auto',
+
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth'
+            },
+
+            eventDisplay: 'block',
+
+            dayMaxEvents: true,
+
+            eventDidMount: function(info) {
+
+                // Tooltip on hover
+                info.el.title = info.event.title;
+
+                info.el.style.fontSize = '0.7rem';
+                info.el.style.fontWeight = '600';
+                info.el.style.padding = '1px 4px';
+                info.el.style.borderRadius = '4px';
+                info.el.style.textAlign = 'center';
+                info.el.style.minHeight = '20px';
+            },
+
+            datesSet: function() {
+
+                const currentDate =
+                    calendar.getDate();
+
+                const month =
+                    currentDate.getMonth() + 1;
+
+                const year =
+                    currentDate.getFullYear();
+
+                loadAttendanceEvents(
+                    month,
+                    year
+                );
+            }
+        });
+
+        calendar.render();
+    });
+
+    function loadAttendanceEvents(
+            month,
+            year
+    ) {
+
+        const employeeIdElement =
+            document.getElementById('employeeId');
+
+        if (!employeeIdElement) {
+            console.error('Employee ID element not found');
+            return;
+        }
+
+        const employeeId = employeeIdElement.value;
+
+        if (!employeeId) {
+            console.error('Employee ID value is empty');
+            return;
+        }
+
+        fetch(
+            `/api/calendar/${employeeId}?year=${year}&month=${month}`
+        )
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(events => {
+
+            calendar.removeAllEvents();
+
+            events.forEach(event => {
+
+                calendar.addEvent({
+
+                    title: event.title,
+
+                    start: event.start,
+
+                    color: event.color,
+
+                    textColor: '#ffffff',
+
+                    allDay: true
+                });
+
+            });
+
+        })
+        .catch(error => {
+
+            console.error(
+                'Calendar Load Error:',
+                error
+            );
+
+            // Optionally show a user-friendly message
+            // You could display a toast notification here
+        });
+    }
+</script>
+
+</body>
+</html>
