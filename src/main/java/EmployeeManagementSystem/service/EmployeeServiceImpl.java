@@ -5,6 +5,8 @@ import EmployeeManagementSystem.dto.BirthdayDTO;
 import EmployeeManagementSystem.dto.CelebrationDto;
 import EmployeeManagementSystem.entity.Employee;
 import EmployeeManagementSystem.entity.Salary;
+import EmployeeManagementSystem.kafkaConfig.EmployeeEvent;
+import EmployeeManagementSystem.kafkaConfig.EmployeeProducer;
 import EmployeeManagementSystem.repository.EmployeeRepository;
 import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,21 +24,58 @@ import java.util.Optional;
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
-    @Autowired
-    private EmployeeRepository employeeRepository;
+    private final EmployeeRepository employeeRepository;
+    private final EmployeeProducer employeeProducer;
+
+    public EmployeeServiceImpl(
+            EmployeeRepository employeeRepository,
+            EmployeeProducer employeeProducer) {
+
+        this.employeeRepository = employeeRepository;
+        this.employeeProducer = employeeProducer;
+    }
 
     @Override
     public Employee saveEmployee(Employee employee) {
+
         if (employee.getSalaryDetails() != null) {
             employee.getSalaryDetails().setEmployee(employee);
         }
 
         if (employee.getAttendanceList() != null) {
-            employee.getAttendanceList().forEach(a -> a.setEmployee(employee));
+            employee.getAttendanceList()
+                    .forEach(a -> a.setEmployee(employee));
         }
 
-        return employeeRepository.save(employee);
+        // Save employee
+        Employee savedEmployee =
+                employeeRepository.save(employee);
+
+        // Prepare employee name
+        String employeeName = savedEmployee.getFullName();
+
+        if (employeeName == null || employeeName.isBlank()) {
+
+            employeeName =
+                    savedEmployee.getFirstName()
+                            + " "
+                            + savedEmployee.getLastName();
+        }
+
+        // Create Kafka Event
+        EmployeeEvent employeeEvent =
+                new EmployeeEvent(
+                        savedEmployee.getId(),
+                        employeeName,
+                        savedEmployee.getEmail()
+                );
+
+        // Publish event
+        employeeProducer.sendEmployeeCreatedEvent(employeeEvent);
+
+        return savedEmployee;
     }
+
 
     @Override
     public List<Employee> getEmployeesByDepartment(Long departmentId) {

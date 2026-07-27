@@ -4,11 +4,14 @@ import EmployeeManagementSystem.dto.EmployeeCredentialsDTO;
 import EmployeeManagementSystem.entity.Department;
 import EmployeeManagementSystem.entity.Employee;
 import EmployeeManagementSystem.entity.EmployeeProfile;
+import EmployeeManagementSystem.kafkaConfig.EmployeeEvent;
+import EmployeeManagementSystem.kafkaConfig.EmployeeProducer;
 import EmployeeManagementSystem.repository.EmployeeRepository;
 import EmployeeManagementSystem.service.DepartmentService;
 import EmployeeManagementSystem.service.EmployeeProfileServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -36,6 +39,8 @@ public class EmployeeProfileController {
     private final DepartmentService departmentService;
     private final EmployeeRepository employeeRepository;
 
+    @Autowired
+    private EmployeeProducer employeeProducer;
     // Redirect from employee-directory to list
     @GetMapping("/employee-directory")
     public String redirectToEmployeeList() {
@@ -88,57 +93,191 @@ public class EmployeeProfileController {
         System.out.println("Department: " + employee.getDepartment());
         System.out.println("Designation: " + employee.getDesignation());
 
+        // Check duplicate email
         if (employeeProfileService.existsByEmail(employee.getEmail())) {
-            bindingResult.rejectValue("email", "error.employee", "Email already registered");
-            System.out.println("Email already exists: " + employee.getEmail());
+            bindingResult.rejectValue(
+                    "email",
+                    "error.employee",
+                    "Email already registered"
+            );
+            System.out.println(
+                    "Email already exists: " + employee.getEmail()
+            );
         }
-
+        // Validation errors
         if (bindingResult.hasErrors()) {
-            System.out.println("Binding errors: " + bindingResult.getAllErrors());
-            // repopulate dropdowns
-            model.addAttribute("departments", departmentService.getActiveDepartments());
-            model.addAttribute("genders", Arrays.asList("Male", "Female", "Other"));
-            model.addAttribute("bloodGroups", Arrays.asList("A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"));
-            model.addAttribute("maritalStatuses", Arrays.asList("Single", "Married", "Divorced", "Widowed"));
-            model.addAttribute("qualifications", Arrays.asList("10th", "12th", "Diploma", "Bachelor's", "Master's", "PhD", "Other"));
+
+            System.out.println(
+                    "Binding errors: " + bindingResult.getAllErrors()
+            );
+            model.addAttribute(
+                    "departments",
+                    departmentService.getActiveDepartments()
+            );
+            model.addAttribute(
+                    "genders",
+                    Arrays.asList("Male", "Female", "Other")
+            );
+
+            model.addAttribute(
+                    "bloodGroups",
+                    Arrays.asList(
+                            "A+", "A-", "B+", "B-",
+                            "AB+", "AB-", "O+", "O-"
+                    )
+            );
+
+            model.addAttribute(
+                    "maritalStatuses",
+                    Arrays.asList(
+                            "Single", "Married",
+                            "Divorced", "Widowed"
+                    )
+            );
+
+            model.addAttribute(
+                    "qualifications",
+                    Arrays.asList(
+                            "10th", "12th", "Diploma",
+                            "Bachelor's", "Master's",
+                            "PhD", "Other"
+                    )
+            );
+
             model.addAttribute("pageTitle", "Add Employee");
+
             return "admin/employee-management/add-employee";
         }
 
         try {
             // 1. Save EmployeeProfile
-            EmployeeCredentialsDTO credentials = employeeProfileService.saveOrUpdateProfile(employee, null);
-            System.out.println("EmployeeProfile saved with ID: " + credentials.getUserId());
-
-            // 2. Create and save Employee (linked to profile)
-            Employee savedEmployee = createAndSaveEmployee(employee);
-            System.out.println("Employee saved with ID: " + savedEmployee.getId());
-
-            // 3. Handle photo upload (if any)
-            if (photoFile != null && !photoFile.isEmpty()) {
-                employeeProfileService.uploadPhoto(photoFile, employee.getUserId());
-                System.out.println("Photo uploaded for employee: " + employee.getUserId());
+            EmployeeCredentialsDTO credentials =
+                    employeeProfileService.saveOrUpdateProfile(
+                            employee,
+                            null
+                    );
+            System.out.println(
+                    "EmployeeProfile saved with ID: "
+                            + credentials.getUserId()
+            );
+            // 2. Create and Save Employee
+            Employee savedEmployee =
+                    createAndSaveEmployee(employee);
+            System.out.println(
+                    "Employee saved with ID: "
+                            + savedEmployee.getId()
+            );
+            System.out.println(
+                    "Employee Email: "
+                            + savedEmployee.getEmail()
+            );
+            // 3. Create Kafka Event
+            String employeeName =
+                    savedEmployee.getFullName();
+            // Fallback if fullName is null
+            if (employeeName == null ||
+                    employeeName.isBlank()) {
+                String firstName =
+                        savedEmployee.getFirstName() != null
+                                ? savedEmployee.getFirstName()
+                                : "";
+                String lastName =
+                        savedEmployee.getLastName() != null
+                                ? savedEmployee.getLastName()
+                                : "";
+                employeeName =
+                        (firstName + " " + lastName).trim();
             }
-
-            // 4. Prepare flash attributes for success page (add page)
-            redirectAttributes.addFlashAttribute("successMessage",
-                    "Employee added successfully! Credentials have been sent to the employee's email.");
-            redirectAttributes.addFlashAttribute("createdEmployeeId", savedEmployee.getId());
-            redirectAttributes.addFlashAttribute("createdEmployeeName", savedEmployee.getFullName());
-
-            // 5. Redirect to the ADD page (so the "Create Payroll" button appears)
+            EmployeeEvent employeeEvent =
+                    new EmployeeEvent(
+                            savedEmployee.getId(),
+                            employeeName,
+                            savedEmployee.getEmail()
+                    );
+            System.out.println(
+                    "===== PREPARING KAFKA EVENT ====="
+            );
+            System.out.println(
+                    "Kafka Event: " + employeeEvent
+            );
+            // 4. Send Event to Kafka
+            employeeProducer.sendEmployeeCreatedEvent(
+                    employeeEvent
+            );
+            System.out.println(
+                    "===== KAFKA PRODUCER CALLED ====="
+            );
+            // 5. Upload Photo
+            if (photoFile != null &&
+                    !photoFile.isEmpty()) {
+                employeeProfileService.uploadPhoto(
+                        photoFile,
+                        employee.getUserId()
+                );
+                System.out.println(
+                        "Photo uploaded for employee: "
+                                + employee.getUserId()
+                );
+            }
+            // 6. Success
+            redirectAttributes.addFlashAttribute(
+                    "successMessage",
+                    "Employee added successfully! Welcome email is being processed."
+            );
+            redirectAttributes.addFlashAttribute(
+                    "createdEmployeeId",
+                    savedEmployee.getId()
+            );
+            redirectAttributes.addFlashAttribute(
+                    "createdEmployeeName",
+                    savedEmployee.getFullName()
+            );
             return "redirect:/admin/employees/add";
         } catch (Exception e) {
-            System.err.println("Error adding employee: " + e.getMessage());
+            System.err.println(
+                    "Error adding employee: "
+                            + e.getMessage()
+            );
             e.printStackTrace();
-            model.addAttribute("errorMessage", "Error adding employee: " + e.getMessage());
-            // repopulate dropdowns
-            model.addAttribute("departments", departmentService.getActiveDepartments());
-            model.addAttribute("genders", Arrays.asList("Male", "Female", "Other"));
-            model.addAttribute("bloodGroups", Arrays.asList("A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"));
-            model.addAttribute("maritalStatuses", Arrays.asList("Single", "Married", "Divorced", "Widowed"));
-            model.addAttribute("qualifications", Arrays.asList("10th", "12th", "Diploma", "Bachelor's", "Master's", "PhD", "Other"));
-            model.addAttribute("pageTitle", "Add Employee");
+            model.addAttribute(
+                    "errorMessage",
+                    "Error adding employee: "
+                            + e.getMessage()
+            );
+            model.addAttribute(
+                    "departments",
+                    departmentService.getActiveDepartments()
+            );
+            model.addAttribute(
+                    "genders",
+                    Arrays.asList("Male", "Female", "Other")
+            );
+            model.addAttribute(
+                    "bloodGroups",
+                    Arrays.asList(
+                            "A+", "A-", "B+", "B-",
+                            "AB+", "AB-", "O+", "O-"
+                    )
+            );
+            model.addAttribute(
+                    "maritalStatuses",
+                    Arrays.asList(
+                            "Single", "Married",
+                            "Divorced", "Widowed"
+                    )
+            );
+            model.addAttribute(
+                    "qualifications",
+                    Arrays.asList(
+                            "10th", "12th", "Diploma",
+                            "Bachelor's", "Master's",
+                            "PhD", "Other"
+                    )
+            );
+            model.addAttribute(
+                    "pageTitle",
+                    "Add Employee"
+            );
             return "admin/employee-management/add-employee";
         }
     }
