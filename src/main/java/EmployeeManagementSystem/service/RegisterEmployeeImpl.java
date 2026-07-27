@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -93,6 +94,10 @@ public class RegisterEmployeeImpl implements RegisterEmployeeService {
 
     public String login(LoginRequest request){
         RegisterEmployee employee=repository.findByUserId(request.getUserId());
+
+        if (employee == null) {
+            throw new RuntimeException("Invalid username");
+        }
         if (passwordEncoder.matches(request.getPassword(),employee.getPassword())){
             return jwtUtil.generateToken(employee.getUserId(),employee.getRole());
         }

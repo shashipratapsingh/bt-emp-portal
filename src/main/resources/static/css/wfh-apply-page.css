@@ -8,7 +8,7 @@
             --text-main: #0f172a;
             --text-muted: #64748b;
             --primary-color: #0ea5e9;
-            --profile-primary: #4f46e5;
+            --profile-primary: #2920b1;
         }
 
         body {
@@ -182,7 +182,7 @@
 
         .btn-submit-wfh {
             background: var(--profile-primary);
-            color: white;
+            color: #2920B1FF;
             border-radius: 8px;
             padding: 12px 40px;
             font-size: 1rem;
