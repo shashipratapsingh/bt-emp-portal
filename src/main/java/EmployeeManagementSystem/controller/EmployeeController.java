@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.util.ArrayList;
 
 @Controller
 @RequestMapping("/employees")
@@ -111,13 +112,13 @@ public class EmployeeController {
 
         Employee employee = employeeService.getEmployeeById(id);
 
-
-        if (employee.getSalaryDetails() == null) {
-            employee.setSalaryDetails(new Salary());
+        if(employee.getSalaries() == null){
+            employee.setSalaries(new ArrayList<>());
         }
 
         model.addAttribute("employee", employee);
-        model.addAttribute("departments", departmentService.getAllDepartments());
+        model.addAttribute("departments",
+                departmentService.getAllDepartments());
 
         return "employee-form";
     }

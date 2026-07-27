@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -210,14 +211,27 @@ public class AdminController {
 
     @GetMapping("/employees")
     public String showAllEmployees(Model model) {
+
         List<Employee> employees = employeeRepository.findAll();
+
+
         Employee employee = new Employee();
+
         employee.setDepartment(new Department());
-        employee.setSalaryDetails(new Salary());
+
+        employee.setSalaries(new ArrayList<>());
+
+
         List<Department> departments = departmentRepository.findAll();
+
+
         model.addAttribute("employees", employees);
+
         model.addAttribute("employee", employee);
+
         model.addAttribute("departments", departments);
+
+
         return "admin/employees";
     }
 

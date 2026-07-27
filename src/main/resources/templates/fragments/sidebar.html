@@ -290,8 +290,16 @@
         <li th:classappend="${currentPage == 'wfh'} ? 'active'">
             <a th:href="@{/employee/wfh/apply}"><i class="fa-solid fa-house-laptop"></i>Work From Home</a>
         </li>
+<!--        <li th:classappend="${currentPage == 'signoff'} ? 'active'">-->
+<!--            <a th:href="@{/employee/attendance/signoff-logs}">-->
+<!--                <i class="fa-solid fa-right-from-bracket text-danger"></i>-->
+<!--                <span>Signoff Logs</span>-->
+<!--            </a>-->
+<!--        </li>-->
+
         <li th:classappend="${currentPage == 'signoff'} ? 'active'">
-            <a th:href="@{/employee/attendance/signoff-logs}">
+            <a href="javascript:void(0);"
+               onclick="resetLiveTimer(); window.location.href='/employee/attendance/signoff-logs';">
                 <i class="fa-solid fa-right-from-bracket text-danger"></i>
                 <span>Signoff Logs</span>
             </a>
@@ -312,62 +320,101 @@
 
     <!-- UPDATED: JAVASCRIPT CONNECTED WITH BACKEND -->
     <script th:inline="javascript">
-        // FIXED: अब यह बैकएंड से आने वाले कुल सेकंड्स (backendTotalSeconds) को कलेक्ट करेगा
-        let totalSeconds = [[${backendTotalSeconds != null ? backendTotalSeconds : 0}]];
-        const timerElement = document.getElementById("sidebarLiveTimer");
+        // Total elapsed seconds received from backend
+ // ===============================
+// LIVE LOGIN TIMER
+// ===============================
 
-        // फ़ंक्शन जो स्क्रीन पर टाइम अपडेट करेगा
-        function updateTimerDisplay() {
-            let hrs = Math.floor(totalSeconds / 3600);
-            let mins = Math.floor((totalSeconds % 3600) / 60);
-            let secs = totalSeconds % 60;
+// Get timer from sessionStorage
+let totalSeconds = Number(sessionStorage.getItem("liveTimer"));
 
-            hrs = hrs < 10 ? "0" + hrs : hrs;
-            mins = mins < 10 ? "0" + mins : mins;
-            secs = secs < 10 ? "0" + secs : secs;
+// If timer is not found, use backend value
+if (isNaN(totalSeconds)) {
+totalSeconds = Number([[${backendTotalSeconds != null ? backendTotalSeconds : 0}]]) || 0;
+}
 
-            timerElement.textContent = `${hrs}:${mins}:${secs}`;
-        }
+const timerElement = document.getElementById("sidebarLiveTimer");
+let timerInterval = null;
 
-        // पेज लोड होते ही तुरंत सही टाइम दिखाएं (ताकि 00:00:00 न चमके)
-        updateTimerDisplay();
+// Update timer on UI
+function updateTimerDisplay() {
 
-        // हर एक सेकंड में टाइमर को आगे बढ़ाने के लिए
-        setInterval(() => {
-            totalSeconds++;
-            updateTimerDisplay();
-        }, 1000);
+const hours = String(Math.floor(totalSeconds / 3600)).padStart(2, "0");
+const minutes = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, "0");
+const seconds = String(totalSeconds % 60).padStart(2, "0");
 
-        // PHOTO UPLOAD JAVASCRIPT
-        function uploadSidebarPhoto(input) {
-            if (input.files && input.files[0]) {
-                const file = input.files[0];
-                const formData = new FormData();
-                formData.append("photo", file);
+if (timerElement) {
+  timerElement.textContent = `${hours}:${minutes}:${seconds}`;
+}
 
-                const profileImg = document.getElementById("sidebarProfileImg");
-                profileImg.style.opacity = "0.4";
+// Save timer value
+sessionStorage.setItem("liveTimer", totalSeconds);
+}
 
-                fetch("/employee/profile/upload-photo", {
-                    method: "POST",
-                    body: formData
-                })
-                .then(response => {
-                    if (!response.ok) throw new Error("Upload failed");
-                    return response.text();
-                })
-                .then(fileName => {
-                    profileImg.src = "/storage/photos/" + fileName + "?t=" + new Date().getTime();
-                    profileImg.style.opacity = "1";
-                    alert("Profile photo updated successfully!");
-                })
-                .catch(error => {
-                    console.error(error);
-                    profileImg.style.opacity = "1";
-                    alert("Something went wrong.");
-                });
-            }
-        }
+// Start timer
+function startLiveTimer() {
+
+if (timerInterval) {
+  clearInterval(timerInterval);
+}
+
+updateTimerDisplay();
+
+timerInterval = setInterval(() => {
+  totalSeconds++;
+  updateTimerDisplay();
+}, 1000);
+}
+
+// Reset timer (Call this on Sign Off / Logout)
+function resetLiveTimer() {
+
+totalSeconds = 0;
+
+sessionStorage.removeItem("liveTimer");
+
+if (timerInterval) {
+  clearInterval(timerInterval);
+}
+
+updateTimerDisplay();
+}
+
+// Start timer automatically
+startLiveTimer();
+
+
+
+// PHOTO UPLOAD JAVASCRIPT
+function uploadSidebarPhoto(input) {
+if (input.files && input.files[0]) {
+   const file = input.files[0];
+   const formData = new FormData();
+   formData.append("photo", file);
+
+   const profileImg = document.getElementById("sidebarProfileImg");
+   profileImg.style.opacity = "0.4";
+
+   fetch("/employee/profile/upload-photo", {
+       method: "POST",
+       body: formData
+   })
+   .then(response => {
+       if (!response.ok) throw new Error("Upload failed");
+       return response.text();
+   })
+   .then(fileName => {
+       profileImg.src = "/storage/photos/" + fileName + "?t=" + new Date().getTime();
+       profileImg.style.opacity = "1";
+       alert("Profile photo updated successfully!");
+   })
+   .catch(error => {
+       console.error(error);
+       profileImg.style.opacity = "1";
+       alert("Something went wrong.");
+   });
+}
+}
     </script>
 </aside>
 
