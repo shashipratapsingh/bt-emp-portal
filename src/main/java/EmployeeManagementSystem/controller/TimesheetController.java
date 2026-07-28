@@ -36,7 +36,7 @@ public class TimesheetController {
         timesheet.setEmployeeName(auth.getName());
         timesheet.setEmployeeId(auth.getName());
         service.saveTimesheet(timesheet);
-        return "redirect:/timesheet/log";
+        return "redirect:/employee/timesheet/log?success";
     }
     @GetMapping("/manage")
     public String manageTimesheet(Model model){

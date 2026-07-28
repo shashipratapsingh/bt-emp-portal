@@ -55,7 +55,7 @@
                                 <i class="fa-solid fa-paper-plane me-2 opacity-75"></i>Apply for Leave
                             </h4>
 
-                            <form th:action="@{/leave/submit}" th:object="${leaveRequest}" method="post">
+                            <form th:action="@{/employee/leave/submit}" th:object="${leaveRequest}" method="post">
                                 <div class="mb-3">
                                     <label class="form-label" for="leaveType">Leave Type</label>
                                     <select id="leaveType" th:field="*{leaveType}" class="form-select" required>

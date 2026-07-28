@@ -21,5 +21,6 @@ public interface AttendanceService {
     List<Attendance> getTodayAttendance();
     List<Attendance> getTodayWFHEmployees();
     List<AttendanceTracking> getAttendanceLogsByEmployeeId(String employeeId);
+    void signoffEmployee(String employeeId);
 
 }

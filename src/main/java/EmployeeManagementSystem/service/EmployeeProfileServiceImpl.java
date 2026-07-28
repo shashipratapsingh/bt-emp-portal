@@ -251,7 +251,7 @@ public class EmployeeProfileServiceImpl implements EmployeeProfileService {
     @Override
     public EmployeeCredentialsDTO saveOrUpdateProfile(@Valid EmployeeProfile employee, Object o) {
         // Save the employee profile
-        EmployeeProfile savedProfile = saveEmployeeProfile(employee);
+        EmployeeProfile savedProfile = updateEmployeeProfile(employee.getId(), employee);
 
         // Create and return credentials DTO
         EmployeeCredentialsDTO credentials = new EmployeeCredentialsDTO();
