@@ -53,4 +53,26 @@ public interface EmployeeProfileRepository extends JpaRepository<EmployeeProfile
     // ===== Search by department ID using native query =====
     @Query(value = "SELECT * FROM employee_profiles WHERE department = (SELECT department_name FROM departments WHERE id = :departmentId)", nativeQuery = true)
     List<EmployeeProfile> findEmployeeProfilesByDepartmentId(@Param("departmentId") Long departmentId);
+
+    @Query("SELECT DISTINCT e.department FROM EmployeeProfile e WHERE e.department IS NOT NULL AND e.department != ''")
+    List<String> findDistinctDepartments();
+
+    // For filtering with keyword (you may need to adjust the query)
+    @Query("SELECT e FROM EmployeeProfile e WHERE " +
+            "(:keyword IS NULL OR LOWER(e.fullName) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+            "LOWER(e.email) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+            "LOWER(e.userId) LIKE LOWER(CONCAT('%', :keyword, '%'))) AND " +
+            "(:department IS NULL OR e.department = :department) AND " +
+            "(:status IS NULL OR e.status = :status)")
+    Page<EmployeeProfile> searchByKeywordAndFilters(@Param("keyword") String keyword,
+                                                    @Param("department") String department,
+                                                    @Param("status") String status,
+                                                    Pageable pageable);
+
+    @Query("SELECT e FROM EmployeeProfile e WHERE " +
+            "(:department IS NULL OR e.department = :department) AND " +
+            "(:status IS NULL OR e.status = :status)")
+    Page<EmployeeProfile> findByFilters(@Param("department") String department,
+                                        @Param("status") String status,
+                                        Pageable pageable);
 }

@@ -49,4 +49,5 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
     // Find employees by department ID - Using Spring Data JPA naming convention
     List<Employee> findByDepartmentId(Long departmentId);
+
 }

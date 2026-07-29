@@ -33,6 +33,8 @@ package EmployeeManagementSystem.repository;
 
 import EmployeeManagementSystem.entity.Salary;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -45,4 +47,7 @@ public interface SalaryRepository extends JpaRepository<Salary, Long> {
     long countByPaymentStatus(String paymentStatus);
 
     List<Salary> findByEmployeeId(String employeeId);
+
+    @Query("SELECT s FROM Salary s WHERE s.employee.id = :employeeId")
+    List<Salary> findSalariesByEmployeeId(@Param("employeeId") Long employeeId);
 }

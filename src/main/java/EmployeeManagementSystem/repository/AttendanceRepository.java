@@ -1,11 +1,13 @@
 package EmployeeManagementSystem.repository;
 
-//import com.ems.entity.Attendance;
-//import com.ems.entity.Employee;
+
 import EmployeeManagementSystem.entity.Attendance;
 import EmployeeManagementSystem.entity.AttendanceTracking;
 import EmployeeManagementSystem.entity.Employee;
+import EmployeeManagementSystem.enums.AttendanceStatus;
 import EmployeeManagementSystem.enums.WorkMode;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -30,6 +32,36 @@ public interface AttendanceRepository
             LocalDate date);
     List<Attendance> findByAttendanceDate(LocalDate attendanceDate);
     List<Attendance> findByAttendanceDateAndWorkMode(LocalDate attendanceDate, WorkMode workMode);
+
+    // ---------- Filtered & paginated attendance records ----------
+    @Query("SELECT a FROM Attendance a JOIN a.employee e LEFT JOIN e.department d WHERE " +
+            "(:fromDate IS NULL OR a.date >= :fromDate) AND " +
+            "(:toDate IS NULL OR a.date <= :toDate) AND " +
+            "(:department IS NULL OR d.departmentName = :department) AND " +
+            "(:status IS NULL OR a.status = :status) AND " +
+            "(:keyword IS NULL OR " +
+            "LOWER(e.fullName) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+            "LOWER(e.email) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+            "LOWER(e.phone) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+            "CAST(e.id AS string) LIKE CONCAT('%', :keyword, '%'))")
+    Page<Attendance> findFiltered(@Param("fromDate") LocalDate fromDate,
+                                  @Param("toDate") LocalDate toDate,
+                                  @Param("department") String department,
+                                  @Param("status") AttendanceStatus status,
+                                  @Param("keyword") String keyword,
+                                  Pageable pageable);
+
+    @Query("SELECT COUNT(a) FROM Attendance a JOIN a.employee e LEFT JOIN e.department d " +
+            "WHERE a.date = :date AND (:department IS NULL OR d.departmentName = :department) AND a.status = :status")
+    long countByDateAndStatusAndDepartment(@Param("date") LocalDate date,
+                                           @Param("status") AttendanceStatus status,
+                                           @Param("department") String department);
+
+    @Query("SELECT COUNT(e) FROM Employee e LEFT JOIN e.department d " +
+            "WHERE (:department IS NULL OR d.departmentName = :department)")
+    long countTotalEmployeesByDepartment(@Param("department") String department);
+
+
 
 
 }
