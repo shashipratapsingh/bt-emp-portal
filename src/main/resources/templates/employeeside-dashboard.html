@@ -203,7 +203,7 @@
                                 <tr th:each="bday, stat : ${birthdayList}" class="border-bottom-subtle">
                                     <td class="py-2 fw-semibold text-muted" th:text="${stat.count}">1</td>
                                     <td class="py-2 fw-medium" th:text="${bday?.name}">Employee Name</td>
-                                    <td class="py-2 text-muted" th:text="${bday?.dateOfBirth}">1st Jul, Wed</td>
+                                    <td class="py-2 text-muted" th:text="${bday?.dob}">1st Jul, Wed</td>
                                     <td class="py-2 text-end">
                                         <span th:classappend="${bday?.remainingDays == 1} ? 'bg-danger-subtle text-danger' : 'bg-light text-dark'"
                                               class="badge rounded-1"
