@@ -1,5 +1,6 @@
 package EmployeeManagementSystem.repository;
 
+import EmployeeManagementSystem.entity.Employee;
 import EmployeeManagementSystem.entity.EmployeeProfile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -53,4 +54,7 @@ public interface EmployeeProfileRepository extends JpaRepository<EmployeeProfile
     // ===== Search by department ID using native query =====
     @Query(value = "SELECT * FROM employee_profiles WHERE department = (SELECT department_name FROM departments WHERE id = :departmentId)", nativeQuery = true)
     List<EmployeeProfile> findEmployeeProfilesByDepartmentId(@Param("departmentId") Long departmentId);
+
+    @Query("SELECT e FROM EmployeeProfile e WHERE MONTH(e.dob) = MONTH(CURRENT_DATE)")
+    List<EmployeeProfile> findUpcomingBirthdays();
 }

@@ -70,7 +70,7 @@ public class DashboardServiceImpl implements DashboardService {
 
             BirthdayDTO dto = new BirthdayDTO();
             dto.setName(e.getFirstName());
-            dto.setDateOfBirth(e.getDateOfBirth());
+            dto.setDob(e.getDateOfBirth());
             dto.setRemainingDays(days);
             dto.setNextDate(nextBirthday);
 

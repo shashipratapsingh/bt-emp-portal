@@ -7,7 +7,9 @@ import EmployeeManagementSystem.entity.Employee;
 import EmployeeManagementSystem.entity.Salary;
 import EmployeeManagementSystem.kafkaConfig.EmployeeEvent;
 import EmployeeManagementSystem.kafkaConfig.EmployeeProducer;
+import EmployeeManagementSystem.repository.EmployeeProfileRepository;
 import EmployeeManagementSystem.repository.EmployeeRepository;
+import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
@@ -22,18 +24,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;
     private final EmployeeProducer employeeProducer;
-
-    public EmployeeServiceImpl(
-            EmployeeRepository employeeRepository,
-            EmployeeProducer employeeProducer) {
-
-        this.employeeRepository = employeeRepository;
-        this.employeeProducer = employeeProducer;
-    }
+    private final EmployeeProfileRepository employeeProfileRepository;
 
     @Override
     public Employee saveEmployee(Employee employee) {
@@ -182,21 +178,25 @@ public class EmployeeServiceImpl implements EmployeeService {
     public List<BirthdayDTO> getUpcomingBirthdays() {
         LocalDate today = LocalDate.now();
 
-        return employeeRepository.findAll()
+        return employeeProfileRepository.findAll()
                 .stream()
-                .filter(emp -> emp.getDateOfBirth() != null)
+                .filter(emp -> emp.getDob() != null)
                 .map(emp -> {
-                    LocalDate nextBirthday = emp.getDateOfBirth().withYear(today.getYear());
+                    LocalDate nextBirthday = emp.getDob().withYear(today.getYear());
+
                     if (nextBirthday.isBefore(today)) {
                         nextBirthday = nextBirthday.plusYears(1);
                     }
+
                     long days = ChronoUnit.DAYS.between(today, nextBirthday);
 
                     BirthdayDTO dto = new BirthdayDTO();
-                    dto.setName(emp.getFirstName());
-                    dto.setDateOfBirth(emp.getDateOfBirth());
+                    dto.setName(emp.getFullName());          // fullName use karo
+                    dto.setDob(emp.getDob());                // getDob() use karo
+                    dto.setDepartment(emp.getDepartment());  // department String hai
                     dto.setRemainingDays(days);
                     dto.setNextDate(nextBirthday);
+
                     return dto;
                 })
                 .sorted(Comparator.comparingLong(BirthdayDTO::getRemainingDays))
@@ -208,19 +208,19 @@ public class EmployeeServiceImpl implements EmployeeService {
     public List<AnniversaryDTO> getUpcomingAnniversaries() {
         LocalDate today = LocalDate.now();
 
-        return employeeRepository.findAll()
+        return employeeProfileRepository.findAll()
                 .stream()
-                .filter(emp -> emp.getJoiningDate() != null)
+                .filter(emp -> emp.getRegisteredAt() != null)
                 .map(emp -> {
-                    LocalDate nextAnniversary = emp.getJoiningDate().withYear(today.getYear());
+                    LocalDate nextAnniversary = LocalDate.from(emp.getRegisteredAt().withYear(today.getYear()));
                     if (nextAnniversary.isBefore(today)) {
                         nextAnniversary = nextAnniversary.plusYears(1);
                     }
                     long days = ChronoUnit.DAYS.between(today, nextAnniversary);
 
                     AnniversaryDTO dto = new AnniversaryDTO();
-                    dto.setName(emp.getFirstName());
-                    dto.setJoiningDate(emp.getJoiningDate());
+                    dto.setName(emp.getFullName());
+                    dto.setJoiningDate(LocalDate.from(emp.getRegisteredAt()));
                     dto.setRemainingDays(days);
                     dto.setNextDate(nextAnniversary);
                     return dto;
