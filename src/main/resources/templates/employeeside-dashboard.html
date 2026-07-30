@@ -11,113 +11,31 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
     <link rel="stylesheet" th:href="@{/css/employeeside-dashboard.css}">
-    <style>
-    /* ── TOP-RIGHT CORNER COMPACT POPUP MODAL STYLING ── */
 
-    /* 1. Modal Positioning (Top-Right Corner) */
-    .modal-celebration {
-    z-index: 1060 !important;
-    }
-
-    .modal-backdrop {
-    z-index: 1050 !important;
-    background-color: rgba(15, 23, 42, 0.4) !important; /* Slightly lighter overlay */
-    }
-
-    .modal-celebration .modal-dialog {
-    max-width: 360px !important; /* Compact overall width */
-    margin-top: 20px !important;   /* Top spacing */
-    margin-right: 20px !important;  /* Right corner spacing */
-    margin-left: auto !important;   /* Right corner align karega */
-    }
-
-    /* 2. Compact Container Box */
-    .modal-celebration .modal-content {
-    border-radius: 16px;
-    border: none;
-    overflow: hidden;
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
-    }
-
-    /* 3. Small & Sleek Header */
-    .modal-celebration .modal-header {
-    background: linear-gradient(135deg, #4f46e5, #7c3aed);
-    color: white;
-    border: none;
-    padding: 10px 16px; /* Compact padding */
-    }
-
-    .modal-celebration .modal-title {
-    font-size: 14px !important;
-    }
-
-    .modal-celebration .btn-close {
-    font-size: 11px;
-    }
-
-    /* 4. Scrollable Body */
-    .modal-celebration .modal-body {
-    padding: 12px !important;
-    max-height: 360px;
-    overflow-y: auto;
-    }
-
-    /* 5. Employee Inner Card */
-    .celebration-card {
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    padding: 10px 12px !important;
-    background: #fafafa;
-    }
-
-    /* 6. Larger Employee Photo (Prominent Focus) */
-    .emp-photo {
-    width: 68px !important;  /* Photo size Bada rakha hai */
-    height: 68px !important;
-    object-fit: cover;
-    border-radius: 50%;
-    border: 3px solid #4f46e5;
-    box-shadow: 0 4px 10px rgba(79, 70, 229, 0.2);
-    }
-
-    /* 7. Typography & Badges */
-    .celebration-card h5 {
-    font-size: 13.5px !important;
-    margin-bottom: 2px !important;
-    }
-
-    .celebration-card small {
-    font-size: 11px !important;
-    }
-
-    .badge-celebration {
-    font-size: 10px !important;
-    padding: 3px 8px !important;
-    border-radius: 50px;
-    font-weight: 600;
-    }
-
-    /* 8. Action Wish Button */
-    .celebration-card .btn {
-    font-size: 11px !important;
-    padding: 4px 10px !important;
-    }
-    </style>
 </head>
 
 <body>
 
 <div class="dashboard-container">
+    <!-- SIDEBAR OVERLAY (for mobile) -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
     <!-- SIDEBAR -->
-    <aside th:replace="~{fragments/sidebar :: sidebar-component}"></aside>
+    <aside th:replace="~{fragments/sidebar :: sidebar-component}" class="sidebar" id="sidebar"></aside>
 
     <!-- MAIN INTERFACE -->
     <div class="main-content">
 
         <!-- TOP NAVIGATION BAR -->
         <header class="top-navbar">
-            <div class="page-title">
-                <h2 th:text="${loggedInEmpName != null} ? ${loggedInEmpName} : 'Dashboard'">Dashboard</h2>
+            <div class="d-flex align-items-center gap-3">
+                <!-- Mobile Sidebar Toggle Button -->
+                <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Toggle sidebar">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <div class="page-title">
+                    <h2 th:text="${loggedInEmpName != null} ? ${loggedInEmpName} : 'Dashboard'">Dashboard</h2>
+                </div>
             </div>
             <div>
                 <a th:if="${isUserLoggedIn == null or !isUserLoggedIn}"
@@ -138,9 +56,9 @@
         <main class="content-body">
 
             <!-- 1. CRITICAL ALERT BANNER -->
-            <div class="alert border-0 rounded-3 p-3 mb-4 d-flex align-items-center gap-3"
+            <div class="alert border-0 rounded-3 p-3 mb-4 d-flex align-items-center gap-3 flex-wrap"
                  style="background-color: #fef2f2; color: #991b1b; border-left: 4px solid #ef4444 !important;">
-                <div class="fs-4"><i class="fa-solid fa-bullhorn text-danger"></i></div>
+                <div class="fs-4 flex-shrink-0"><i class="fa-solid fa-bullhorn text-danger"></i></div>
                 <div>
                     <strong class="d-block mb-1" style="font-size: 14px; font-weight: 700;">Alert Notice</strong>
                     <span style="font-size: 13.5px; color: #991b1b; font-weight: 500;">
@@ -149,9 +67,9 @@
                 </div>
             </div>
 
-            <!-- 2. QUICK STATS (TOP LEVEL) -->
-            <div class="row g-4 mb-4">
-                <div class="col-xl-4 col-md-6">
+            <!-- 2. QUICK STATS (TOP LEVEL) - Responsive Grid -->
+            <div class="row g-3 g-lg-4 mb-4">
+                <div class="col-12 col-sm-6 col-xl-4">
                     <div class="stat-card">
                         <div class="stat-info">
                             <span>WFH Workforce</span>
@@ -160,7 +78,7 @@
                         <div class="stat-icon" style="background-color: #ecfdf5; color: #059669;"><i class="fa-solid fa-house-laptop"></i></div>
                     </div>
                 </div>
-                <div class="col-xl-4 col-md-6">
+                <div class="col-12 col-sm-6 col-xl-4">
                     <div class="stat-card">
                         <div class="stat-info">
                             <span>Today's Leave Status</span>
@@ -169,7 +87,7 @@
                         <div class="stat-icon" style="background-color: #fef3c7; color: #d97706;"><i class="fa-solid fa-calendar-minus"></i></div>
                     </div>
                 </div>
-                <div class="col-xl-4 col-md-6">
+                <div class="col-12 col-sm-6 col-xl-4">
                     <div class="stat-card">
                         <div class="stat-info">
                             <span>Project Off-logs</span>
@@ -180,12 +98,12 @@
                 </div>
             </div>
 
-            <!-- 3. DETAILED INFORMATION TABS/GRIDS -->
-            <div class="row g-4 mb-4">
+            <!-- 3. DETAILED INFORMATION TABS/GRIDS - Responsive -->
+            <div class="row g-3 g-lg-4 mb-4">
                 <!-- UPCOMING BIRTHDAYS -->
-                <div class="col-lg-6">
-                    <div class="bg-white rounded-3 border p-4 h-100">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="col-12 col-lg-6">
+                    <div class="bg-white rounded-3 border p-3 p-lg-4 h-100">
+                        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
                             <h6 class="fw-bold m-0" style="font-size: 14px; color: var(--text-main);"><i class="fa-solid fa-cake-candles text-danger me-2"></i>Upcoming Birthdays</h6>
                             <span class="badge rounded-pill bg-light text-secondary border fw-medium" th:text="${currentMonthName != null ? currentMonthName : 'Month'}">Month</span>
                         </div>
@@ -220,9 +138,9 @@
                 </div>
 
                 <!-- UPCOMING WORK ANNIVERSARIES -->
-                <div class="col-lg-6">
-                    <div class="bg-white rounded-3 border p-4 h-100">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="col-12 col-lg-6">
+                    <div class="bg-white rounded-3 border p-3 p-lg-4 h-100">
+                        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
                             <h6 class="fw-bold m-0" style="font-size: 14px; color: var(--text-main);"><i class="fa-solid fa-award text-primary me-2"></i>Work Anniversaries</h6>
                             <span class="badge rounded-pill bg-light text-secondary border fw-medium">Milestones</span>
                         </div>
@@ -257,10 +175,11 @@
                 </div>
             </div>
 
-            <div class="row g-4">
+            <!-- 4. BOTTOM SECTION - Responsive Grid -->
+            <div class="row g-3 g-lg-4">
                 <!-- ALL LEAVE REQUESTS TRACKER -->
-                <div class="col-xl-8">
-                    <div class="bg-white rounded-3 border p-4 h-100">
+                <div class="col-12 col-xl-8">
+                    <div class="bg-white rounded-3 border p-3 p-lg-4 h-100">
                         <h6 class="fw-bold mb-3" style="font-size: 14px;"><i class="fa-solid fa-user-clock text-warning me-2"></i>Employee Leave Records</h6>
                         <div class="table-responsive" style="max-height: 430px; overflow-y: auto;">
                             <table class="table table-sm align-middle mb-0" style="font-size: 13px; border-color: var(--border-color);">
@@ -269,7 +188,7 @@
                                     <th class="py-2 px-3" style="width: 10%;">S.No.</th>
                                     <th class="py-2">Emp ID</th>
                                     <th class="py-2">Employee Name</th>
-                                    <th class="py-2">Duration</th>
+                                    <th class="py-2 d-none d-sm-table-cell">Duration</th>
                                     <th class="py-2 text-end px-3">Status</th>
                                 </tr>
                                 </thead>
@@ -278,7 +197,7 @@
                                     <td class="py-3 px-3 fw-semibold text-muted" th:text="${stat.count}">1</td>
                                     <td class="py-3 text-mono text-muted" th:text="${leave?.employeeId}">BT0000</td>
                                     <td class="py-3 fw-medium" th:text="${leave?.employeeName}">Employee Name</td>
-                                    <td class="py-3 text-muted" th:text="${(leave?.startDate + ' to ' + leave?.endDate)}">Dates</td>
+                                    <td class="py-3 text-muted d-none d-sm-table-cell" th:text="${(leave?.startDate + ' to ' + leave?.endDate)}">Dates</td>
                                     <td class="py-3 text-end px-3">
                                         <span th:classappend="${leave?.status == 'Approved' || leave?.status == 'APPROVED'} ? 'bg-success-subtle text-success border-success' : 'bg-warning-subtle text-warning border-warning'"
                                               class="badge border rounded-pill px-2"
@@ -294,20 +213,20 @@
                     </div>
                 </div>
 
-                <!-- SIDE LOGS -->
-                <div class="col-xl-4">
+                <!-- SIDE LOGS - Responsive -->
+                <div class="col-12 col-xl-4">
                     <!-- WFH List Card -->
-                    <div class="bg-white rounded-3 border p-4 mb-4" style="height: 240px; display: flex; flex-direction: column;">
+                    <div class="bg-white rounded-3 border p-3 p-lg-4 mb-3 mb-lg-4">
                         <h6 class="fw-bold mb-3" style="font-size: 14px;">
                             <i class="fa-solid fa-house-user text-success me-2"></i>WFH List
                         </h6>
-                        <div class="table-responsive w-100 flex-grow-1" style="max-height: 160px; overflow-y: auto;">
+                        <div class="table-responsive" style="max-height: 160px; overflow-y: auto;">
                             <table class="table table-sm table-borderless align-middle mb-0" style="font-size: 13px; table-layout: fixed; width: 100%;">
                                 <thead class="text-muted sticky-top bg-white" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border-color);">
                                 <tr>
                                     <th style="width: 15%;" class="pb-2">S.No.</th>
                                     <th style="width: 35%;" class="pb-2">Employee</th>
-                                    <th style="width: 20%;" class="pb-2">ID</th>
+                                    <th style="width: 20%;" class="pb-2 d-none d-sm-table-cell">ID</th>
                                     <th style="width: 30%;" class="pb-2 text-end">Duration</th>
                                 </tr>
                                 </thead>
@@ -317,7 +236,7 @@
                                     <td class="py-2 fw-medium text-dark">
                                         <span class="truncate-text d-block" th:text="${wfh?.employeeName}" th:title="${wfh?.employeeName}">Employee Name</span>
                                     </td>
-                                    <td class="py-2 text-muted" th:text="${wfh?.employeeId}">BT0000</td>
+                                    <td class="py-2 text-muted d-none d-sm-table-cell" th:text="${wfh?.employeeId}">BT0000</td>
                                     <td class="py-2 text-end">
                                         <span class="badge bg-light text-secondary border rounded p-1" style="font-size: 11px; white-space: nowrap;">
                                             <span th:text="${wfh?.startDate}">01/07</span>
@@ -335,7 +254,7 @@
                     </div>
 
                     <!-- Project Off Logs Card -->
-                    <div class="bg-white rounded-3 border p-4">
+                    <div class="bg-white rounded-3 border p-3 p-lg-4">
                         <h6 class="fw-bold mb-3" style="font-size: 14px;"><i class="fa-solid fa-toggle-off text-muted me-2"></i>Project Off Logs</h6>
                         <ul class="list-group list-group-flush" style="font-size: 13px;">
                             <li th:each="offLog : ${projectOffLogs}" class="list-group-item d-flex justify-content-between align-items-center px-0 border-light py-2">
@@ -351,6 +270,7 @@
                     </div>
                 </div>
             </div>
+
             <!-- 🎉 CELEBRATION POPUP MODAL -->
             <div id="celebrationModal" class="modal fade modal-celebration" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
                 <div class="modal-dialog modal-md">
@@ -364,9 +284,8 @@
 
                         <div class="modal-body p-4" style="max-height: 420px; overflow-y: auto;">
                             <div class="d-flex flex-column gap-3">
-                                <div th:each="emp : ${celebrations}" class="celebration-card d-flex align-items-center gap-3">
+                                <div th:each="emp : ${celebrations}" class="celebration-card d-flex align-items-center gap-3 flex-wrap">
                                     <div>
-                                        <!-- Safe photo check -->
                                         <img th:src="${emp?.photo != null && emp?.photo != ''} ? @{/storage/photos/{filename}(filename=${emp.photo})} : 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'"
                                              class="emp-photo" alt="Employee Photo"
                                              style="width: 60px; height: 60px; object-fit: cover; border-radius: 50%;">
@@ -412,10 +331,53 @@
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Sidebar Toggle Function -->
+<script>
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+
+        if (sidebar) {
+            sidebar.classList.toggle('show');
+            if (overlay) {
+                overlay.classList.toggle('show');
+            }
+        }
+    }
+
+    // Close sidebar when clicking outside on mobile
+    document.addEventListener('click', function(event) {
+        const sidebar = document.getElementById('sidebar');
+        const toggleBtn = document.getElementById('sidebarToggleBtn');
+        const overlay = document.getElementById('sidebarOverlay');
+
+        if (window.innerWidth <= 991.98 && sidebar && toggleBtn && overlay) {
+            const isClickInsideSidebar = sidebar.contains(event.target);
+            const isClickOnToggle = toggleBtn.contains(event.target);
+            const isClickOnOverlay = overlay === event.target;
+
+            if (!isClickInsideSidebar && !isClickOnToggle && !isClickOnOverlay) {
+                sidebar.classList.remove('show');
+                overlay.classList.remove('show');
+            }
+        }
+    });
+
+    // Close sidebar on window resize to desktop
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 991.98) {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            if (sidebar) sidebar.classList.remove('show');
+            if (overlay) overlay.classList.remove('show');
+        }
+    });
+</script>
+
 <!-- AUTO TRIGGER POPUP SCRIPT -->
 <script th:inline="javascript">
     document.addEventListener("DOMContentLoaded", function () {
-        /* Thymeleaf inline variable */
         let celebrationsCount = [[${celebrations != null ? celebrations.size() : 0}]];
 
         console.log("Celebrations count today: " + celebrationsCount);
@@ -429,11 +391,12 @@
         }
     });
 </script>
+
 <script th:inline="javascript">
     function sendWishToEmployee(buttonElement) {
         let receiverId = buttonElement.getAttribute("data-receiver-id");
         let wishType = buttonElement.getAttribute("data-wish-type");
-        let senderId = [[${loggedInEmpId}]]; // Spring Model se logged-in employee ID
+        let senderId = [[${loggedInEmpId}]];
 
         if (!receiverId) {
             alert("Receiver details missing!");
@@ -469,24 +432,5 @@
         });
     }
 </script>
-<!--<script th:inline="javascript">-->
-<!--    document.addEventListener("DOMContentLoaded", function () {-->
-<!--        let celebrationsCount = [[${celebrations != null ? celebrations.size() : 0}]];-->
-
-<!--        // Aaj ki date string (YYYY-MM-DD)-->
-<!--        let todayDate = new Date().toISOString().slice(0, 10);-->
-<!--        let lastShownDate = localStorage.getItem("celebrationPopupShownDate");-->
-
-<!--        // Agar aaj ke din abhi tak nahi dikhaya gaya hai-->
-<!--        if (celebrationsCount > 0 && lastShownDate !== todayDate) {-->
-<!--            var celebrationModalElement = document.getElementById("celebrationModal");-->
-<!--            var modal = new bootstrap.Modal(celebrationModalElement);-->
-<!--            modal.show();-->
-
-<!--            // Store karein ki aaj ki date ko popup dikha diya gaya hai-->
-<!--            localStorage.setItem("celebrationPopupShownDate", todayDate);-->
-<!--        }-->
-<!--    });-->
-<!--</script>-->
 </body>
 </html>

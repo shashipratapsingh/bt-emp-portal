@@ -32,11 +32,11 @@
             <div class="container-fluid" style="max-width: 1200px; padding: 0;">
 
                 <!-- HEADER SECTION -->
-                <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="d-flex flex-wrap flex-sm-nowrap justify-content-between align-items-center gap-2 mb-4">
                     <h2 class="fs-4 m-0 fw-bold tracking-tight text-slate-900">
                         Leave Management Portal
                     </h2>
-                    <a th:href="@{/employee/dashboard}" class="btn btn-custom-dashboard rounded-pill px-4 fw-medium">
+                    <a th:href="@{/employee/dashboard}" class="btn btn-custom-dashboard rounded-pill px-3 px-sm-4 fw-medium">
                         <i class="fa-solid fa-arrow-left me-2"></i> Back to Dashboard
                     </a>
                 </div>
@@ -47,9 +47,9 @@
                 </div>
 
                 <!-- TWO COLUMN: Form + History -->
-                <div class="row items-stretch">
+                <div class="row g-3 g-lg-4 items-stretch">
                     <!-- Column 1: Leave Application Form -->
-                    <div class="col-xl-5 col-lg-6 mb-4">
+                    <div class="col-xl-5 col-lg-6 mb-3 mb-lg-4">
                         <div class="section-card">
                             <h4 class="section-title">
                                 <i class="fa-solid fa-paper-plane me-2 opacity-75"></i>Apply for Leave
@@ -67,12 +67,12 @@
                                         <option value="Full Day">Full Day</option>
                                     </select>
                                 </div>
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
+                                <div class="row g-2 g-sm-3">
+                                    <div class="col-12 col-sm-6 mb-2 mb-sm-3">
                                         <label class="form-label" for="startDate">Start Date</label>
                                         <input type="date" id="startDate" th:field="*{startDate}" class="form-control" required>
                                     </div>
-                                    <div class="col-md-6 mb-3">
+                                    <div class="col-12 col-sm-6 mb-2 mb-sm-3">
                                         <label class="form-label" for="endDate">End Date</label>
                                         <input type="date" id="endDate" th:field="*{endDate}" class="form-control" required>
                                     </div>
@@ -89,7 +89,7 @@
                     </div>
 
                     <!-- Column 2: Leave History Table -->
-                    <div class="col-xl-7 col-lg-6 mb-4">
+                    <div class="col-xl-7 col-lg-6 mb-3 mb-lg-4">
                         <div class="section-card">
                             <h4 class="section-title">
                                 <i class="fa-solid fa-clock-rotate-left me-2 opacity-75"></i>My Leave History

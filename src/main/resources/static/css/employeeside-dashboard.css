@@ -1,4 +1,4 @@
-<style>
+
         :root {
             /* Synchronized Dashboard & Profile Colors */
             --sidebar-bg: #1e293b;
@@ -10,6 +10,8 @@
             --text-muted: #64748b;
             --primary-color: #0ea5e9;
             --profile-primary: #4f46e5;
+            --sidebar-width: 260px;
+            --sidebar-collapsed: 0px;
         }
 
         body {
@@ -27,9 +29,9 @@
         }
 
         /* ── 2. SIDEBAR STYLES ── */
-        aside, [th\:replace], .sidebar {
-            width: 260px;
-            min-width: 260px;
+        .sidebar {
+            width: var(--sidebar-width);
+            min-width: var(--sidebar-width);
             background-color: var(--sidebar-bg);
             color: #fff;
             position: fixed;
@@ -41,25 +43,40 @@
             z-index: 1000;
             overflow-y: auto;
             flex-shrink: 0;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        /* Sidebar toggle for mobile */
+        .sidebar-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-main);
+            font-size: 1.5rem;
+            padding: 0.5rem;
+            cursor: pointer;
         }
 
         /* ── 3. MAIN WORKSPACE ── */
         .main-content {
-            margin-left: 260px;
+            margin-left: var(--sidebar-width);
             flex-grow: 1;
             display: flex;
             flex-direction: column;
-            width: calc(100% - 260px);
+            width: calc(100% - var(--sidebar-width));
             min-width: 0;
+            transition: margin-left 0.3s ease-in-out;
         }
 
         .top-navbar {
             background-color: #fff;
             border-bottom: 1px solid var(--border-color);
-            padding: 16px 40px;
+            padding: 16px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .page-title h2 {
@@ -70,19 +87,22 @@
         }
 
         .content-body {
-            padding: 40px;
+            padding: 20px;
+            flex: 1;
         }
 
-        /* Missing Quick Stat Cards Style added */
+        /* Quick Stat Cards */
         .stat-card {
             background: #fff;
             border: 1px solid var(--border-color);
             border-radius: 12px;
-            padding: 24px;
+            padding: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            height: 100%;
+            min-height: 100px;
         }
 
         .stat-info span {
@@ -92,9 +112,13 @@
             margin-bottom: 4px;
         }
 
-        .stat-info h4 a {
-            font-size: 18px;
+        .stat-info h4 {
+            font-size: 16px;
             font-weight: 600;
+            margin: 0;
+        }
+
+        .stat-info h4 a {
             color: var(--text-main);
             text-decoration: none;
         }
@@ -107,11 +131,211 @@
             align-items: center;
             justify-content: center;
             font-size: 20px;
+            flex-shrink: 0;
         }
 
         .truncate-text {
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            max-width: 120px;
         }
-    </style>
+
+        /* ── TOP-RIGHT CORNER COMPACT POPUP MODAL STYLING ── */
+        .modal-celebration {
+            z-index: 1060 !important;
+        }
+
+        .modal-backdrop {
+            z-index: 1050 !important;
+            background-color: rgba(15, 23, 42, 0.4) !important;
+        }
+
+        .modal-celebration .modal-dialog {
+            max-width: 360px !important;
+            margin-top: 20px !important;
+            margin-right: 20px !important;
+            margin-left: auto !important;
+        }
+
+        .modal-celebration .modal-content {
+            border-radius: 16px;
+            border: none;
+            overflow: hidden;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-celebration .modal-header {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+        }
+
+        .modal-celebration .modal-title {
+            font-size: 14px !important;
+        }
+
+        .modal-celebration .btn-close {
+            font-size: 11px;
+        }
+
+        .modal-celebration .modal-body {
+            padding: 12px !important;
+            max-height: 360px;
+            overflow-y: auto;
+        }
+
+        .celebration-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 10px 12px !important;
+            background: #fafafa;
+        }
+
+        .emp-photo {
+            width: 68px !important;
+            height: 68px !important;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 3px solid #4f46e5;
+            box-shadow: 0 4px 10px rgba(79, 70, 229, 0.2);
+        }
+
+        .celebration-card h5 {
+            font-size: 13.5px !important;
+            margin-bottom: 2px !important;
+        }
+
+        .celebration-card small {
+            font-size: 11px !important;
+        }
+
+        .badge-celebration {
+            font-size: 10px !important;
+            padding: 3px 8px !important;
+            border-radius: 50px;
+            font-weight: 600;
+        }
+
+        .celebration-card .btn {
+            font-size: 11px !important;
+            padding: 4px 10px !important;
+        }
+
+        /* ── RESPONSIVE BREAKPOINTS ── */
+
+        /* Tablet and below */
+        @media (max-width: 991.98px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .sidebar-toggle {
+                display: block;
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            /* Overlay for mobile sidebar */
+            .sidebar-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 999;
+            }
+
+            .sidebar-overlay.show {
+                display: block;
+            }
+        }
+
+        /* Mobile */
+        @media (max-width: 575.98px) {
+            .top-navbar {
+                padding: 12px 16px;
+            }
+
+            .page-title h2 {
+                font-size: 18px;
+            }
+
+            .content-body {
+                padding: 12px;
+            }
+
+            .stat-card {
+                padding: 16px;
+                min-height: 80px;
+            }
+
+            .stat-info h4 {
+                font-size: 14px;
+            }
+
+            .stat-info span {
+                font-size: 12px;
+            }
+
+            .stat-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+            }
+
+            /* Make tables horizontally scrollable on mobile */
+            .table-responsive-mobile {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            /* Celebration modal adjustments for mobile */
+            .modal-celebration .modal-dialog {
+                max-width: 95% !important;
+                margin: 10px auto !important;
+                margin-top: 10px !important;
+            }
+
+            .emp-photo {
+                width: 50px !important;
+                height: 50px !important;
+            }
+
+            .celebration-card {
+                flex-wrap: wrap;
+            }
+
+            .celebration-card .btn {
+                width: 100%;
+                margin-top: 8px;
+            }
+        }
+
+        /* Small tablets */
+        @media (min-width: 576px) and (max-width: 767.98px) {
+            .content-body {
+                padding: 16px;
+            }
+
+            .stat-card {
+                padding: 18px;
+            }
+        }
+
+        /* Large screens - better spacing */
+        @media (min-width: 1400px) {
+            .content-body {
+                padding: 40px 50px;
+            }
+        }

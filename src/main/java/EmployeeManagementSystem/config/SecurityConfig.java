@@ -49,17 +49,18 @@ public class SecurityConfig {
                 )
 
                 .exceptionHandling(exception -> exception
-
                         .authenticationEntryPoint((request, response, authException) -> {
+                            String uri = request.getRequestURI();
 
-                            response.sendRedirect("/auth/loginPage?expired=true");
-
+                            // Sirf protected URLs ke liye login redirect
+                            if (uri.startsWith("/employee") || uri.startsWith("/admin")) {
+                                response.sendRedirect("/auth/loginPage?expired=true");
+                            } else {
+                                response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+                            }
                         })
-
                         .accessDeniedHandler((request, response, accessDeniedException) -> {
-
                             response.sendRedirect("/auth/access-denied");
-
                         })
                 )
 

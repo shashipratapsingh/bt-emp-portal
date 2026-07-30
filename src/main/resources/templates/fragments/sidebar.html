@@ -5,7 +5,7 @@
 </head>
 <body>
 
-<aside th:fragment="sidebar-component" class="sidebar">
+<aside th:fragment="sidebar-component" class="sidebar" id="sidebar">
     <!-- ── GLOBAL SIDEBAR BRAND NEW UI CSS ── -->
     <style>
         .sidebar {
@@ -24,15 +24,36 @@
             border-right: 1px solid #334155;
             font-family: 'Inter', system-ui, sans-serif;
 
+            /* 🔥 IMPORTANT: Add transition for smooth animation */
+            transition: transform 0.3s ease-in-out;
 
-            -ms-overflow-style: none;  /* IE and Edge */
-            scrollbar-width: none;  /* Firefox */
+            /* Hide scrollbar */
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
 
-        /* Chrome, Safari, Opera के लिए स्क्रॉल बार छिपाना */
+        /* Hide scrollbar for Chrome/Safari/Opera */
         .sidebar::-webkit-scrollbar {
             width: 0px;
             background: transparent;
+        }
+
+        /* 🔥 IMPORTANT: Mobile responsive - hidden by default on small screens */
+        @media (max-width: 991.98px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+        }
+
+        /* Desktop: always visible */
+        @media (min-width: 992px) {
+            .sidebar {
+                transform: translateX(0) !important;
+            }
         }
 
         .sidebar-brand {
@@ -210,6 +231,43 @@
             color: #0ea5e9 !important;
             background: transparent !important;
         }
+
+        /* 🔥 Mobile specific adjustments */
+        @media (max-width: 575.98px) {
+            .profile-container-horizontal {
+                padding: 12px 8px;
+                margin: 0 8px;
+                gap: 10px;
+            }
+
+            .profile-info-block h6 {
+                font-size: 12px !important;
+            }
+
+            .profile-info-block span {
+                font-size: 10px !important;
+            }
+
+            .style-profile-wrapper img {
+                width: 42px !important;
+                height: 42px !important;
+            }
+
+            .sidebar-brand {
+                padding: 16px 16px;
+                font-size: 16px;
+            }
+
+            .sidebar-menu li a,
+            .sidebar-menu .dropdown-trigger {
+                padding: 10px 12px;
+                font-size: 13px;
+            }
+
+            .submenu {
+                padding-left: 28px !important;
+            }
+        }
     </style>
 
     <div class="sidebar-brand">
@@ -298,6 +356,7 @@
                 </button>
             </form>
         </li>
+        <li>
             <button class="dropdown-trigger" type="button" data-bs-toggle="collapse" data-bs-target="#policySubmenu" aria-expanded="false">
                 <i class="fa-solid fa-shield-halved"></i>
                 <span>Policy</span>

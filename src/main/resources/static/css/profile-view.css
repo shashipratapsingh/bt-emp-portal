@@ -1,5 +1,4 @@
 <!-- Custom CSS -->
-    <style>
         :root {
             --bg-main: #f8fafc;
             --text-main: #0f172a;
@@ -389,4 +388,3 @@
             .profile-cards-grid { grid-template-columns: 1fr; }
             .profile-info-card[style*="grid-column: span 2;"] { grid-column: span 1 !important; }
         }
-    </style>
