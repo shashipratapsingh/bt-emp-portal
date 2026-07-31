@@ -19,68 +19,87 @@
 
 <div class="dashboard-container">
 
-    <!-- SIDEBAR FRAGMENT REPLACEMENT -->
-    <aside th:replace="~{fragments/sidebar :: sidebar-component}"></aside>
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+    <!-- SIDEBAR -->
+    <aside th:replace="~{fragments/sidebar :: sidebar-component}" class="sidebar" id="sidebar"></aside>
 
     <!-- MAIN INTERFACE WRAPPER -->
     <div class="main-content">
 
         <!-- CONTENT BODY -->
         <main class="content-body">
-            <div class="container-fluid" style="max-width: 850px; padding: 0;">
+            <div class="container-fluid px-0">
 
                 <!-- HEADER UTILITIES AREA -->
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2 class="fs-4 m-0 fw-bold tracking-tight text-slate-900">
-                        Work From Home Request
-                    </h2>
-                    <a th:href="@{/employee/dashboard}" class="btn btn-custom-dashboard rounded-pill px-4 fw-medium">
-                        <i class="fa-solid fa-arrow-left me-2"></i> Back to Dashboard
+                <div class="d-flex flex-wrap flex-sm-nowrap justify-content-between align-items-center gap-2 mb-4">
+                    <div class="d-flex align-items-center gap-2">
+                        <!-- Mobile Hamburger Button -->
+                        <button class="hamburger-btn" onclick="toggleSidebar()" aria-label="Toggle sidebar">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                        <h2 class="fs-5 fs-sm-4 m-0 fw-bold tracking-tight text-slate-900 header-title">
+                            <span class="d-none d-sm-inline">Work From Home Request</span>
+                            <span class="d-inline d-sm-none">WFH Request</span>
+                        </h2>
+                    </div>
+                    <a th:href="@{/employee/dashboard}" class="btn btn-custom-dashboard rounded-pill fw-medium">
+                        <i class="fa-solid fa-arrow-left me-1 me-sm-2"></i>
+                        <span class="btn-text d-none d-sm-inline">Back to Dashboard</span>
+                        <span class="d-inline d-sm-none">Back</span>
                     </a>
                 </div>
 
                 <!-- SUCCESS ALERT BANNER -->
-                <div th:if="${param.success}" class="alert alert-success rounded-3 text-center py-3 mb-4 shadow-sm">
-                    <i class="fa-solid fa-circle-check me-2 fs-5 align-middle"></i> WFH Request has been submitted successfully for manager approval.
+                <div th:if="${param.success}" class="alert alert-success rounded-3 text-center py-2 py-sm-3 mb-3 mb-sm-4 shadow-sm">
+                    <i class="fa-solid fa-circle-check me-2 fs-5 align-middle"></i>
+                    <span class="d-none d-sm-inline">WFH Request has been submitted successfully for manager approval.</span>
+                    <span class="d-inline d-sm-none">WFH Request submitted!</span>
                 </div>
 
                 <!-- POLICY NOTIFICATION FLAG -->
-                <div class="info-note mb-4 d-flex align-items-start gap-3">
-                    <div class="fs-5 mt-0.5"><i class="fa-solid fa-circle-info text-success"></i></div>
+                <div class="info-note mb-3 mb-sm-4 d-flex align-items-start gap-2 gap-sm-3">
+                    <div class="fs-5 mt-0.5 flex-shrink-0">
+                        <i class="fa-solid fa-circle-info text-success"></i>
+                    </div>
                     <div>
-                        <strong>WFH Guideline Note:</strong> All remote workforce requests must be initiated at least 24 hours in advance. Ensure your system configurations and internet stability logs meet project standards before logging in.
+                        <strong>WFH Guideline Note:</strong>
+                        <span class="d-none d-sm-inline">All remote workforce requests must be initiated at least 24 hours in advance. Ensure your system configurations and internet stability logs meet project standards before logging in.</span>
+                        <span class="d-inline d-sm-none">All WFH requests must be initiated 24 hours in advance with proper system configurations.</span>
                     </div>
                 </div>
 
                 <!-- MAIN REQUEST APPLICATION CARD -->
                 <div class="wfh-card">
                     <h4 class="section-title">
-                        <i class="fa-solid fa-house-laptop me-2 opacity-75"></i>Remote Mode Specifications
+                        <i class="fa-solid fa-house-laptop me-2 opacity-75"></i>
+                        <span class="d-none d-sm-inline">Remote Mode Specifications</span>
+                        <span class="d-inline d-sm-none">WFH Request Details</span>
                     </h4>
 
-                    <!-- FORM HANDLING TRIPPED VIA THYMELEAF -->
+                    <!-- FORM HANDLING VIA THYMELEAF -->
                     <form th:action="@{/employee/wfh/save}" th:object="${wfhRequest}" method="POST">
 
-                        <!-- OPTIONAL HIDDEN FIELDS FOR UPDATES (Uncomment if needed) -->
+                        <!-- OPTIONAL HIDDEN FIELDS FOR UPDATES -->
                         <!-- <input type="hidden" th:field="*{id}" /> -->
 
-                        <!-- ADDED CRITICAL OPENING ROW CONTAINER HERE -->
-                        <div class="row g-4">
+                        <div class="row g-3 g-md-4">
 
                             <!-- Target Project reference allocation -->
-                            <div class="col-md-12">
+                            <div class="col-12">
                                 <label class="form-label" for="projectName">Current Project Title</label>
                                 <input type="text" id="projectName" th:field="*{projectName}" class="form-control" placeholder="e.g. E-Commerce Platform" required>
                             </div>
 
                             <!-- Duration Window: Start Date -->
-                            <div class="col-md-6">
+                            <div class="col-12 col-sm-6">
                                 <label class="form-label" for="startDate">Effective From (Date)</label>
                                 <input type="date" id="startDate" th:field="*{startDate}" class="form-control" required>
                             </div>
 
                             <!-- Duration Window: End Date -->
-                            <div class="col-md-6">
+                            <div class="col-12 col-sm-6">
                                 <label class="form-label" for="endDate">Effective Till (Date)</label>
                                 <input type="date" id="endDate" th:field="*{endDate}" class="form-control" required>
                             </div>
@@ -93,9 +112,11 @@
                         </div>
 
                         <!-- SUBMIT BUTTON BLOCK -->
-                        <div class="text-end mt-4">
+                        <div class="d-grid d-sm-block text-end mt-3 mt-sm-4">
                             <button type="submit" class="btn btn-submit-wfh shadow-sm">
-                                <i class="fa-solid fa-paper-plane me-2"></i>Submit Application
+                                <i class="fa-solid fa-paper-plane me-2"></i>
+                                <span class="d-none d-sm-inline">Submit Application</span>
+                                <span class="d-inline d-sm-none">Submit</span>
                             </button>
                         </div>
                     </form>
@@ -104,8 +125,8 @@
             </div>
 
             <!-- FOOTER SECTION -->
-            <footer class="mt-5 pt-4 text-center text-muted border-top" style="font-size: 12px;">
-                <p class="mb-0">Copyright &copy; 2026 Bluethink IT Consulting Pvt. Ltd. All rights reserved.</p>
+            <footer class="mt-4 mt-sm-5 pt-3 pt-sm-4 text-center text-muted border-top">
+                <p class="mb-0 small">&copy; 2026 Bluethink IT Consulting Pvt. Ltd. All rights reserved.</p>
             </footer>
         </main>
     </div>
@@ -113,6 +134,54 @@
 
 <!-- Bootstrap JS Bundle -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Sidebar Toggle Script -->
+<script>
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('active');
+
+        // Prevent body scroll when sidebar is open
+        if (sidebar.classList.contains('open')) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+    }
+
+    function closeSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+
+        sidebar.classList.remove('open');
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    // Close sidebar on Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeSidebar();
+        }
+    });
+
+    // Close sidebar on window resize to desktop
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 768) {
+            closeSidebar();
+        }
+    });
+
+    // Initialize - ensure sidebar is closed on mobile
+    document.addEventListener('DOMContentLoaded', function() {
+        if (window.innerWidth <= 768) {
+            closeSidebar();
+        }
+    });
+</script>
 
 </body>
 </html>
