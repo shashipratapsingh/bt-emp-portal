@@ -21,12 +21,21 @@ public class TimesheetServiceImpl implements TimesheetService{
         return repository.findAll();
     }
     public void updateTimesheetStatus(Long id,String action){
-        Timesheet sheet=repository.findById(id).orElseThrow(()->new RuntimeException("Timsheet not found"));
+        Timesheet sheet=repository.findById(id).orElseThrow(()->new RuntimeException("Timesheet not found"));
         if ("approve".equalsIgnoreCase(action)){
             sheet.setStatus("APPROVED");
         } else if ("reject".equalsIgnoreCase(action)) {
             sheet.setStatus("REJECTED");
         }
         repository.save(sheet);
+    }
+
+    @Override
+    public Timesheet getById(Long id) {
+
+        return repository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Timesheet not found with id : " + id)
+                );
     }
 }

@@ -1,16 +1,182 @@
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Log Daily Timesheet</title>-->
+
+<!--    &lt;!&ndash; Bootstrap 5.3.3 &ndash;&gt;-->
+<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">-->
+<!--    &lt;!&ndash; Font Awesome 6.5.0 &ndash;&gt;-->
+<!--    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">-->
+<!--    &lt;!&ndash; Google Fonts &ndash;&gt;-->
+<!--    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">-->
+
+<!--    <link rel="stylesheet" th:href="@{/css/timesheet-log.css}">-->
+<!--</head>-->
+
+<!--<body>-->
+
+<!--<div class="dashboard-container">-->
+
+<!--    &lt;!&ndash; SIDEBAR WITH DROPDOWNS &ndash;&gt;-->
+<!--    <aside th:replace="~{fragments/sidebar :: sidebar-component}"></aside>-->
+
+<!--    &lt;!&ndash; MAIN INTERFACE WRAPPER &ndash;&gt;-->
+<!--    <div class="main-content">-->
+
+<!--        &lt;!&ndash; CONTENT BODY &ndash;&gt;-->
+<!--        <main class="content-body">-->
+<!--            <div class="container-fluid" style="max-width: 1200px; padding: 0;">-->
+
+<!--                &lt;!&ndash; HEADER SECTION &ndash;&gt;-->
+<!--                <div class="d-flex justify-content-between align-items-center mb-4">-->
+<!--                    <h2 class="fs-4 m-0 fw-bold tracking-tight text-slate-900">-->
+<!--                        <i class="fa-solid fa-clock me-2 opacity-75" style="color: var(&#45;&#45;profile-primary);"></i>Daily Timesheet Log-->
+<!--                    </h2>-->
+<!--                    <a th:href="@{/employee/dashboard}" class="btn btn-custom-dashboard rounded-pill px-4 fw-medium">-->
+<!--                        <i class="fa-solid fa-house me-2"></i> Back to Dashboard-->
+<!--                    </a>-->
+<!--                </div>-->
+
+<!--                &lt;!&ndash; SUCCESS ALERT (Optional but styled) &ndash;&gt;-->
+<!--                <div th:if="${param.success}" class="alert alert-success rounded-3 text-center py-3 mb-4 shadow-sm">-->
+<!--                    <i class="fa-solid fa-circle-check me-2 fs-5 align-middle"></i> Timesheet log submitted successfully.-->
+<!--                </div>-->
+
+<!--                &lt;!&ndash; SUBMIT LOG CARD &ndash;&gt;-->
+<!--                <div class="section-card">-->
+<!--                    <h4 class="section-title">-->
+<!--                        <i class="fa-solid fa-pen-to-square me-2 opacity-75"></i>Submit New Entry-->
+<!--                    </h4>-->
+<!--                    <form th:action="@{/timesheet/submit}" th:object="${timesheet}" method="POST">-->
+<!--                        <div class="row g-3">-->
+<!--                            <div class="col-md-3">-->
+<!--                                <label class="form-label" for="logDate">Date</label>-->
+<!--                                <input type="date" id="logDate" th:field="*{date}" class="form-control" required>-->
+<!--                            </div>-->
+<!--                            <div class="col-md-3">-->
+<!--                                <label class="form-label" for="hoursWorked">Hours Worked</label>-->
+<!--                                <input type="number" id="hoursWorked" step="0.5" min="0" max="24" th:field="*{hoursWorked}" class="form-control" placeholder="e.g. 8.5" required>-->
+<!--                            </div>-->
+
+<!--                            <div class="col-md-3 d-flex align-items-end">-->
+<!--                                <button type="submit" class="btn btn-submit-profile w-100 shadow-sm fw-bold">-->
+<!--                                    <i class="fa-solid fa-paper-plane me-2"></i>Submit Log-->
+<!--                                </button>-->
+<!--                            </div>-->
+
+
+<!--                            <div class="col-md-3">-->
+<!--                                <label for="projectId" class="form-label">Assigned Project</label>-->
+
+<!--                                <select id="projectId"-->
+<!--                                        name="projectId"-->
+<!--                                        class="form-select"-->
+<!--                                        required>-->
+
+<!--                                    <option value="">&#45;&#45; Select Project &#45;&#45;</option>-->
+
+<!--                                    <option th:each="project : ${projects}"-->
+<!--                                            th:value="${project.id}"-->
+<!--                                            th:text="${project.projectName}">-->
+<!--                                    </option>-->
+
+<!--                                </select>-->
+<!--                            </div>-->
+
+<!--                            <div class="col-12">-->
+<!--                                <label class="form-label" for="taskDescription">Task Description</label>-->
+<!--                                <textarea id="taskDescription" th:field="*{taskDescription}" class="form-control" rows="2" placeholder="Describe the work tasks completed today..." required></textarea>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </form>-->
+<!--                </div>-->
+
+<!--                &lt;!&ndash; HISTORY LOG CARD &ndash;&gt;-->
+<!--                <div class="section-card">-->
+<!--                    <h4 class="section-title">-->
+<!--                        <i class="fa-solid fa-history me-2 opacity-75"></i>Your Log History-->
+<!--                    </h4>-->
+<!--                    <div class="table-responsive-custom">-->
+<!--                        <table class="table table-hover align-middle">-->
+<!--                            <thead>-->
+<!--                            <tr>-->
+<!--                                <th>Date</th>-->
+<!--                                <th>Hours</th>-->
+<!--                                <th>Mode</th>-->
+<!--                                <th>Task Description</th>-->
+<!--                                <th>Status</th>-->
+<!--                            </tr>-->
+<!--                            </thead>-->
+<!--                            <tbody>-->
+<!--                            <tr th:each="log : ${myLogs}">-->
+<!--                                <td th:text="${log.date}" class="fw-semibold text-dark">2026-06-22</td>-->
+<!--                                <td th:text="${log.hoursWorked + ' hrs'}" class="text-secondary">8 hrs</td>-->
+<!--                                <td><span class="badge-mode" th:text="${log.workMode}">Office</span></td>-->
+<!--                                <td th:text="${log.taskDescription}" class="text-secondary">Completed authentication module setup</td>-->
+<!--                                <td>-->
+<!--                                    <span th:if="${log.status == 'PENDING'}" class="badge-pending-clean">PENDING</span>-->
+<!--                                    <span th:if="${log.status == 'APPROVED'}" class="badge-approved-clean">APPROVED</span>-->
+<!--                                    <span th:if="${log.status == 'REJECTED'}" class="badge-rejected-clean">REJECTED</span>-->
+<!--                                </td>-->
+<!--                            </tr>-->
+<!--                            &lt;!&ndash; Empty State &ndash;&gt;-->
+<!--                            <tr th:if="${#lists.isEmpty(myLogs)}">-->
+<!--                                <td colspan="5" class="text-center py-5 text-muted">No logs found. Start submitting your daily tasks above!</td>-->
+<!--                            </tr>-->
+<!--                            </tbody>-->
+<!--                        </table>-->
+<!--                    </div>-->
+<!--                </div>-->
+
+<!--            </div>-->
+
+<!--            &lt;!&ndash; FOOTER COPYRIGHT SECTION &ndash;&gt;-->
+<!--            <footer class="mt-5 pt-4 text-center text-muted border-top" style="font-size: 12px;">-->
+<!--                <p class="mb-0">Copyright &copy; 2026 Bluethink IT Consulting Pvt. Ltd. All rights reserved.</p>-->
+<!--            </footer>-->
+<!--        </main>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--&lt;!&ndash; Bootstrap JS Bundle for Dropdown Animations &ndash;&gt;-->
+<!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>-->
+<!--</body>-->
+<!--</html>-->
+
+
+
+
+
+
+
+
+
+
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Log Daily Timesheet</title>
 
-    <!-- Bootstrap 5.3.3 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome 6.5.0 -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+          rel="stylesheet">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
+
+    <!-- Summernote CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote-bs5.min.css" rel="stylesheet">
 
     <link rel="stylesheet" th:href="@{/css/timesheet-log.css}">
 </head>
@@ -19,108 +185,374 @@
 
 <div class="dashboard-container">
 
-    <!-- SIDEBAR WITH DROPDOWNS -->
+    <!-- Sidebar -->
     <aside th:replace="~{fragments/sidebar :: sidebar-component}"></aside>
 
-    <!-- MAIN INTERFACE WRAPPER -->
     <div class="main-content">
 
-        <!-- CONTENT BODY -->
         <main class="content-body">
-            <div class="container-fluid" style="max-width: 1200px; padding: 0;">
 
-                <!-- HEADER SECTION -->
+            <div class="container-fluid" style="max-width:1200px;padding:0;">
+
+                <!-- Header -->
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2 class="fs-4 m-0 fw-bold tracking-tight text-slate-900">
-                        <i class="fa-solid fa-clock me-2 opacity-75" style="color: var(--profile-primary);"></i>Daily Timesheet Log
+
+                    <h2 class="fs-4 fw-bold">
+                        <i class="fa-solid fa-clock me-2"></i>
+                        Daily Timesheet Log
                     </h2>
-                    <a th:href="@{/employee/dashboard}" class="btn btn-custom-dashboard rounded-pill px-4 fw-medium">
-                        <i class="fa-solid fa-house me-2"></i> Back to Dashboard
-                    </a>
+
+<!--                    <a th:href="@{/employee/dashboard}"-->
+<!--                       class="btn btn-custom-dashboard rounded-pill px-4">-->
+
+<!--                        <i class="fa-solid fa-house me-2"></i>-->
+<!--                        Back to Dashboard-->
+
+<!--                    </a>-->
+
                 </div>
 
-                <!-- SUCCESS ALERT (Optional but styled) -->
-                <div th:if="${param.success}" class="alert alert-success rounded-3 text-center py-3 mb-4 shadow-sm">
-                    <i class="fa-solid fa-circle-check me-2 fs-5 align-middle"></i> Timesheet log submitted successfully.
+                <!-- Success Message -->
+                <div th:if="${param.success}"
+                     id="successAlert"
+                     class="alert alert-success alert-dismissible fade show">
+
+                    <i class="fa-solid fa-circle-check me-2"></i>
+                    <strong>Success!</strong>
+                    Timesheet Submitted Successfully.
+
                 </div>
 
-                <!-- SUBMIT LOG CARD -->
+                <!-- Submit Card -->
                 <div class="section-card">
+
                     <h4 class="section-title">
-                        <i class="fa-solid fa-pen-to-square me-2 opacity-75"></i>Submit New Entry
+                        <i class="fa-solid fa-pen-to-square me-2"></i>
+                        Submit New Entry
                     </h4>
-                    <form th:action="@{/timesheet/submit}" th:object="${timesheet}" method="POST">
+
+                    <form th:action="@{/employee/timesheet/submit}"
+                          th:object="${timesheet}"
+                          method="post">
+
                         <div class="row g-3">
+
+                            <!-- Date -->
                             <div class="col-md-3">
-                                <label class="form-label" for="logDate">Date</label>
-                                <input type="date" id="logDate" th:field="*{date}" class="form-control" required>
-                            </div>
-                            <div class="col-md-3">
-                                <label class="form-label" for="hoursWorked">Hours Worked</label>
-                                <input type="number" id="hoursWorked" step="0.5" min="0" max="24" th:field="*{hoursWorked}" class="form-control" placeholder="e.g. 8.5" required>
+
+                                <label class="form-label">
+                                    Date
+                                </label>
+
+                                <input type="date"
+                                       class="form-control"
+                                       th:field="*{date}"
+                                       required>
+
                             </div>
 
-                            <div class="col-md-3 d-flex align-items-end">
-                                <button type="submit" class="btn btn-submit-profile w-100 shadow-sm fw-bold">
-                                    <i class="fa-solid fa-paper-plane me-2"></i>Submit Log
-                                </button>
+                            <!-- Hours -->
+                            <div class="col-md-3">
+
+                                <label class="form-label">
+                                    Hours Worked
+                                </label>
+
+                                <input type="number"
+                                       class="form-control"
+                                       th:field="*{hoursWorked}"
+                                       min="0"
+                                       max="24"
+                                       step="0.5"
+                                       required>
+
                             </div>
+
+                            <!-- Project -->
+                            <div class="col-md-3">
+
+                                <label class="form-label">
+                                    Assigned Project
+                                </label>
+
+                                <select name="project.id"
+                                        class="form-select"
+                                        required>
+
+                                    <option value="">
+                                        -- Select Project --
+                                    </option>
+
+                                    <option th:each="project:${projects}"
+                                            th:value="${project.id}"
+                                            th:text="${project.projectName}">
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div class="col-md-3 d-flex align-items-end">
+
+                                <button type="submit"
+                                        class="btn btn-submit-profile w-100">
+
+                                    <i class="fa-solid fa-paper-plane me-2"></i>
+                                    Submit Log
+
+                                </button>
+
+                            </div>
+
+                            <!-- Task Description -->
                             <div class="col-12">
-                                <label class="form-label" for="taskDescription">Task Description</label>
-                                <textarea id="taskDescription" th:field="*{taskDescription}" class="form-control" rows="2" placeholder="Describe the work tasks completed today..." required></textarea>
+
+                                <label for="taskDescription" class="form-label">
+                                    Task Description
+                                </label>
+
+                                <textarea id="taskDescription"
+                                          class="form-control"
+                                          rows="8"
+                                          th:field="*{taskDescription}"
+                                          placeholder="Describe your work..."
+                                          required>
+    </textarea>
+
                             </div>
                         </div>
+
                     </form>
+
                 </div>
 
-                <!-- HISTORY LOG CARD -->
+                <!-- History Card -->
                 <div class="section-card">
+
                     <h4 class="section-title">
-                        <i class="fa-solid fa-history me-2 opacity-75"></i>Your Log History
+
+                        <i class="fa-solid fa-history me-2"></i>
+                        Your Log History
+
                     </h4>
-                    <div class="table-responsive-custom">
+
+                    <div class="table-responsive">
+
                         <table class="table table-hover align-middle">
+
                             <thead>
+
                             <tr>
-                                <th>Date</th>
-                                <th>Hours</th>
-                                <th>Mode</th>
-                                <th>Task Description</th>
-                                <th>Status</th>
+
+                                <th>DATE</th>
+                                <th>PROJECT NAME</th>
+                                <th>HOURS</th>
+                                <th>TASK</th>
+                                <th>STATUS</th>
+                                <th class="text-center">ACTIONS</th>
+
                             </tr>
+
                             </thead>
+
                             <tbody>
-                            <tr th:each="log : ${myLogs}">
-                                <td th:text="${log.date}" class="fw-semibold text-dark">2026-06-22</td>
-                                <td th:text="${log.hoursWorked + ' hrs'}" class="text-secondary">8 hrs</td>
-                                <td><span class="badge-mode" th:text="${log.workMode}">Office</span></td>
-                                <td th:text="${log.taskDescription}" class="text-secondary">Completed authentication module setup</td>
+
+                            <tr th:each="log:${myLogs}">
+
+                                <td th:text="${log.date}"></td>
+                                <td th:text="${log.project.projectName}"></td>
+
+                                <td th:text="${log.hoursWorked + ' hrs'}"></td>
+
                                 <td>
-                                    <span th:if="${log.status == 'PENDING'}" class="badge-pending-clean">PENDING</span>
-                                    <span th:if="${log.status == 'APPROVED'}" class="badge-approved-clean">APPROVED</span>
-                                    <span th:if="${log.status == 'REJECTED'}" class="badge-rejected-clean">REJECTED</span>
+                                    <div class="task-preview"
+                                         th:text="${log.taskDescription}">
+                                    </div>
                                 </td>
+
+                                <td>
+
+                                    <span class="badge bg-warning text-dark"
+                                          th:if="${log.status == 'PENDING'}">
+                                        PENDING
+                                    </span>
+
+                                    <span class="badge bg-success"
+                                          th:if="${log.status == 'APPROVED'}">
+                                        APPROVED
+                                    </span>
+
+                                    <span class="badge bg-danger"
+                                          th:if="${log.status == 'REJECTED'}">
+                                        REJECTED
+                                    </span>
+
+                                </td>
+                                <td class="text-center">
+
+                                    <!-- View -->
+                                    <a th:href="@{/employee/timesheet/view/{id}(id=${log.id})}"
+                                       class="btn btn-sm btn-outline-info me-2"
+                                       title="View Timesheet">
+
+                                        <i class="fa-solid fa-eye"></i>
+
+                                    </a>
+
+
+                                    <!-- Edit -->
+                                    <a th:href="@{/employee/timesheet/edit/{id}(id=${log.id})}"
+                                       class="btn btn-sm btn-outline-primary"
+                                       title="Edit Timesheet">
+
+                                        <i class="fa-solid fa-pen-to-square"></i>
+
+                                    </a>
+
+                                </td>
+
                             </tr>
-                            <!-- Empty State -->
+
+                            <!-- Empty Data -->
                             <tr th:if="${#lists.isEmpty(myLogs)}">
-                                <td colspan="5" class="text-center py-5 text-muted">No logs found. Start submitting your daily tasks above!</td>
+
+                                <td colspan="6"
+                                    class="text-center text-muted">
+
+                                    No Timesheet Found
+
+                                </td>
+
                             </tr>
+
                             </tbody>
+
                         </table>
+
                     </div>
+
                 </div>
 
             </div>
 
-            <!-- FOOTER COPYRIGHT SECTION -->
-            <footer class="mt-5 pt-4 text-center text-muted border-top" style="font-size: 12px;">
-                <p class="mb-0">Copyright &copy; 2026 Bluethink IT Consulting Pvt. Ltd. All rights reserved.</p>
+            <footer class="mt-5 text-center text-muted">
+                Copyright © 2026 Bluethink IT Consulting Pvt. Ltd.
             </footer>
+
         </main>
+
     </div>
+
 </div>
 
-<!-- Bootstrap JS Bundle for Dropdown Animations -->
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+<!--<script>-->
+
+<!--    document.addEventListener("DOMContentLoaded", function () {-->
+
+<!--        // Success message auto hide-->
+<!--        const alert = document.getElementById("successAlert");-->
+
+<!--        if (alert) {-->
+
+<!--            setTimeout(() => {-->
+
+<!--                alert.style.transition = "opacity .5s";-->
+
+<!--                alert.style.opacity = "0";-->
+
+<!--                setTimeout(() => {-->
+
+<!--                    alert.remove();-->
+
+<!--                }, 500);-->
+
+<!--            }, 3000);-->
+
+<!--        }-->
+
+<!--        // CKEditor-->
+<!--        ClassicEditor-->
+<!--            .create(document.querySelector("#taskDescription"), {-->
+
+<!--                toolbar: [-->
+<!--                    "heading",-->
+<!--                    "|",-->
+<!--                    "bold",-->
+<!--                    "italic",-->
+<!--                    "|",-->
+<!--                    "bulletedList",-->
+<!--                    "numberedList",-->
+<!--                    "|",-->
+<!--                    "blockQuote",-->
+<!--                    "insertTable",-->
+<!--                    "link",-->
+<!--                    "|",-->
+<!--                    "undo",-->
+<!--                    "redo"-->
+<!--                ]-->
+
+<!--            })-->
+<!--            .catch(error => {-->
+<!--                console.error(error);-->
+<!--            });-->
+
+<!--    });-->
+
+<!--</script>-->
+
+<!--&lt;!&ndash; CKEditor 5 &ndash;&gt;-->
+<!--<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>-->
+
+<!--&lt;!&ndash; Bootstrap &ndash;&gt;-->
+<!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>-->
+
+<!-- Bootstrap -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<!-- Summernote -->
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote-bs5.min.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const alert = document.getElementById("successAlert");
+
+        if (alert) {
+            setTimeout(() => {
+                alert.style.transition = "opacity .5s";
+                alert.style.opacity = "0";
+
+                setTimeout(() => {
+                    alert.remove();
+                }, 500);
+
+            }, 3000);
+        }
+
+        $('#taskDescription').summernote({
+            height: 220,
+            placeholder: 'Describe your work...',
+            toolbar: [
+                ['style', ['style']],
+                ['font', ['bold', 'italic', 'underline', 'clear']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['table', ['table']],
+                ['insert', ['link']],
+                ['view', ['codeview']]
+            ]
+        });
+
+    });
+</script>
+
+
 </body>
 </html>

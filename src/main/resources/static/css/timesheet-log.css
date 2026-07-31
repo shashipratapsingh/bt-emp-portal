@@ -206,7 +206,7 @@
 
         .btn-submit-profile {
             background: var(--profile-primary);
-            color: white;
+            color: Black;
             border-radius: 8px;
             padding: 11px 24px;
             font-size: 0.95rem;
@@ -278,5 +278,17 @@
             background-color: #ecfdf5 !important;
             border: 1px solid #10b981 !important;
             color: #065f46 !important;
+        }
+
+        .task-preview{
+            max-width:350px;
+            white-space:nowrap;
+            overflow:hidden;
+            text-overflow:ellipsis;
+        }
+
+        .modal-body p{
+            margin-bottom:10px;
+            word-break:break-word;
         }
     </style>
