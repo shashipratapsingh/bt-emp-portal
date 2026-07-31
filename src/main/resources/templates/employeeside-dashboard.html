@@ -342,45 +342,68 @@
 
 <!-- Sidebar Toggle Function -->
 <script>
-    function toggleSidebar() {
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('sidebarOverlay');
+    // Sidebar Toggle Function - IMPROVED
+  function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('sidebarOverlay');
+      const mainContent = document.querySelector('.main-content');
 
-        if (sidebar) {
-            sidebar.classList.toggle('show');
-            if (overlay) {
-                overlay.classList.toggle('show');
-            }
-        }
-    }
+      if (sidebar) {
+          sidebar.classList.toggle('show');
+          if (overlay) {
+              overlay.classList.toggle('show');
+          }
+          // Add class to main content to prevent interactions when sidebar is open
+          if (mainContent) {
+              if (sidebar.classList.contains('show')) {
+                  mainContent.classList.add('sidebar-open');
+                  // Prevent body scroll when sidebar is open
+                  document.body.style.overflow = 'hidden';
+              } else {
+                  mainContent.classList.remove('sidebar-open');
+                  document.body.style.overflow = '';
+              }
+          }
+      }
+  }
 
-    // Close sidebar when clicking outside on mobile
-    document.addEventListener('click', function(event) {
-        const sidebar = document.getElementById('sidebar');
-        const toggleBtn = document.getElementById('sidebarToggleBtn');
-        const overlay = document.getElementById('sidebarOverlay');
+  // Close sidebar when clicking outside on mobile
+  document.addEventListener('click', function(event) {
+      const sidebar = document.getElementById('sidebar');
+      const toggleBtn = document.querySelector('.sidebar-toggle');
+      const overlay = document.getElementById('sidebarOverlay');
+      const mainContent = document.querySelector('.main-content');
 
-        if (window.innerWidth <= 991.98 && sidebar && toggleBtn && overlay) {
-            const isClickInsideSidebar = sidebar.contains(event.target);
-            const isClickOnToggle = toggleBtn.contains(event.target);
-            const isClickOnOverlay = overlay === event.target;
+      if (window.innerWidth <= 991.98 && sidebar && toggleBtn && overlay) {
+          const isClickInsideSidebar = sidebar.contains(event.target);
+          const isClickOnToggle = toggleBtn.contains(event.target);
+          const isClickOnOverlay = overlay === event.target;
 
-            if (!isClickInsideSidebar && !isClickOnToggle && !isClickOnOverlay) {
-                sidebar.classList.remove('show');
-                overlay.classList.remove('show');
-            }
-        }
-    });
+          if (!isClickInsideSidebar && !isClickOnToggle && !isClickOnOverlay) {
+              sidebar.classList.remove('show');
+              overlay.classList.remove('show');
+              if (mainContent) {
+                  mainContent.classList.remove('sidebar-open');
+              }
+              document.body.style.overflow = '';
+          }
+      }
+  });
 
-    // Close sidebar on window resize to desktop
-    window.addEventListener('resize', function() {
-        if (window.innerWidth > 991.98) {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-            if (sidebar) sidebar.classList.remove('show');
-            if (overlay) overlay.classList.remove('show');
-        }
-    });
+  // Close sidebar on window resize to desktop
+  window.addEventListener('resize', function() {
+      if (window.innerWidth > 991.98) {
+          const sidebar = document.getElementById('sidebar');
+          const overlay = document.getElementById('sidebarOverlay');
+          const mainContent = document.querySelector('.main-content');
+          if (sidebar) sidebar.classList.remove('show');
+          if (overlay) overlay.classList.remove('show');
+          if (mainContent) {
+              mainContent.classList.remove('sidebar-open');
+          }
+          document.body.style.overflow = '';
+      }
+  });
 </script>
 
 <!-- AUTO TRIGGER POPUP SCRIPT -->

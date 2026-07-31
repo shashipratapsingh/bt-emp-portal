@@ -42,10 +42,29 @@
         @media (max-width: 991.98px) {
             .sidebar {
                 transform: translateX(-100%);
+                transition: transform 0.3s ease-in-out;
+                box-shadow: none;
             }
 
             .sidebar.show {
                 transform: translateX(0);
+                box-shadow: 2px 0 20px rgba(0, 0, 0, 0.3);
+            }
+
+            /* When sidebar is open, prevent interaction with main content */
+            .main-content.sidebar-open {
+                pointer-events: none;
+                opacity: 0.7;
+                transition: opacity 0.3s ease;
+            }
+
+            /* But allow interactions with the sidebar */
+            .sidebar.show {
+                pointer-events: auto;
+            }
+
+            .sidebar.show * {
+                pointer-events: auto;
             }
         }
 
@@ -355,11 +374,6 @@
                     <span>Signoff Logs</span>
                 </button>
             </form>
-            <a href="javascript:void(0);"
-               onclick="resetLiveTimer(); window.location.href='/employee/attendance/signoff-logs';">
-                <i class="fa-solid fa-right-from-bracket text-danger"></i>
-                <span>Signoff Logs</span>
-            </a>
         </li>
         <li>
             <button class="dropdown-trigger" type="button" data-bs-toggle="collapse" data-bs-target="#policySubmenu" aria-expanded="false">
@@ -372,6 +386,14 @@
                     <li><a th:href="@{/employee/policy}">View Company Policy</a></li>
                 </ul>
             </div>
+        </li>
+        <li th:classappend="${currentPage == 'signoff'} ? 'active'">
+            <form th:action="@{/employee/attendance/perform-signoff}" method="post" class="d-inline w-100">
+                <button type="submit" class="nav-link border-0 bg-transparent text-start w-100 p-0" style="color: inherit; cursor: pointer;">
+                    <i class="fa-solid fa-right-from-bracket text-danger me-2"></i>
+                    <span>Signoff Logs</span>
+                </button>
+            </form>
         </li>
     </ul>
 

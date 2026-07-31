@@ -221,11 +221,13 @@ public String login(@ModelAttribute("loginRequest") LoginRequest request,
 
         if (existing.isEmpty()) {
 
-            AttendanceTracking attendance = new AttendanceTracking();
-            attendance.setEmployeeId(employeeId);
-            attendance.setDate(LocalDate.now());
-            attendance.setLoginTime(LocalDateTime.now());
-            attendance.setStatus("Present");
+                AttendanceTracking attendance = new AttendanceTracking();
+                attendance.setEmployeeId(employeeId);
+                //attendance.setEmployeeName(registerEmployee.getName());
+                attendance.setDate(LocalDate.now());
+                attendance.setLoginTime(LocalDateTime.now());
+                attendance.setWorkMode(request.getWorkMode());
+                attendance.setStatus("Present");
 
             attendanceTrackingRepository.save(attendance);
         }

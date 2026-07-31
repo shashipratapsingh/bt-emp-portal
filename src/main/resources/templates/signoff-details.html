@@ -1,104 +1,154 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>Signoff Details</title>
+
     <!-- Bootstrap and Font-Awesome CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-    <!-- Custom CSS for layout fix -->
+    <link rel="stylesheet" th:href="@{/css/signoff-details.css}">
+
     <style>
-        html, body {
-            height: 100%;
-            margin: 0;
-            background-color: #f8f9fa; /* Light grey background poore page ke liye */
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        /* Additional CSS for sidebar toggle */
+        .sidebar {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-in-out;
         }
 
-        /* Full screen flex wrapper */
-        .page-wrapper {
-            display: flex;
-            min-height: 100vh;
-            width: 100%;
+        .sidebar.show {
+            transform: translateX(0);
+            box-shadow: 2px 0 20px rgba(0, 0, 0, 0.3);
         }
 
-        /* Sidebar container handling (Aapke fragment ke wrap ke liye) */
-        .sidebar-container {
-            min-width: 260px; /* Sidebar ki standard width fix ki */
-            max-width: 260px;
-            background: #1e293b; /* Dark theme standard color agar fragment me background nahi hai */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
         }
 
-        /* Main content area handling */
-        .main-content {
-            flex-grow: 1;
-            background-color: #f8f9fa;
-            overflow-y: auto; /* Agar data lamba ho toh sirf content scroll ho, poora page nahi */
-            height: 100vh;
+        .sidebar-overlay.active {
+            display: block;
+            opacity: 1;
         }
 
-        /* Custom styling for badges and table headers */
-        .table thead th {
-            letter-spacing: 0.5px;
+        .sidebar-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-main, #0f172a);
+            font-size: 1.5rem;
+            padding: 0.5rem;
+            cursor: pointer;
+            line-height: 1;
         }
 
-        .badge {
-            letter-spacing: 0.3px;
-            padding: 6px 12px;
+        .sidebar-toggle:hover {
+            color: #4f46e5;
+        }
+
+        @media (max-width: 992px) {
+            .sidebar-toggle {
+                display: block !important;
+            }
+
+            .main-content {
+                margin-left: 0 !important;
+                width: 100% !important;
+            }
+        }
+
+        @media (min-width: 993px) {
+            .sidebar {
+                transform: translateX(0) !important;
+            }
         }
     </style>
 </head>
 <body>
 
-<div class="page-wrapper">
-    <!-- Sidebar Fragment Box -->
-    <div class="sidebar-container">
-        <div th:replace="~{fragments/sidebar :: sidebar-component}"></div>
-    </div>
+<div class="dashboard-container">
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+    <!-- SIDEBAR -->
+    <aside th:replace="~{fragments/sidebar :: sidebar-component}" class="sidebar" id="sidebar"></aside>
 
     <!-- Main Content Area -->
-    <div class="main-content p-4">
-        <div class="container-fluid bg-white rounded-3 border p-4 shadow-sm">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h5 class="fw-bold m-0 text-dark">
-                    <i class="fa-solid fa-clock-rotate-left text-primary me-2"></i>My Signoff & Attendance Logs
+    <div class="main-content p-3 p-md-4" id="mainContent">
+        <div class="container-fluid bg-white rounded-3 border p-2 p-md-4 shadow-sm">
+
+            <!-- Page Header with Mobile Sidebar Toggle -->
+            <div class="d-flex justify-content-between align-items-center mb-3 mb-md-4">
+                <h5 class="fw-bold m-0 text-dark d-flex align-items-center">
+                    <!-- UNCOMMENTED: Three lines button for sidebar toggle -->
+                    <button class="btn btn-light d-md-none me-2 p-2 sidebar-toggle" onclick="toggleSidebar()" aria-label="Toggle sidebar" id="sidebarToggleBtn">
+                        <i class="fa-solid fa-bars fs-5"></i>
+                    </button>
+                    <i class="fa-solid fa-clock-rotate-left text-primary me-2"></i>
+                    <span class="d-none d-sm-inline">My Daily Working Hours</span>
+                    <span class="d-sm-none">Logs</span>
                 </h5>
             </div>
 
-            <div class="table-responsive">
+            <!-- Responsive Table Container (Desktop / Laptop View) -->
+            <div class="table-responsive d-none d-md-block">
                 <table class="table table-hover align-middle border" style="font-size: 14px;">
-                    <thead class="table-light text-muted" style="font-size: 12px; text-transform: uppercase;">
+                    <thead class="table-light text-muted" style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">
                     <tr>
-                        <th style="width: 8%;">S.No.</th>
+                        <th style="width: 5%;">#</th>
+                        <th>Work Hours</th>
+                        <th>Mode</th>
                         <th>Login Time</th>
                         <th>Logout Time</th>
-                        <th>Work Hours</th>
                     </tr>
                     </thead>
                     <tbody>
                     <!-- Loop through attendance logs -->
-                    <tr th:each="log, stat : ${attendanceLogs}">
+                    <tr th:each="log, stat : ${attendanceLogs}" class="log-row">
                         <td class="fw-bold text-muted" th:text="${stat.count}">1</td>
 
-                        <!-- Agar aapka time normal String hai toh ye perfect hai, agar LocalDateTime hai toh #temporals use karein -->
-                        <td th:text="${log.loginTime != null ?
-                                        #temporals.format(log.loginTime,'dd MMM yyyy hh:mm a') : '-'}">
-                        </td>
-
-                        <td th:text="${log.logoutTime != null ?
-                            #temporals.format(log.logoutTime,'dd MMM yyyy hh:mm a') :
-                                        'Still Logged In'}">
-                        </td>
+                        <!-- 1. Work Hours Column -->
                         <td>
-                            <span class="badge bg-success-subtle text-success fw-medium rounded-2"
+                            <span class="badge bg-success-subtle text-success fw-medium rounded-2 px-3 py-2"
                                   th:text="${log.workingHours != null ? log.workingHours : 'In Progress...'}">
                                 9h 0m
                             </span>
                         </td>
+
+                        <!-- 2. Work Mode Column -->
+                        <td>
+                            <span th:if="${log?.workMode != null}"
+                                  th:class="${log.workMode == 'WFH' ? 'badge bg-info-subtle text-info rounded-2 px-3 py-2' : 'badge bg-primary-subtle text-primary rounded-2 px-3 py-2'}"
+                                  th:text="${log.workMode}">
+                                WFH
+                            </span>
+                            <span th:if="${log?.workMode == null}" class="text-muted">-</span>
+                        </td>
+
+                        <!-- 3. Login Time Column -->
+                        <td class="text-nowrap" th:text="${log.loginTime != null ? #temporals.format(log.loginTime, 'dd MMM yyyy hh:mm a') : '-'}">
+                            01 Aug 2026 09:00 AM
+                        </td>
+
+                        <!-- 4. Logout Time Column -->
+                        <td class="text-nowrap" th:text="${log.logoutTime != null ? #temporals.format(log.logoutTime, 'dd MMM yyyy hh:mm a') : 'Still Logged In'}">
+                            01 Aug 2026 06:00 PM
+                        </td>
                     </tr>
-                    <!-- If list is empty -->
+
+                    <!-- Empty State If List Has No Data -->
                     <tr th:if="${#lists.isEmpty(attendanceLogs)}">
-                        <td colspan="4" class="text-center text-muted py-5">
+                        <td colspan="5" class="text-center text-muted py-5">
                             <i class="fa-regular fa-folder-open d-block fs-3 mb-2 text-secondary"></i>
                             No logs found for your profile.
                         </td>
@@ -106,11 +156,151 @@
                     </tbody>
                 </table>
             </div>
+
+            <!-- Mobile Card View (Only on small screens) -->
+            <div class="d-md-none mt-3">
+                <div th:each="log, stat : ${attendanceLogs}" class="card mb-3 shadow-sm border-0">
+                    <div class="card-body p-3">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <span class="fw-bold text-muted">#<span th:text="${stat.count}">1</span></span>
+                            <span class="badge bg-success-subtle text-success fw-medium rounded-2 px-3 py-2"
+                                  th:text="${log.workingHours != null ? log.workingHours : 'In Progress...'}">
+                                9h 0m
+                            </span>
+                        </div>
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <small class="text-muted d-block">Mode</small>
+                                <span th:if="${log?.workMode != null}"
+                                      th:class="${log.workMode == 'WFH' ? 'badge bg-info-subtle text-info rounded-2 px-3 py-2' : 'badge bg-primary-subtle text-primary rounded-2 px-3 py-2'}"
+                                      th:text="${log.workMode}">
+                                    WFH
+                                </span>
+                                <span th:if="${log?.workMode == null}" class="text-muted">-</span>
+                            </div>
+                            <div class="col-6">
+                                <small class="text-muted d-block">Status</small>
+                                <span th:if="${log.logoutTime == null}" class="badge bg-warning-subtle text-warning">
+                                    <i class="fa-solid fa-circle fa-2xs me-1"></i>Active
+                                </span>
+                                <span th:if="${log.logoutTime != null}" class="badge bg-secondary-subtle text-secondary">
+                                    <i class="fa-solid fa-check-circle me-1"></i>Completed
+                                </span>
+                            </div>
+                            <div class="col-12 mt-2">
+                                <div class="border-top pt-2">
+                                    <small class="text-muted d-block">Login</small>
+                                    <span class="text-dark" th:text="${log.loginTime != null ? #temporals.format(log.loginTime, 'dd MMM yyyy hh:mm a') : '-'}">
+                                        01 Aug 2026 09:00 AM
+                                    </span>
+                                </div>
+                                <div class="border-top pt-2 mt-1">
+                                    <small class="text-muted d-block">Logout</small>
+                                    <span class="text-dark" th:text="${log.logoutTime != null ? #temporals.format(log.logoutTime, 'dd MMM yyyy hh:mm a') : 'Still Logged In'}">
+                                        01 Aug 2026 06:00 PM
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Empty State for Mobile -->
+                <div th:if="${#lists.isEmpty(attendanceLogs)}" class="text-center text-muted py-5">
+                    <i class="fa-regular fa-folder-open d-block fs-3 mb-2 text-secondary"></i>
+                    No logs found for your profile.
+                </div>
+            </div>
+
+            <!-- Footer Pagination -->
+            <div class="d-flex justify-content-between align-items-center mt-3 pt-2 border-top">
+                <span class="text-muted small">
+                    <i class="fa-regular fa-file-lines me-1"></i>
+                    <span th:text="${#lists.size(attendanceLogs)}">0</span> records
+                </span>
+                <div class="d-flex gap-1">
+                    <button class="btn btn-sm btn-outline-secondary" disabled>
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-secondary">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
-<!-- Bootstrap Bundle with Popper (Zaroori hai dropdown/collapse ke liye) -->
+
+<!-- JS Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+
+<!-- Sidebar Toggle Script - CORRECTED -->
+<script>
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+
+        if (sidebar) {
+            // Use 'show' class to match sidebar fragment
+            sidebar.classList.toggle('show');
+        }
+        if (overlay) {
+            overlay.classList.toggle('active');
+        }
+
+        // Prevent body scroll when sidebar is open
+        if (sidebar && sidebar.classList.contains('show')) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+    }
+
+    function closeSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+
+        if (sidebar) {
+            sidebar.classList.remove('show');
+        }
+        if (overlay) {
+            overlay.classList.remove('active');
+        }
+        document.body.style.overflow = '';
+    }
+
+    // Close sidebar on Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeSidebar();
+        }
+    });
+
+    // Close sidebar on window resize to desktop
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 992) {
+            closeSidebar();
+        }
+    });
+
+    // Close sidebar when clicking outside (on overlay)
+    document.addEventListener('click', function(event) {
+        const sidebar = document.getElementById('sidebar');
+        const toggleBtn = document.getElementById('sidebarToggleBtn');
+        const overlay = document.getElementById('sidebarOverlay');
+
+        if (window.innerWidth <= 992 && sidebar && toggleBtn && overlay) {
+            const isClickInsideSidebar = sidebar.contains(event.target);
+            const isClickOnToggle = toggleBtn.contains(event.target);
+            const isClickOnOverlay = overlay === event.target;
+
+            if (!isClickInsideSidebar && !isClickOnToggle && !isClickOnOverlay) {
+                closeSidebar();
+            }
+        }
+    });
+</script>
+
 </body>
 </html>
