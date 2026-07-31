@@ -270,7 +270,7 @@ public class TimesheetController {
         model.addAttribute("projects", projectService.getAllProjects());
 
         return "timesheet-edit";
-        return "redirect:/employee/timesheet/log?success";
+//        return "redirect:/employee/timesheet/log?success";
     }
 
     // ===================== UPDATE TIMESHEET =====================
