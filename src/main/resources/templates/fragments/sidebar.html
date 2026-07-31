@@ -5,7 +5,7 @@
 </head>
 <body>
 
-<aside th:fragment="sidebar-component" class="sidebar">
+<aside th:fragment="sidebar-component" class="sidebar" id="sidebar">
     <!-- ── GLOBAL SIDEBAR BRAND NEW UI CSS ── -->
     <style>
         .sidebar {
@@ -24,15 +24,36 @@
             border-right: 1px solid #334155;
             font-family: 'Inter', system-ui, sans-serif;
 
+            /* 🔥 IMPORTANT: Add transition for smooth animation */
+            transition: transform 0.3s ease-in-out;
 
-            -ms-overflow-style: none;  /* IE and Edge */
-            scrollbar-width: none;  /* Firefox */
+            /* Hide scrollbar */
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
 
-        /* Chrome, Safari, Opera के लिए स्क्रॉल बार छिपाना */
+        /* Hide scrollbar for Chrome/Safari/Opera */
         .sidebar::-webkit-scrollbar {
             width: 0px;
             background: transparent;
+        }
+
+        /* 🔥 IMPORTANT: Mobile responsive - hidden by default on small screens */
+        @media (max-width: 991.98px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+        }
+
+        /* Desktop: always visible */
+        @media (min-width: 992px) {
+            .sidebar {
+                transform: translateX(0) !important;
+            }
         }
 
         .sidebar-brand {
@@ -210,6 +231,43 @@
             color: #0ea5e9 !important;
             background: transparent !important;
         }
+
+        /* 🔥 Mobile specific adjustments */
+        @media (max-width: 575.98px) {
+            .profile-container-horizontal {
+                padding: 12px 8px;
+                margin: 0 8px;
+                gap: 10px;
+            }
+
+            .profile-info-block h6 {
+                font-size: 12px !important;
+            }
+
+            .profile-info-block span {
+                font-size: 10px !important;
+            }
+
+            .style-profile-wrapper img {
+                width: 42px !important;
+                height: 42px !important;
+            }
+
+            .sidebar-brand {
+                padding: 16px 16px;
+                font-size: 16px;
+            }
+
+            .sidebar-menu li a,
+            .sidebar-menu .dropdown-trigger {
+                padding: 10px 12px;
+                font-size: 13px;
+            }
+
+            .submenu {
+                padding-left: 28px !important;
+            }
+        }
     </style>
 
     <div class="sidebar-brand">
@@ -290,14 +348,13 @@
         <li th:classappend="${currentPage == 'wfh'} ? 'active'">
             <a th:href="@{/employee/wfh/apply}"><i class="fa-solid fa-house-laptop"></i>Work From Home</a>
         </li>
-<!--        <li th:classappend="${currentPage == 'signoff'} ? 'active'">-->
-<!--            <a th:href="@{/employee/attendance/signoff-logs}">-->
-<!--                <i class="fa-solid fa-right-from-bracket text-danger"></i>-->
-<!--                <span>Signoff Logs</span>-->
-<!--            </a>-->
-<!--        </li>-->
-
         <li th:classappend="${currentPage == 'signoff'} ? 'active'">
+            <form th:action="@{/employee/attendance/perform-signoff}" method="post" class="d-inline w-100">
+                <button type="submit" class="nav-link border-0 bg-transparent text-start w-100 p-0" style="color: inherit; cursor: pointer;">
+                    <i class="fa-solid fa-right-from-bracket text-danger me-2"></i>
+                    <span>Signoff Logs</span>
+                </button>
+            </form>
             <a href="javascript:void(0);"
                onclick="resetLiveTimer(); window.location.href='/employee/attendance/signoff-logs';">
                 <i class="fa-solid fa-right-from-bracket text-danger"></i>
@@ -385,36 +442,36 @@ startLiveTimer();
 
 
 
-// PHOTO UPLOAD JAVASCRIPT
-function uploadSidebarPhoto(input) {
-if (input.files && input.files[0]) {
-   const file = input.files[0];
-   const formData = new FormData();
-   formData.append("photo", file);
+        // PHOTO UPLOAD JAVASCRIPT
+        function uploadSidebarPhoto(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const formData = new FormData();
+                formData.append("photo", file);
 
-   const profileImg = document.getElementById("sidebarProfileImg");
-   profileImg.style.opacity = "0.4";
+                const profileImg = document.getElementById("sidebarProfileImg");
+                profileImg.style.opacity = "0.4";
 
-   fetch("/employee/profile/upload-photo", {
-       method: "POST",
-       body: formData
-   })
-   .then(response => {
-       if (!response.ok) throw new Error("Upload failed");
-       return response.text();
-   })
-   .then(fileName => {
-       profileImg.src = "/storage/photos/" + fileName + "?t=" + new Date().getTime();
-       profileImg.style.opacity = "1";
-       alert("Profile photo updated successfully!");
-   })
-   .catch(error => {
-       console.error(error);
-       profileImg.style.opacity = "1";
-       alert("Something went wrong.");
-   });
-}
-}
+                fetch("/employee/profile/upload-photo", {
+                    method: "POST",
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error("Upload failed");
+                    return response.text();
+                })
+                .then(fileName => {
+                    profileImg.src = "/storage/photos/" + fileName + "?t=" + new Date().getTime();
+                    profileImg.style.opacity = "1";
+                    alert("Profile photo updated successfully!");
+                })
+                .catch(error => {
+                    console.error(error);
+                    profileImg.style.opacity = "1";
+                    alert("Something went wrong.");
+                });
+            }
+        }
     </script>
 </aside>
 

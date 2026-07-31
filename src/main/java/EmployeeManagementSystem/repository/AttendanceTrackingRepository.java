@@ -4,13 +4,13 @@ import EmployeeManagementSystem.entity.Attendance;
 import EmployeeManagementSystem.entity.AttendanceTracking;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-
-public interface AttendanceTrackingRepository
-        extends JpaRepository<AttendanceTracking, Long> {
+@Repository
+public interface AttendanceTrackingRepository extends JpaRepository<AttendanceTracking, Long> {
 
     AttendanceTracking findTopByEmployeeIdAndDateOrderByIdDesc(
             Long employeeId,
@@ -27,4 +27,5 @@ public interface AttendanceTrackingRepository
     Optional<AttendanceTracking> findByEmployeeIdAndDate(String employeeId,
                                                          LocalDate date);
     AttendanceTracking findTopByEmployeeIdAndDateOrderByLoginTimeDesc(String employeeId, LocalDate date);
+    Optional<AttendanceTracking> findTopByEmployeeIdOrderByLoginTimeDesc(String employeeId);
 }

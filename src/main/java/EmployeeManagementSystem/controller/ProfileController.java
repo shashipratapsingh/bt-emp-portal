@@ -31,7 +31,7 @@ public class ProfileController {
         Authentication auth=SecurityContextHolder.getContext().getAuthentication();
         String currentEmpId=auth.getName();
         service.saveOrUpdateProfile(profile,currentEmpId);
-        return "redirect:/profile/view?success=true";
+        return "redirect:/employee/profile/view?success=true";
     }
 
     @PostMapping("/upload-photo")

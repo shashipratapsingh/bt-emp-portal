@@ -2,12 +2,12 @@ package EmployeeManagementSystem.service;
 
 import EmployeeManagementSystem.dto.AnniversaryDTO;
 import EmployeeManagementSystem.dto.BirthdayDTO;
+import EmployeeManagementSystem.dto.CelebrationDto;
 import EmployeeManagementSystem.entity.Employee;
 import EmployeeManagementSystem.entity.Salary;
 import EmployeeManagementSystem.kafkaConfig.EmployeeEvent;
 import EmployeeManagementSystem.kafkaConfig.EmployeeProducer;
 import EmployeeManagementSystem.repository.EmployeeRepository;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +19,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +35,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     // =========================
     // SAVE EMPLOYEE
     // =========================
+    private final EmployeeProfileRepository employeeProfileRepository;
 
     @Override
     public Employee saveEmployee(Employee employee) {
@@ -316,6 +318,17 @@ public class EmployeeServiceImpl implements EmployeeService {
 
             LocalDate today = LocalDate.now();
 
+        return employeeProfileRepository.findAll()
+                .stream()
+                .filter(emp -> emp.getDob() != null)
+                .map(emp -> {
+                    LocalDate nextBirthday = emp.getDob().withYear(today.getYear());
+
+                    if (nextBirthday.isBefore(today)) {
+                        nextBirthday = nextBirthday.plusYears(1);
+                    }
+
+                    long days = ChronoUnit.DAYS.between(today, nextBirthday);
 
             return employeeRepository.findAll()
                     .stream()
@@ -338,6 +351,19 @@ public class EmployeeServiceImpl implements EmployeeService {
                         }
 
 
+                    BirthdayDTO dto = new BirthdayDTO();
+                    dto.setName(emp.getFullName());          // fullName use karo
+                    dto.setDob(emp.getDob());                // getDob() use karo
+                    dto.setDepartment(emp.getDepartment());  // department String hai
+                    dto.setRemainingDays(days);
+                    dto.setNextDate(nextBirthday);
+
+                    return dto;
+                })
+                .sorted(Comparator.comparingLong(BirthdayDTO::getRemainingDays))
+                .limit(5)
+                .toList();
+    }
                         BirthdayDTO dto = new BirthdayDTO();
 
 
@@ -379,6 +405,15 @@ public class EmployeeServiceImpl implements EmployeeService {
 
             LocalDate today = LocalDate.now();
 
+        return employeeProfileRepository.findAll()
+                .stream()
+                .filter(emp -> emp.getRegisteredAt() != null)
+                .map(emp -> {
+                    LocalDate nextAnniversary = LocalDate.from(emp.getRegisteredAt().withYear(today.getYear()));
+                    if (nextAnniversary.isBefore(today)) {
+                        nextAnniversary = nextAnniversary.plusYears(1);
+                    }
+                    long days = ChronoUnit.DAYS.between(today, nextAnniversary);
 
             return employeeRepository.findAll()
                     .stream()
@@ -400,6 +435,17 @@ public class EmployeeServiceImpl implements EmployeeService {
 
                         }
 
+                    AnniversaryDTO dto = new AnniversaryDTO();
+                    dto.setName(emp.getFullName());
+                    dto.setJoiningDate(LocalDate.from(emp.getRegisteredAt()));
+                    dto.setRemainingDays(days);
+                    dto.setNextDate(nextAnniversary);
+                    return dto;
+                })
+                .sorted(Comparator.comparingLong(AnniversaryDTO::getRemainingDays))
+                .limit(5)
+                .toList();
+    }
 
                         AnniversaryDTO dto =
                                 new AnniversaryDTO();

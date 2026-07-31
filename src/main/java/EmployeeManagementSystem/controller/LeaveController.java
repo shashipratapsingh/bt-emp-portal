@@ -117,7 +117,7 @@ public class LeaveController {
 
         leaveService.applyLeave(leaveRequest);
 
-        return "redirect:/leave/apply?success=true";
+        return "redirect:/employee/leave/apply?success=true";
     }
 
     @GetMapping("/manage")

@@ -2,14 +2,15 @@ package EmployeeManagementSystem.service;
 
 import EmployeeManagementSystem.dto.CelebrationDto;
 import EmployeeManagementSystem.dto.EmployeeCredentialsDTO;
-import EmployeeManagementSystem.entity.Department;
-import EmployeeManagementSystem.entity.Employee;
-import EmployeeManagementSystem.entity.EmployeeProfile;
+import EmployeeManagementSystem.dto.EmployeeDetailsDTO;
+import EmployeeManagementSystem.entity.*;
 import EmployeeManagementSystem.repository.EmployeeProfileRepository;
-import EmployeeManagementSystem.service.DepartmentService;
-import EmployeeManagementSystem.service.EmployeeProfileService;
+import EmployeeManagementSystem.repository.ProjectRepository;
+import EmployeeManagementSystem.repository.SalaryRepository;
 
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,13 +25,16 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
+@RequiredArgsConstructor
 public class EmployeeProfileServiceImpl implements EmployeeProfileService {
+
+    private final SalaryRepository salaryRepository;
+
+    private final ProjectRepository projectRepository;
+
 
     @Autowired
     private EmployeeProfileRepository employeeProfileRepository;
@@ -251,7 +255,7 @@ public class EmployeeProfileServiceImpl implements EmployeeProfileService {
     @Override
     public EmployeeCredentialsDTO saveOrUpdateProfile(@Valid EmployeeProfile employee, Object o) {
         // Save the employee profile
-        EmployeeProfile savedProfile = saveEmployeeProfile(employee);
+        EmployeeProfile savedProfile = updateEmployeeProfile(employee.getId(), employee);
 
         // Create and return credentials DTO
         EmployeeCredentialsDTO credentials = new EmployeeCredentialsDTO();
@@ -451,5 +455,62 @@ public class EmployeeProfileServiceImpl implements EmployeeProfileService {
         }
 
         return celebrations;
+    }
+
+    @Override
+    public Page<EmployeeProfile> searchProfiles(String keyword, Pageable pageable) {
+        // Uses the existing searchEmployees with pagination
+        return employeeProfileRepository.searchEmployees(keyword, pageable);
+    }
+
+    @Override
+    public EmployeeProfile getProfileWithEmployee(Long id) {
+        // Fetch profile and its associated Employee (for join date, projects, etc.)
+        // If you need to fetch Employee eagerly, add a custom query in the repository.
+        // For now, we'll fetch the profile, and the Employee will be lazily loaded.
+        // If you need projects, consider adding a JOIN FETCH query.
+        return employeeProfileRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Profile not found"));
+    }
+
+    @Override
+    @Transactional
+    public EmployeeDetailsDTO getEmployeeDetails(Long profileId) {
+        EmployeeProfile profile = employeeProfileRepository.findById(profileId)
+                .orElseThrow(() -> new RuntimeException("Profile not found"));
+
+        EmployeeDetailsDTO dto = new EmployeeDetailsDTO();
+        dto.setProfile(profile);
+
+        Employee employee = profile.getEmployee();
+        dto.setEmployee(employee);
+
+        List<Salary> salaries = Collections.emptyList();
+        List<Project> projects = Collections.emptyList();
+
+        if (employee != null) {
+            Long empId = employee.getId();   // numeric id (e.g., 29 for Krishna)
+            salaries = salaryRepository.findSalariesByEmployeeId(empId);
+            projects = projectRepository.findProjectsByEmployeeId(empId);
+        }
+
+        dto.setSalaries(salaries);
+        dto.setProjects(projects);
+        return dto;
+    }
+
+    @Override
+    public Page<EmployeeProfile> filterEmployees(String keyword, String department, String status, Pageable pageable) {
+        if (keyword != null && !keyword.isEmpty()) {
+            // If keyword is provided, we search by name/email/id and also apply department/status if given
+            return employeeProfileRepository.searchByKeywordAndFilters(keyword, department, status, pageable);
+        } else {
+            return employeeProfileRepository.findByFilters(department, status, pageable);
+        }
+    }
+
+    @Override
+    public List<String> getAllDepartments() {
+        return employeeProfileRepository.findDistinctDepartments();
     }
 }

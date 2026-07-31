@@ -447,7 +447,7 @@
                 </div>
 
                 <!-- MAIN FORM -->
-                <form th:action="@{/profile/save}" th:object="${profile}" method="POST" enctype="multipart/form-data" class="animate-fade-in" style="animation-delay: 0.1s;" id="profileForm">
+                <form th:action="@{/employee/profile/save}" th:object="${profile}" method="POST" enctype="multipart/form-data" class="animate-fade-in" style="animation-delay: 0.1s;" id="profileForm">
 
                     <!-- HIDDEN SYSTEM FIELDS -->
                     <input type="hidden" th:field="*{id}" />
@@ -563,7 +563,10 @@
                                 </div>
                                 <div class="info-row">
                                     <span class="info-label">Email</span>
-                                    <span class="info-value read-only" th:text="*{email}">email@example.com</span>
+                                    <span class="info-value" th:text="*{email}">email@example.com</span>
+                                    <div class="edit-field">
+                                        <input type="email" th:field="*{email}" class="form-control" required />
+                                    </div>
                                 </div>
                             </div>
                         </div>

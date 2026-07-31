@@ -4,6 +4,7 @@ import EmployeeManagementSystem.dto.DashboardStatsDTO;
 import EmployeeManagementSystem.entity.*;
 import EmployeeManagementSystem.repository.*;
 import EmployeeManagementSystem.service.*;
+import EmployeeManagementSystem.service.admin_leave.AdminLeaveServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -45,7 +46,7 @@ public class AdminController {
     private LeaveRepository leaveRepository;
 
     @Autowired
-    private LeaveService leaveService;
+    private AdminLeaveServiceImpl adminLeaveServiceImpl;
 
     private final ActivityService activityService;
     private final DashboardService dashboardService;

@@ -152,7 +152,6 @@ import java.util.List;
 
 import EmployeeManagementSystem.entity.Project;
 import EmployeeManagementSystem.entity.Timesheet;
-import EmployeeManagementSystem.service.ProjectService;
 import EmployeeManagementSystem.service.TimesheetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -271,6 +270,7 @@ public class TimesheetController {
         model.addAttribute("projects", projectService.getAllProjects());
 
         return "timesheet-edit";
+        return "redirect:/employee/timesheet/log?success";
     }
 
     // ===================== UPDATE TIMESHEET =====================
@@ -348,7 +348,6 @@ public class TimesheetController {
 
         return "timesheet-manage";
     }
-
     @PostMapping("/status/{id}")
     public String updateStatus(@PathVariable Long id,
                                @RequestParam String action) {

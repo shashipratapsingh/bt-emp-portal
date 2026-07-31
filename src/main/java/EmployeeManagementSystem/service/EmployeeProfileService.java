@@ -2,6 +2,7 @@ package EmployeeManagementSystem.service;
 
 import EmployeeManagementSystem.dto.CelebrationDto;
 import EmployeeManagementSystem.dto.EmployeeCredentialsDTO;
+import EmployeeManagementSystem.dto.EmployeeDetailsDTO;
 import EmployeeManagementSystem.entity.EmployeeProfile;
 import EmployeeManagementSystem.repository.EmployeeProfileRepository;
 import jakarta.validation.Valid;
@@ -72,4 +73,14 @@ public interface EmployeeProfileService {
     EmployeeProfile getProfileByUserId(String currentEmplId);
 
     public List<CelebrationDto> getTodayCelebrations();
+
+    Page<EmployeeProfile> searchProfiles(String keyword, Pageable pageable);
+
+    EmployeeProfile getProfileWithEmployee(Long id);
+
+    public EmployeeDetailsDTO getEmployeeDetails(Long profileId);
+
+    Page<EmployeeProfile> filterEmployees(String keyword, String department, String status, Pageable pageable);
+
+    List<String> getAllDepartments();
 }

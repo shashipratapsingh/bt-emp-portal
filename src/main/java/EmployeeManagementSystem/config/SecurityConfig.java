@@ -41,9 +41,6 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    /**
-     * Spring Security Configuration
-     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
@@ -51,7 +48,6 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
 
                 .formLogin(form -> form.disable())
-
                 .httpBasic(basic -> basic.disable())
 
                 .sessionManagement(session ->
@@ -89,37 +85,33 @@ public class SecurityConfig {
                 )
 
                 .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            String uri = request.getRequestURI();
 
-                        .authenticationEntryPoint((request, response, ex) ->
-                                response.sendRedirect("/auth/loginPage?expired=true")
-                        )
-
-                        .accessDeniedHandler((request, response, ex) ->
-                                response.sendRedirect("/auth/access-denied")
-                        )
+                            // Sirf protected URLs ke liye login redirect
+                            if (uri.startsWith("/employee") || uri.startsWith("/admin")) {
+                                response.sendRedirect("/auth/loginPage?expired=true");
+                            } else {
+                                response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+                            }
+                        })
+                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+                            response.sendRedirect("/auth/access-denied");
+                        })
                 )
 
-                .addFilterBefore(
-                        jwtAuthenticationFilter,
-                        UsernamePasswordAuthenticationFilter.class
-                );
+                .addFilterBefore(jwtAuthenticationFilter,
+                        UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
-    /**
-     * Custom Access Denied Handler
-     */
     @Bean
     public AccessDeniedHandler accessDeniedHandler() {
-
         return (request, response, accessDeniedException) -> {
-
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             response.setContentType("application/json");
-
-            response.getWriter()
-                    .write("{\"error\":\"Access Denied\"}");
+            response.getWriter().write("{\"error\":\"Access Denied\"}");
         };
     }
 }

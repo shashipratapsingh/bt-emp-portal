@@ -88,6 +88,20 @@ public class AttendanceController {
 //        return attendanceService.getTodayWFHEmployees();
 //
 //    }
+@PostMapping("/perform-signoff")
+public String performSignoff() {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    if (authentication != null && authentication.isAuthenticated()) {
+        String employeeId = authentication.getName();
+
+        // Database me logout time save aur working hours calculate karega
+        attendanceService.signoffEmployee(employeeId);
+    }
+
+    // Signoff complete karne ke baad Logs page par redirect karein
+    return "redirect:/employee/attendance/signoff-logs";
+}
+
 
     @GetMapping("/signoff-logs")
     public String getSignoffLogs(Model model) {

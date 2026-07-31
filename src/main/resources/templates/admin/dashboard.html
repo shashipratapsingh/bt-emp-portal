@@ -1,265 +1,195 @@
-<html xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HRMS Admin · Dashboard</title>
-    <!-- Font Awesome 6 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Google Font Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
-    <!-- Bootstrap 5 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard · HRMS</title>
+
+    <!-- Bootstrap 5 + Icons + Fonts -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body {
+        /* ===== GLOBAL ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html,
+        body {
             font-family: 'Inter', sans-serif;
             background: #f4f7fc;
             height: 100%;
-            width: 100%;
             overflow-x: hidden;
         }
-
         body {
             display: flex;
             flex-direction: row;
         }
 
-        /*!* ===== SIDEBAR STYLES ===== *!*/
-        /*.sidebar {*/
-        /*    width: 270px;*/
-        /*    min-width: 260px;*/
-        /*    background-color: #1e293b !important;*/
-        /*    color: #fff !important;*/
-        /*    position: fixed;*/
-        /*    height: 100vh;*/
-        /*    left: 0;*/
-        /*    top: 0;*/
-        /*    display: flex;*/
-        /*    flex-direction: column;*/
-        /*    z-index: 1000;*/
-        /*    overflow-y: auto !important;*/
-        /*    border-right: 1px solid #334155;*/
-        /*    font-family: 'Inter', system-ui, sans-serif;*/
-
-
-        /*    -ms-overflow-style: none;  !* IE and Edge *!*/
-        /*    scrollbar-width: none;  !* Firefox *!*/
-        /*}*/
-
-        /*!* Chrome, Safari, Opera के लिए स्क्रॉल बार छिपाना *!*/
-        /*.sidebar::-webkit-scrollbar {*/
-        /*    width: 0px;*/
-        /*    background: transparent;*/
-        /*}*/
-
-        /*.sidebar-brand {*/
-        /*    padding: 0 1.5rem 1.8rem 1.5rem;*/
-        /*    border-bottom: 1px solid rgba(255, 255, 255, 0.08);*/
-        /*    margin-bottom: 1.2rem;*/
-        /*}*/
-        /*.sidebar-brand a {*/
-        /*    padding-top: 27px;*/
-        /*    font-size: 1.3rem;*/
-        /*    font-weight: 700;*/
-        /*    color: #D1D5DB;*/
-        /*    text-decoration: none;*/
-        /*    display: flex;*/
-        /*    align-items: center;*/
-        /*    gap: 10px;*/
-        /*}*/
-        /*.sidebar-brand a i {*/
-        /*    font-size: 1.6rem;*/
-        /*    color: #60A5FA;*/
-        /*}*/
-
-        /*.sidebar-menu {*/
-        /*    list-style: none;*/
-        /*    padding: 0 0.75rem;*/
-        /*    margin: 0;*/
-        /*    flex: 1;*/
-        /*}*/
-        /*.sidebar-menu li {*/
-        /*    margin-bottom: 4px;*/
-        /*}*/
-
-        .menu-title {
-            color: #9CA3AF;
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            padding: 1.2rem 1.5rem 0.5rem 1.5rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.06);
-            margin-top: 1.2rem;
-            letter-spacing: 0.5px;
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 260px;
+            height: 100vh;
+            background: #0f172a;
+            color: #cbd5e1;
+            padding: 1.5rem 0;
+            overflow-y: auto;
+            z-index: 1050;
+            transition: transform 0.3s ease;
         }
-        .menu-title:first-of-type {
-            border-top: none;
-            margin-top: 0.5rem;
+        .sidebar-brand {
+            padding: 0 1.5rem 1.5rem 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            margin-bottom: 1.5rem;
         }
-
-        /*.sidebar-menu li a,*/
-        /*.sidebar-menu li .dropdown-trigger {*/
-        /*    display: flex;*/
-        /*    align-items: center;*/
-        /*    gap: 14px;*/
-        /*    padding: 0.7rem 1rem;*/
-        /*    border-radius: 10px;*/
-        /*    font-weight: 500;*/
-        /*    font-size: 0.80rem;*/
-        /*    color: #D1D5DB;*/
-        /*    text-decoration: none;*/
-        /*    background: transparent;*/
-        /*    border: none;*/
-        /*    width: 100%;*/
-        /*    transition: background 0.25s, color 0.25s;*/
-        /*    cursor: pointer;*/
-        /*}*/
-        /*.sidebar-menu li a i,*/
-        /*.sidebar-menu li .dropdown-trigger i {*/
-        /*    width: 20px;*/
-        /*    font-size: 1.1rem;*/
-        /*    color: #9CA3AF;*/
-        /*    transition: color 0.25s;*/
-        /*}*/
-        /*.sidebar-menu li a span,*/
-        /*.sidebar-menu li .dropdown-trigger span {*/
-        /*    flex: 1;*/
-        /*    text-align: left;*/
-        /*}*/
-        /*.arrow-icon {*/
-        /*    font-size: 0.75rem;*/
-        /*    transition: transform 0.25s ease;*/
-        /*    color: #9CA3AF;*/
-        /*}*/
-
-        /*.sidebar-menu li a:hover,*/
-        /*.sidebar-menu li .dropdown-trigger:hover {*/
-        /*    background: #334155 !important;*/
-        /*    color: #FFFFFF;*/
-        /*}*/
-        /*.sidebar-menu li a:hover i,*/
-        /*.sidebar-menu li .dropdown-trigger:hover i {*/
-        /*    color: #334155 !important;*/
-        /*}*/
-        /*.sidebar-menu li a:hover .arrow-icon,*/
-        /*.sidebar-menu li .dropdown-trigger:hover .arrow-icon {*/
-        /*    color: #334155 !important;*/
-        /*}*/
-
-        /*.sidebar-menu li.active > a {*/
-        /*    background: #334155 !important;*/
-        /*    color: #FFFFFF;*/
-        /*}*/
-        /*.sidebar-menu li.active > a i {*/
-        /*    color: #334155 !important;*/
-        /*}*/
-
-        .submenu {
+        .sidebar-brand h5 {
+            color: #fff;
+            font-weight: 700;
+            font-size: 1.2rem;
+            letter-spacing: -0.3px;
+        }
+        .sidebar-brand h5 i {
+            color: #3b82f6;
+            margin-right: 8px;
+        }
+        .sidebar-brand small {
+            color: #94a3b8;
+            font-size: 0.65rem;
+            display: block;
+            margin-top: 2px;
+            font-weight: 400;
+        }
+        .sidebar-nav {
             list-style: none;
-            padding-left: 1.8rem;
-            margin: 6px 0 6px 0;
+            padding: 0 0.75rem;
+            margin: 0;
         }
-        .submenu li {
+        .sidebar-nav li {
             margin-bottom: 2px;
         }
-        .submenu li a {
+        .sidebar-nav li a {
             display: flex;
             align-items: center;
-            padding: 0.5rem 1rem 0.5rem 0.5rem;
-            font-size: 0.7rem;
-            font-weight: 300;
-            color: #D1D5DB;
-            border-radius: 5px;
+            gap: 12px;
+            padding: 0.6rem 1rem;
+            border-radius: 10px;
+            color: #94a3b8;
             text-decoration: none;
-            transition: background 0.2s, color 0.2s;
-            gap: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: 0.2s;
         }
-        .submenu li a::before {
-            content: "•";
-            font-size: 1.2rem;
-            color: #9CA3AF;
-            margin-right: 6px;
+        .sidebar-nav li a i {
+            width: 20px;
+            font-size: 0.95rem;
+            text-align: center;
+            flex-shrink: 0;
         }
-        .submenu li a:hover {
-            background: #1E40AF;
-            color: #FFFFFF;
+        .sidebar-nav li a:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: #e2e8f0;
         }
-        .submenu li a:hover::before {
-            color: #FFFFFF;
+        .sidebar-nav li a.active {
+            background: #1e293b;
+            color: #fff;
         }
-        .submenu li.active-sub a {
-            background: #2563EB;
-            color: #FFFFFF;
+        .sidebar-nav li a.active i {
+            color: #3b82f6;
         }
-        .submenu li.active-sub a::before {
-            color: #FFFFFF;
-        }
-
-        .collapse {
-            transition: height 0.2s ease;
-        }
-
-        .dropdown-trigger[aria-expanded="true"] .arrow-icon {
-            transform: rotate(90deg);
+        .sidebar-nav .nav-label {
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #475569;
+            padding: 0.75rem 1rem 0.3rem 1rem;
+            font-weight: 600;
         }
 
-        .sidebar-footer {
-            padding: 1.5rem 1.5rem 0.2rem;
-            font-size: 0.7rem;
-            color: #D1D5DB;
-            border-top: 1px solid rgba(255, 255, 255, 0.06);
-            margin-top: 0.8rem;
-        }
-
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-                min-height: auto;
-                border-right: none;
-                border-bottom: 1px solid rgba(255,255,255,0.1);
-                position: relative;
-                left: 0;
-                top: 0;
-            }
-        }
-
-        /* ----- MAIN CONTENT ----- */
+        /* ===== MAIN CONTENT ===== */
         .main-content {
             flex: 1;
-            padding: 1.5rem 2rem;
+            padding: 1.5rem 2rem 2rem 2rem;
             background: #f4f7fc;
             min-height: 100vh;
-            margin-left: 280px;
-            width: calc(100% - 280px);
+            margin-left: 260px;
+            width: calc(100% - 260px);
         }
-        @media (max-width: 768px) {
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
             .main-content {
                 margin-left: 0;
                 width: 100%;
+                padding: 1rem;
+            }
+            .sidebar-toggle {
+                display: flex !important;
             }
         }
+        .sidebar-toggle {
+            display: none;
+            background: #0f172a;
+            color: #fff;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            align-items: center;
+            justify-content: center;
+        }
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 1040;
+        }
+        .sidebar-overlay.show {
+            display: block;
+        }
 
+        /* ===== PAGE HEADER ===== */
         .page-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 1.5rem;
             flex-wrap: wrap;
-            gap: 1rem;
+            gap: 0.75rem;
         }
         .page-header h4 {
-            font-weight: 600;
-            color: #1a2639;
+            font-weight: 700;
+            color: #0f172a;
             margin: 0;
-            font-size: 1.5rem;
+            font-size: 1.4rem;
+        }
+        .page-header h4 small {
+            font-weight: 400;
+            font-size: 0.85rem;
+            color: #64748b;
+            display: block;
+            margin-top: 1px;
         }
         .page-header .breadcrumb {
             background: transparent;
             padding: 0;
             margin: 0;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
-        .page-header .breadcrumb-item + .breadcrumb-item::before {
+        .page-header .breadcrumb-item+.breadcrumb-item::before {
             content: "›";
         }
         .page-header .breadcrumb-item a {
@@ -267,198 +197,31 @@
             text-decoration: none;
         }
         .page-header .breadcrumb-item.active {
-            color: #1a2639;
+            color: #0f172a;
         }
-
-        .stat-card {
-            background: #fff;
-            border-radius: 12px;
-            padding: 1.2rem 1.5rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-            border: 1px solid #e9edf4;
-            transition: 0.2s;
-            height: 100%;
+        .header-actions {
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            gap: 0.75rem;
+            flex-wrap: wrap;
         }
-        .stat-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
-        .stat-card .stat-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.4rem;
-            color: #fff;
-            flex-shrink: 0;
-        }
-        .stat-card .stat-number {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #1a2639;
-            line-height: 1.2;
-        }
-        .stat-card .stat-label {
-            font-size: 0.85rem;
-            color: #6b7a8f;
-            font-weight: 500;
-        }
-        .stat-card .stat-sub {
-            font-size: 0.75rem;
-            color: #8a9bb5;
-        }
-        .bg-soft-primary { background: #e6efff; color: #2a6df4; }
-        .bg-soft-success { background: #e3f5ec; color: #0f973d; }
-        .bg-soft-warning { background: #fef3e2; color: #e67e22; }
-        .bg-soft-danger { background: #fde8e8; color: #d94a4a; }
-        .bg-soft-info { background: #e3f0ff; color: #1a7fdb; }
-        .bg-soft-purple { background: #ede7f6; color: #7c3aed; }
-
-        .card-custom {
-            background: #fff;
-            border-radius: 12px;
-            border: 1px solid #e9edf4;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-            padding: 1.2rem 1.5rem;
-            height: 100%;
-        }
-        .card-custom .card-title {
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: #1a2639;
-            margin-bottom: 1rem;
-        }
-        .dept-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 0.5rem 0;
-            border-bottom: 1px solid #f0f2f5;
-            font-size: 0.9rem;
-        }
-        .dept-item:last-child { border-bottom: none; }
-        .dept-item .dept-name { color: #3d4a5c; }
-        .dept-item .dept-stats { color: #6b7a8f; font-weight: 500; }
-
-        .recent-employee {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 0.6rem 0;
-            border-bottom: 1px solid #f0f2f5;
-        }
-        .recent-employee:last-child { border-bottom: none; }
-        .recent-employee .avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: #e6efff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
+        .today-badge {
+            background: rgba(42, 109, 244, 0.1);
             color: #2a6df4;
-            font-size: 0.9rem;
-            flex-shrink: 0;
-        }
-        .recent-employee .emp-info { flex: 1; }
-        .recent-employee .emp-name { font-weight: 500; color: #1a2639; font-size: 0.9rem; }
-        .recent-employee .emp-role { font-size: 0.8rem; color: #6b7a8f; }
-
-        .status-badge {
-            padding: 0.2rem 0.7rem;
+            padding: 0.35rem 1rem;
             border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 500;
-        }
-        .status-active { background: #e3f5ec; color: #0f973d; }
-        .status-notice { background: #fef3e2; color: #e67e22; }
-        .status-resigned { background: #fde8e8; color: #d94a4a; }
-        .status-terminated { background: #f1f3f5; color: #6b7a8f; }
-
-        .table-custom {
-            font-size: 0.9rem;
-        }
-        .table-custom thead th {
-            background: #f8fafc;
-            color: #4a5a72;
-            font-weight: 600;
-            border-bottom: 1px solid #e9edf4;
-            padding: 0.8rem 0.8rem;
-        }
-        .table-custom tbody td {
-            padding: 0.8rem 0.8rem;
-            vertical-align: middle;
-            border-bottom: 1px solid #f0f2f5;
-        }
-        .table-custom tbody tr:hover { background: #fafcff; }
-
-        .activity-item {
-            display: flex;
+            font-size: 0.8rem;
+            display: inline-flex;
             align-items: center;
-            gap: 12px;
-            padding: 0.5rem 0;
-            border-bottom: 1px solid #f0f2f5;
-            font-size: 0.85rem;
+            gap: 6px;
         }
-        .activity-item:last-child { border-bottom: none; }
-        .activity-item .activity-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            flex-shrink: 0;
-        }
-        .activity-item .activity-text { color: #3d4a5c; }
-        .activity-item .activity-text strong { color: #1a2639; }
-
-        .birthday-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 0.4rem 0;
-            border-bottom: 1px solid #f0f2f5;
-            font-size: 0.9rem;
-        }
-        .birthday-item:last-child { border-bottom: none; }
-        .birthday-item .bday-icon {
-            color: #e67e22;
-            font-size: 1rem;
-            width: 20px;
-            flex-shrink: 0;
-        }
-        .birthday-item .bday-name { color: #1a2639; font-weight: 500; }
-        .birthday-item .bday-dept { color: #6b7a8f; font-size: 0.8rem; }
-
-        .view-all-link {
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: #2a6df4;
-            text-decoration: none;
-        }
-        .view-all-link:hover { text-decoration: underline; }
-
-        .progress-bar-custom {
-            height: 6px;
-            border-radius: 10px;
-            background: #e9edf4;
-            margin-top: 4px;
-        }
-        .progress-bar-custom .fill {
-            height: 100%;
-            border-radius: 10px;
-            background: #2a6df4;
-        }
-
-        .fw-500 { font-weight: 500; }
-
         .logout-btn {
             color: #6b7a8f;
             text-decoration: none;
-            padding: 0.4rem 1rem;
+            padding: 0.35rem 1rem;
             border-radius: 8px;
             transition: 0.2s;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             display: inline-flex;
             align-items: center;
             gap: 6px;
@@ -468,424 +231,1793 @@
             color: #d94a4a;
         }
 
-        .today-badge {
-            background: rgba(42, 109, 244, 0.1);
-            color: #2a6df4;
-            padding: 0.4rem 1rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            display: inline-flex;
+        /* ===== SECTION TITLE ===== */
+        .section-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: -8px;
+            margin-top: 8px;
+            padding-bottom: 0.4rem;
+            /* border-bottom: 2px solid #e9edf4; */
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .section-title i {
+            color: #1a56db;
+        }
+        .section-title .badge-trend {
+            font-size: 0.65rem;
+            font-weight: 500;
+            padding-top: 5px;
+            padding-bottom: 3px;
+            margin-left: 0.3rem;
+        }
+        .badge-trend.up {
+            background: #e6f7ed;
+            color: #0b7e3d;
+        }
+        .badge-trend.down {
+            background: #fde8e8;
+            color: #b91c1c;
+        }
+        .badge-trend.neutral {
+            background: #f1f5f9;
+            color: #64748b;
+        }
+
+        /* ===== STAT CARDS ===== */
+        .stat-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 1rem 1.3rem;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+            border: 1px solid #e9edf4;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: 0.2s;
+        }
+        .stat-card:hover {
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+        }
+        .stat-card .stat-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+        .stat-card .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0f172a;
+            line-height: 1.2;
+            padding-top:7px;
+        }
+        .stat-card .stat-label {
+            font-size: 0.8rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+        .stat-card .stat-sub {
+            font-size: 0.7rem;
+            color: #94a3b8;
+            margin-top: 1px;
+        }
+        .bg-soft-primary {
+            background: #e8f0fe;
+            color: #1a56db;
+        }
+        .bg-soft-success {
+            background: #e6f7ed;
+            color: #0b7e3d;
+        }
+        .bg-soft-danger {
+            background: #fde8e8;
+            color: #b91c1c;
+        }
+        .bg-soft-warning {
+            background: #fef3e2;
+            color: #c2410c;
+        }
+        .bg-soft-purple {
+            background: #ede7f6;
+            color: #6d28d9;
+        }
+        .bg-soft-info {
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+        .bg-soft-teal {
+            background: #e0f7fa;
+            color: #0e7490;
+        }
+        .bg-soft-secondary {
+            background: #f1f5f9;
+            color: #64748b;
+        }
+
+        /* ===== CARD CUSTOM ===== */
+        .card-custom {
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid #e9edf4;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+            padding: 1.2rem 1.3rem;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .card-custom .card-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 0.75rem;
+        }
+
+        /* ===== CHART WRAPPER ===== */
+        .chart-wrapper {
+            position: relative;
+            height: 180px;
+            width: 100%;
+        }
+        .chart-wrapper-sm {
+            height: 140px;
+        }
+        .chart-wrapper-xs {
+            height: 100px;
+            width: 100px;
+            margin: 0 auto;
+        }
+        .chart-wrapper-doughnut {
+            height: 160px;
+            width: 160px;
+            margin: 0 auto;
+        }
+
+        /* ===== DEPT ROW ===== */
+        .dept-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.35rem 0;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 0.82rem;
+        }
+        .dept-row:last-child {
+            border-bottom: none;
+        }
+        .dept-row .dept-name {
+            color: #334155;
+            font-weight: 500;
+        }
+        .dept-row .dept-value {
+            font-weight: 600;
+            color: #0f172a;
+        }
+        .dept-row .dept-change {
+            font-size: 0.6rem;
+            font-weight: 600;
+            padding: 0.05rem 0.45rem;
+            border-radius: 12px;
+        }
+        .dept-change.up {
+            background: #e6f7ed;
+            color: #0b7e3d;
+        }
+        .dept-change.down {
+            background: #fde8e8;
+            color: #b91c1c;
+        }
+        .dept-change.neutral {
+            background: #f1f5f9;
+            color: #64748b;
+        }
+
+        /* ===== NOTIFICATION ===== */
+        .notif-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0.45rem 0;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 0.8rem;
+        }
+        .notif-item:last-child {
+            border-bottom: none;
+        }
+        .notif-item .notif-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .notif-item .notif-text {
+            color: #334155;
+            flex: 1;
+        }
+        .notif-item .notif-text strong {
+            color: #0f172a;
+        }
+        .notif-item .notif-badge {
+            font-size: 0.55rem;
+            padding: 0.1rem 0.45rem;
+            border-radius: 10px;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+        .notif-badge.pending {
+            background: #fef3e2;
+            color: #c2410c;
+        }
+        .notif-badge.processing {
+            background: #e8f0fe;
+            color: #1a56db;
+        }
+        .notif-badge.joined {
+            background: #e6f7ed;
+            color: #0b7e3d;
+        }
+        .notif-badge.deadline {
+            background: #fde8e8;
+            color: #b91c1c;
+        }
+        .notif-badge.missing {
+            background: #f1f5f9;
+            color: #64748b;
+        }
+        .notif-item .notif-time {
+            color: #94a3b8;
+            font-size: 0.65rem;
+            white-space: nowrap;
+        }
+
+        /* ===== LOSS ITEMS ===== */
+        .loss-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.35rem 0;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 0.8rem;
+        }
+        .loss-item:last-child {
+            border-bottom: none;
+        }
+        .loss-item .loss-label {
+            color: #475569;
+        }
+        .loss-item .loss-label i {
+            color: #1a56db;
+            width: 18px;
+        }
+        .loss-item .loss-value {
+            font-weight: 700;
+            color: #0f172a;
+        }
+        .loss-item .loss-value.negative {
+            color: #b91c1c;
+        }
+        .loss-item .loss-sub {
+            font-size: 0.65rem;
+            color: #94a3b8;
+            font-weight: 400;
+        }
+
+        /* ===== PROJECT OVERVIEW ===== */
+        .project-metric {
+            text-align: center;
+            padding: 0.4rem 0;
+        }
+        .project-metric .pm-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+        .project-metric .pm-label {
+            font-size: 0.7rem;
+            color: #94a3b8;
+            font-weight: 500;
+        }
+        .project-metric .pm-sub {
+            font-size: 0.6rem;
+            color: #64748b;
+        }
+
+        /* ===== QUICK ACTIONS ===== */
+        .quick-action-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.4rem;
+        }
+        .quick-action-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 0.4rem 0.2rem;
+            border-radius: 8px;
+            background: #f8fafc;
+            border: 1px solid #e9edf4;
+            text-decoration: none;
+            color: #0f172a;
+            font-size: 0.65rem;
+            font-weight: 500;
+            transition: 0.2s;
+            text-align: center;
+            gap: 2px;
+        }
+        .quick-action-btn i {
+            font-size: 1rem;
+            color: #1a56db;
+        }
+        .quick-action-btn:hover {
+            background: #e8f0fe;
+            border-color: #1a56db;
+            color: #0f172a;
+        }
+
+        /* ===== REPORT LIST ===== */
+        .report-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0;
+        }
+        .report-list li {
+            padding: 0.2rem 0;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 0.7rem;
+            color: #334155;
+            display: flex;
             align-items: center;
             gap: 6px;
         }
-
-        /* Status section */
-        .status-item {
-            margin-bottom: 0.5rem;
+        .report-list li:last-child {
+            border-bottom: none;
         }
-        .status-item:last-child { margin-bottom: 0; }
-        .status-item .status-label {
+        .report-list li i {
+            color: #1a56db;
+            font-size: 0.65rem;
+            width: 14px;
+        }
+        .report-scroll {
+            max-height: 110px;
+            overflow-y: auto;
+        }
+        .report-scroll::-webkit-scrollbar {
+            width: 3px;
+        }
+        .report-scroll::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 4px;
+        }
+
+        /* ===== TABLE ===== */
+        .table-custom {
+            font-size: 0.78rem;
+        }
+        .table-custom thead th {
+            background: #f8fafc;
+            color: #475569;
+            font-weight: 600;
+            border-bottom: 2px solid #e9edf4;
+            padding: 0.4rem 0.5rem;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .table-custom tbody td {
+            padding: 0.35rem 0.5rem;
+            vertical-align: middle;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .table-custom tbody tr:hover {
+            background: #fafcff;
+        }
+        .table-custom .total-row {
+            background: #f8fafc;
+            font-weight: 700;
+        }
+        .table-custom .total-row td {
+            border-top: 2px solid #e9edf4;
+        }
+
+        /* ===== VIEW ALL ===== */
+        .view-all-link {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #1a56db;
+            text-decoration: none;
+        }
+        .view-all-link:hover {
+            text-decoration: underline;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer-note {
+            margin-top: 2rem;
+            font-size: 0.7rem;
+            border-top: 1px solid #e9edf4;
+            padding-top: 1rem;
+            color: #94a3b8;
+        }
+
+        /* ===== MINI BADGE ===== */
+        .mini-badge {
+            font-size: 0.6rem;
+            padding: 0.1rem 0.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+        .mini-badge.green {
+            background: #e6f7ed;
+            color: #0b7e3d;
+        }
+        .mini-badge.red {
+            background: #fde8e8;
+            color: #b91c1c;
+        }
+        .mini-badge.blue {
+            background: #e8f0fe;
+            color: #1a56db;
+        }
+        .mini-badge.gray {
+            background: #f1f5f9;
+            color: #64748b;
+        }
+        .mini-badge.purple {
+            background: #ede7f6;
+            color: #6d28d9;
+        }
+
+        /* ===== THREE CARD ROW ===== */
+        .three-card-row .stat-card {
+            padding: 0.8rem 1rem;
+        }
+        .three-card-row .stat-number {
+            font-size: 1.3rem;
+        }
+        .three-card-row .stat-icon {
+            width: 38px;
+            height: 38px;
+            font-size: 1rem;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .stat-card .stat-number {
+                font-size: 1.2rem;
+            }
+            .stat-card .stat-icon {
+                width: 38px;
+                height: 38px;
+                font-size: 1rem;
+            }
+            .page-header h4 {
+                font-size: 1.1rem;
+            }
+            .chart-wrapper {
+                height: 140px;
+            }
+            .chart-wrapper-doughnut {
+                height: 130px;
+                width: 130px;
+            }
+            .three-card-row .stat-number {
+                font-size: 1.1rem;
+            }
+            .three-card-row .stat-icon {
+                width: 34px;
+                height: 34px;
+                font-size: 0.9rem;
+            }
+            .quick-action-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        @media (max-width: 576px) {
+            .main-content {
+                padding: 0.75rem;
+            }
+            .stat-card {
+                padding: 0.7rem 0.9rem;
+            }
+            .card-custom {
+                padding: 0.9rem;
+            }
+            .quick-action-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .report-list {
+                grid-template-columns: 1fr;
+            }
+            .chart-wrapper-doughnut {
+                height: 110px;
+                width: 110px;
+            }
+        }
+
+        /* ===== NOTIFICATION CARD HEIGHT ===== */
+        .notif-scroll {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .notif-scroll::-webkit-scrollbar {
+            width: 3px;
+        }
+        .notif-scroll::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 4px;
+        }
+
+        /* ===== DEPT GRID ===== */
+        .dept-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.3rem 1.5rem;
+        }
+        @media (max-width: 576px) {
+            .dept-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ===== PIE CHART BELOW CARDS ===== */
+        .pie-row {
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid #f1f5f9;
+        }
+        .pie-row .chart-wrapper-xs {
+            height: 80px;
+            width: 80px;
+        }
+
+        /* Stat card vertical */
+        .stat-card-vertical {
+            background: #fff;
+            border-radius: 12px;
+            padding: 1rem 1.2rem;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+            border: 1px solid #e9edf4;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+            transition: 0.2s;
+        }
+        .stat-card-vertical:hover {
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+        }
+        .stat-card-vertical .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0f172a;
+            line-height: 1.2;
+        }
+        .stat-card-vertical .stat-label {
+            font-size: 0.8rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+        .stat-card-vertical .stat-sub {
+            font-size: 0.7rem;
+            color: #94a3b8;
+            margin-top: 1px;
+        }
+
+        /* ===== COMPACT FIRST ROW ===== */
+        .card-compact {
+            padding: 0.2rem 0.4rem !important;
+        }
+        .card-compact .card-title {
+            font-size: 0.6rem !important;
+            font-weight: 600;
+            margin-bottom: 0 !important;
+            color: #0f172a;
+            letter-spacing: -0.01em;
+        }
+        .card-compact .chart-wrapper {
+            height: 85px !important;
+            margin: 0.1rem 0;
+        }
+        .card-compact .stat-number {
+            font-size: 0.9rem !important;
+            font-weight: 700;
+        }
+        .card-compact .stat-label {
+            font-size: 0.45rem !important;
+            line-height: 1.2;
+            display: block;
+            color: #64748b;
+        }
+        .card-compact .mini-badge {
+            font-size: 0.45rem !important;
+            padding: 0.05rem 0.35rem;
+        }
+        .card-compact .month-labels {
+            font-size: 0.35rem !important;
+            line-height: 1.1;
+            color: #94a3b8;
+            text-align: right;
+        }
+        .card-compact .pl-item {
+            padding: 0.15rem 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .card-compact .pl-item:last-child {
+            border-bottom: none;
+        }
+        .card-compact .pl-value {
+            font-size: 0.85rem !important;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+        .card-compact .pl-label {
+            font-size: 0.45rem !important;
+            color: #64748b;
+            font-weight: 500;
+            line-height: 1.1;
+        }
+        .card-compact .pl-meta {
+            font-size: 0.4rem !important;
+            line-height: 1.1;
+        }
+        .card-compact .notif-item {
+            padding: 0.12rem 0;
+            font-size: 0.5rem;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .card-compact .notif-item .notif-text {
+            font-size: 0.5rem;
+        }
+        .card-compact .notif-item .notif-badge {
+            font-size: 0.35rem;
+            padding: 0.05rem 0.3rem;
+        }
+        .card-compact .notif-item .notif-time {
+            font-size: 0.4rem;
+        }
+
+        /* ===== FLOATING CHATBOT ===== */
+        .chat-float-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1060;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: #1a56db;
+            color: #fff;
+            border: none;
+            box-shadow: 0 4px 20px rgba(26, 86, 219, 0.4);
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .chat-float-btn:hover {
+            transform: scale(1.08);
+            background: #1e4bb5;
+            box-shadow: 0 6px 28px rgba(26, 86, 219, 0.5);
+        }
+        .chat-float-btn .badge-dot {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ef4444;
+            border: 2px solid #fff;
+        }
+
+        .chat-window {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 380px;
+            max-width: calc(100vw - 60px);
+            max-height: 520px;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.15);
+            border: 1px solid #e9edf4;
+            z-index: 1060;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .chat-window.open {
+            display: flex;
+            animation: slideUp 0.3s ease;
+        }
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .chat-window .chat-header {
+            padding: 0.8rem 1rem;
+            background: #0f172a;
+            color: #fff;
             display: flex;
             justify-content: space-between;
-            font-size: 0.85rem;
-            color: #3d4a5c;
+            align-items: center;
         }
-        .status-item .status-label strong {
-            color: #1a2639;
+        .chat-window .chat-header .chat-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .chat-window .chat-header .chat-title .ai-badge {
+            background: #3b82f6;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.6rem;
+            font-weight: 700;
+        }
+        .chat-window .chat-header .chat-close {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .chat-window .chat-header .chat-close:hover {
+            color: #fff;
+        }
+
+        .chat-window .chat-body {
+            padding: 0.8rem 1rem;
+            flex: 1;
+            overflow-y: auto;
+            background: #f8fafc;
+        }
+        .chat-window .chat-body .chat-greeting {
+            font-size: 0.8rem;
+            color: #0f172a;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        .chat-window .chat-body .chat-greeting span {
+            font-size: 0.9rem;
+        }
+        .chat-window .chat-body .chat-btn-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+        .chat-window .chat-body .chat-btn-list button {
+            text-align: left;
+            padding: 0.3rem 0.7rem;
+            border-radius: 12px;
+            border: none;
+            background: #fff;
+            color: #1a56db;
+            font-size: 0.65rem;
+            font-weight: 500;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            transition: 0.2s;
+            border: 1px solid #e9edf4;
+        }
+        .chat-window .chat-body .chat-btn-list button:hover {
+            background: #e8f0fe;
+            border-color: #1a56db;
+        }
+
+        .chat-window .chat-footer {
+            padding: 0.5rem 0.8rem;
+            border-top: 1px solid #e9edf4;
+            background: #fff;
+            display: flex;
+            gap: 0.4rem;
+        }
+        .chat-window .chat-footer input {
+            flex: 1;
+            border: 1px solid #e9edf4;
+            border-radius: 20px;
+            padding: 0.2rem 0.7rem;
+            font-size: 0.65rem;
+            background: #f8fafc;
+            outline: none;
+            transition: 0.2s;
+        }
+        .chat-window .chat-footer input:focus {
+            border-color: #1a56db;
+            background: #fff;
+        }
+        .chat-window .chat-footer button {
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            background: #1a56db;
+            color: #fff;
+            font-size: 0.6rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .chat-window .chat-footer button:hover {
+            background: #1e4bb5;
+        }
+        .chat-window .chat-footer .powered {
+            font-size: 0.35rem;
+            color: #94a3b8;
+            text-align: right;
+            padding-top: 2px;
+        }
+
+        @media (max-width: 576px) {
+            .chat-window {
+                width: calc(100vw - 40px);
+                right: 20px;
+                bottom: 80px;
+                max-height: 440px;
+            }
+            .chat-float-btn {
+                bottom: 20px;
+                right: 20px;
+                width: 48px;
+                height: 48px;
+                font-size: 1.1rem;
+            }
         }
     </style>
 </head>
 <body>
 
-<!-- Include Sidebar from fragments/sidebar-admin.html -->
 <div th:replace="~{fragments/sidebar-admin :: sidebar-component}"></div>
+
 
 <!-- ===== MAIN CONTENT ===== -->
 <div class="main-content">
 
-    <!-- Page Header -->
+    <!-- ===== PAGE HEADER ===== -->
     <div class="page-header">
         <div>
-            <h4 th:text="'Hi, ' + (${loggedInUser} ?: 'Guest')">Hi, User</h4>
-
+            <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <h4 th:text="'Hi, ' + (${loggedInUser} ?: 'Super Admin')">Hi, Super Admin</h4>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Employee Management</li>
+                    <li class="breadcrumb-item active" aria-current="page">Super Admin</li>
                 </ol>
             </nav>
         </div>
-        <div class="d-flex align-items-center gap-3">
+        <div class="header-actions">
             <span class="today-badge">
                 <i class="fa-regular fa-calendar"></i> Today
             </span>
-            <a th:href="@{/auth/logout}" class="logout-btn">
+            <a href="#" class="logout-btn">
                 <i class="fa-solid fa-right-from-bracket"></i> Logout
             </a>
         </div>
     </div>
 
-    <!-- Stats Row - 4 Cards -->
-    <div class="row g-3 mb-4">
-        <!-- Total Employees -->
-        <div class="col-xl-3 col-lg-6 col-md-6">
-            <div class="stat-card">
-                <div>
-                    <div class="stat-number" th:text="${totalEmployees != null ? totalEmployees : 150}">150</div>
-                    <div class="stat-label">Total Employees</div>
-                    <div class="stat-sub">
-                        <i class="fa-regular fa-circle-check text-success"></i>
-                        <span th:text="${activeEmployees != null ? activeEmployees : 120}">120</span> active
+    <!-- ============================================================= -->
+    <!--  ROW 1: 2×2 Revenue Grid (Company + Dept) + Right Sidebar      -->
+    <!-- ============================================================= -->
+    <div class="row g-3 mb-3">
+        <!-- LEFT COLUMN: Company Revenue (Yearly/Monthly) + Department Revenue (Monthly/Yearly) -->
+        <div class="col-lg-6">
+            <div class="row g-2">
+                <!-- Yearly Revenue -->
+                <div class="col-md-6">
+                    <div class="card-custom card-compact h-100" style="height: 185px; align-self: flex-start;">
+                        <div class="d-flex justify-content-between align-items-center" style="margin-bottom:0.1rem; padding-top: 5px">
+                            <span class="card-title" style="font-size:0.6rem; font-weight:600;">
+                                <i class="fa-solid fa-chart-line me-1" style="color:#1a56db;"></i> Company Revenue – Yearly
+                            </span>
+                            <span class="mini-badge green" style="font-size:0.45rem; padding:0.05rem 0.35rem;">
+                                <i class="fa-regular fa-circle-check"></i> +18%
+                            </span>
+                        </div>
+                        <div class="chart-wrapper" style="height:90px; margin:0.1rem 0; padding-top: 3px">
+                            <canvas id="yearlyRevenueChart"></canvas>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center" style="margin-top:0.1rem; padding-top: 5px">
+                            <div>
+                                <span class="stat-number" style="font-size:0.9rem; font-weight:700;">₹12.5M</span>
+                                <span class="stat-label" style="font-size:0.45rem; display:block; color:#64748b; line-height:1.2;">Net Revenue</span>
+                            </div>
+                            <div style="font-size:0.35rem; color:#94a3b8; text-align:right; line-height:1.1;">
+                                <span>Jan</span> <span>Feb</span> <span>Mar</span> <span>Apr</span> <span>May</span> <span>Jun</span><br>
+                                <span>Jul</span> <span>Aug</span> <span>Sep</span> <span>Oct</span> <span>Nov</span> <span>Dec</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="stat-icon bg-soft-primary"><i class="fa-solid fa-users"></i></div>
-            </div>
-        </div>
-        <!-- New Joiners -->
-        <div class="col-xl-3 col-lg-6 col-md-6">
-            <div class="stat-card">
-                <div>
-                    <div class="stat-number" th:text="${newJoinees != null ? newJoinees : 12}">12</div>
-                    <div class="stat-label">New Joiners</div>
-                    <div class="stat-sub">This month</div>
-                </div>
-                <div class="stat-icon bg-soft-success"><i class="fa-solid fa-user-plus"></i></div>
-            </div>
-        </div>
-        <!-- Departments -->
-        <div class="col-xl-3 col-lg-6 col-md-6">
-            <div class="stat-card">
-                <div>
-                    <div class="stat-number" th:text="${vacancies != null ? vacancies : 18}">18</div>
-                    <div class="stat-label">Departments</div>
-                    <div class="stat-sub">
-                        <span th:text="${pendingLeaves != null ? pendingLeaves : 11}">11</span> require attention
+
+                <!-- Monthly Revenue -->
+                <div class="col-md-6">
+                    <div class="card-custom card-compact h-100" style="height: 185px; align-self: flex-start;">
+                        <div class="d-flex justify-content-between align-items-center" style="margin-bottom:0.1rem;padding-top: 5px">
+                            <span class="card-title" style="font-size:0.6rem; font-weight:600;">
+                                <i class="fa-solid fa-chart-simple me-1" style="color:#0b7e3d;"></i> Company Revenue – Monthly
+                            </span>
+                            <span class="mini-badge green" style="font-size:0.45rem; padding:0.05rem 0.35rem;">
+                                <i class="fa-regular fa-circle-check"></i> +4.2%
+                            </span>
+                        </div>
+                        <div class="chart-wrapper" style="height:90px; margin:0.1rem 0; padding-top: 3px">
+                            <canvas id="monthlyRevenueChart"></canvas>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center" style="margin-top:0.1rem;  padding-top: 5px">
+                            <div>
+                                <span class="stat-number" style="font-size:0.9rem; font-weight:700;">₹1.05M</span>
+                                <span class="stat-label" style="font-size:0.45rem; display:block; color:#64748b; line-height:1.2;">Net Revenue</span>
+                            </div>
+                            <div style="font-size:0.35rem; color:#94a3b8; text-align:right; line-height:1.1;">
+                                <span>Jan</span> <span>Feb</span> <span>Mar</span> <span>Apr</span> <span>May</span> <span>Jun</span><br>
+                                <span>Jul</span> <span>Aug</span> <span>Sep</span> <span>Oct</span> <span>Nov</span> <span>Dec</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="stat-icon bg-soft-warning"><i class="fa-solid fa-building"></i></div>
+                <div class="section-title"><i class="fa-solid fa-building-columns"></i> Department Revenue</div>
+                <!-- Dept Monthly -->
+                <div class="col-md-6">
+                    <div class="card-custom h-100" style="padding: 0.7rem 0.9rem;">
+                        <div class="card-title" style="font-size:0.7rem; margin-bottom:0.3rem;">
+                            <i class="fa-regular fa-calendar me-1"></i> Department Revenue – Monthly
+                        </div>
+                        <div class="d-flex align-items-center" style="gap: 0.25rem;">
+                            <div style="flex-shrink:0; width:120px; height:120px;">
+                                <canvas id="monthlyDeptDoughnutLeft"></canvas>
+                            </div>
+                            <div style="flex:1; padding-left: 0.25rem;">
+                                <div class="dept-row" style="padding:0.15rem 0; font-size:0.65rem;">
+                                    <span class="dept-name"><span style="display:inline-block; width:10px; height:10px; background:#1a56db; border-radius:3px; margin-right:4px;"></span>Java</span>
+                                    <span class="dept-value">₹0.35M</span>
+                                    <span class="dept-change up" style="font-size:0.5rem;">+3%</span>
+                                </div>
+                                <div class="dept-row" style="padding:0.15rem 0; font-size:0.65rem;">
+                                    <span class="dept-name"><span style="display:inline-block; width:10px; height:10px; background:#0b7e3d; border-radius:3px; margin-right:4px;"></span>Python</span>
+                                    <span class="dept-value">₹0.26M</span>
+                                    <span class="dept-change down" style="font-size:0.5rem;">-2%</span>
+                                </div>
+                                <div class="dept-row" style="padding:0.15rem 0; font-size:0.65rem;">
+                                    <span class="dept-name"><span style="display:inline-block; width:10px; height:10px; background:#c2410c; border-radius:3px; margin-right:4px;"></span>Salesforce</span>
+                                    <span class="dept-value">₹0.23M</span>
+                                    <span class="dept-change up" style="font-size:0.5rem;">+6%</span>
+                                </div>
+                                <div class="dept-row" style="padding:0.15rem 0; font-size:0.65rem;">
+                                    <span class="dept-name"><span style="display:inline-block; width:10px; height:10px; background:#6d28d9; border-radius:3px; margin-right:4px;"></span>Magento</span>
+                                    <span class="dept-value">₹0.07M</span>
+                                    <span class="dept-change up" style="font-size:0.5rem;">+4%</span>
+                                </div>
+                                <div class="dept-row" style="padding:0.15rem 0; font-size:0.65rem; border-bottom:none;">
+                                    <span class="dept-name"><span style="display:inline-block; width:10px; height:10px; background:#0e7490; border-radius:3px; margin-right:4px;"></span>Dynamics</span>
+                                    <span class="dept-value">₹0.05M</span>
+                                    <span class="dept-change neutral" style="font-size:0.5rem;">+1%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dept Yearly -->
+                <div class="col-md-6">
+                    <div class="card-custom h-100" style="padding: 0.7rem 0.9rem;">
+                        <div class="card-title" style="font-size:0.7rem; margin-bottom:0.3rem;">
+                            <i class="fa-regular fa-calendar-plus me-1"></i> Department Revenue – Yearly
+                        </div>
+                        <div class="d-flex align-items-center" style="gap: 0.25rem;">
+                            <div style="flex-shrink:0; width:120px; height:120px;">
+                                <canvas id="yearlyDeptDoughnutLeft"></canvas>
+                            </div>
+                            <div style="flex:1; padding-left: 0.25rem;">
+                                <div class="dept-row" style="padding:0.15rem 0; font-size:0.65rem;">
+                                    <span class="dept-name"><span style="display:inline-block; width:10px; height:10px; background:#1a56db; border-radius:3px; margin-right:4px;"></span>Java</span>
+                                    <span class="dept-value">₹4.2M</span>
+                                    <span class="dept-change up" style="font-size:0.5rem;">+22%</span>
+                                </div>
+                                <div class="dept-row" style="padding:0.15rem 0; font-size:0.65rem;">
+                                    <span class="dept-name"><span style="display:inline-block; width:10px; height:10px; background:#0b7e3d; border-radius:3px; margin-right:4px;"></span>Python</span>
+                                    <span class="dept-value">₹3.1M</span>
+                                    <span class="dept-change up" style="font-size:0.5rem;">+18%</span>
+                                </div>
+                                <div class="dept-row" style="padding:0.15rem 0; font-size:0.65rem;">
+                                    <span class="dept-name"><span style="display:inline-block; width:10px; height:10px; background:#c2410c; border-radius:3px; margin-right:4px;"></span>Salesforce</span>
+                                    <span class="dept-value">₹2.8M</span>
+                                    <span class="dept-change up" style="font-size:0.5rem;">+16%</span>
+                                </div>
+                                <div class="dept-row" style="padding:0.15rem 0; font-size:0.65rem;">
+                                    <span class="dept-name"><span style="display:inline-block; width:10px; height:10px; background:#6d28d9; border-radius:3px; margin-right:4px;"></span>Magento</span>
+                                    <span class="dept-value">₹0.9M</span>
+                                    <span class="dept-change up" style="font-size:0.5rem;">+12%</span>
+                                </div>
+                                <div class="dept-row" style="padding:0.15rem 0; font-size:0.65rem; border-bottom:none;">
+                                    <span class="dept-name"><span style="display:inline-block; width:10px; height:10px; background:#0e7490; border-radius:3px; margin-right:4px;"></span>Dynamics</span>
+                                    <span class="dept-value">₹0.6M</span>
+                                    <span class="dept-change neutral" style="font-size:0.5rem;">+5%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Overview (Full Width) – remains below the 2×2 grid -->
             </div>
         </div>
-        <!-- Pending Approvals -->
-        <div class="col-xl-3 col-lg-6 col-md-6">
-            <div class="stat-card">
-                <div>
-                    <div class="stat-number" th:text="${pendingLeaves != null ? pendingLeaves : 11}">11</div>
-                    <div class="stat-label">Pending Approvals</div>
-                    <div class="stat-sub">Requires attention</div>
+
+        <!-- RIGHT COLUMN: Profit/Loss + Notifications SIDE BY SIDE (horizontal) -->
+        <div class="col-lg-6">
+            <div class="row g-2" style="height: 90%;">
+                <!-- Profit & Loss (left half) -->
+                <div class="col-4">
+                    <div class="card-custom card-compact d-flex flex-column justify-content-around" style="min-height: 316px; height: 100%;">
+                        <!-- Profit Yearly -->
+                        <div class="d-flex justify-content-between align-items-center py-1 border-bottom" style="border-color: #f1f5f9;">
+                            <div style="padding: 8px">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="pl-value" style="font-size:0.85rem; font-weight:700; color:#0b7e3d;">₹3.2M</span>
+                                </div>
+                                <div class="pl-label" style="font-size:0.45rem; color:#64748b; font-weight:500; line-height:1.1;">Profit (Yearly)</div>
+                                <div class="pl-meta" style="font-size:0.4rem; color:#0b7e3d; line-height:1.1;">25.6% margin</div>
+                            </div>
+                            <div class="d-flex align-items-center gap-1">
+                                <div style="width: 40px; height: 18px;">
+                                    <svg viewBox="0 0 50 20" style="width: 100%; height: 100%;">
+                                        <path d="M 0 12 L 10 8 L 20 10 L 30 6 L 40 2" stroke="#22c55e" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </div>
+                                <div class="d-flex justify-content-center align-items-center rounded-2" style="width: 28px; height: 28px; background-color: #dcfce7;">
+                                    <svg width="12" height="12" viewBox="0 0 16 16">
+                                        <path d="M 2 12 L 12 2 M 12 2 L 8 2 M 12 2 L 12 6" stroke="#22c55e" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Profit Monthly -->
+                        <div class="d-flex justify-content-between align-items-center py-1 border-bottom" style="border-color: #f1f5f9;">
+                            <div style="padding: 8px">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="pl-value" style="font-size:0.85rem; font-weight:700; color:#0b7e3d;">₹0.28M</span>
+                                </div>
+                                <div class="pl-label" style="font-size:0.45rem; color:#64748b; font-weight:500; line-height:1.1;">Profit (Monthly)</div>
+                                <div class="pl-meta" style="font-size:0.4rem; color:#0b7e3d; line-height:1.1;">26.7% margin</div>
+                            </div>
+                            <div class="d-flex align-items-center gap-1">
+                                <div style="width: 40px; height: 18px;">
+                                    <svg viewBox="0 0 50 20" style="width: 100%; height: 100%;">
+                                        <path d="M 0 14 L 10 10 L 20 12 L 30 8 L 40 4" stroke="#22c55e" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </div>
+                                <div class="d-flex justify-content-center align-items-center rounded-2" style="width: 28px; height: 28px; background-color: #dcfce7;">
+                                    <svg width="12" height="12" viewBox="0 0 16 16">
+                                        <path d="M 2 12 L 12 2 M 12 2 L 8 2 M 12 2 L 12 6" stroke="#22c55e" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Loss Yearly -->
+                        <div class="d-flex justify-content-between align-items-center py-1 border-bottom" style="border-color: #f1f5f9;">
+                            <div style="padding: 8px">
+                                <div class="d-flex align-items-center gap-2 ">
+                                    <span class="pl-value" style="font-size:0.85rem; font-weight:700; color:#b91c1c;">₹0.8M</span>
+                                </div>
+                                <div class="pl-label" style="font-size:0.45rem; color:#64748b; font-weight:500; line-height:1.1;">Loss (Yearly)</div>
+                                <div class="pl-meta" style="font-size:0.4rem; color:#b91c1c; line-height:1.1;">-6.4% of revenue</div>
+                            </div>
+                            <div class="d-flex align-items-center gap-1">
+                                <div style="width: 40px; height: 18px;">
+                                    <svg viewBox="0 0 50 20" style="width: 100%; height: 100%;">
+                                        <path d="M 0 4 L 10 8 L 20 6 L 30 10 L 40 12" stroke="#ef4444" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </div>
+                                <div class="d-flex justify-content-center align-items-center rounded-2" style="width: 28px; height: 28px; background-color: #fee2e2;">
+                                    <svg width="12" height="12" viewBox="0 0 16 16">
+                                        <path d="M 2 2 L 12 12 M 12 12 L 8 12 M 12 12 L 12 8" stroke="#ef4444" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Loss Monthly -->
+                        <div class="d-flex justify-content-between align-items-center py-1">
+                            <div style="padding: 8px">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="pl-value" style="font-size:0.85rem; font-weight:700; color:#c2410c;">₹0.07M</span>
+                                </div>
+                                <div class="pl-label" style="font-size:0.45rem; color:#64748b; font-weight:500; line-height:1.1;">Loss (Monthly)</div>
+                                <div class="pl-meta" style="font-size:0.4rem; color:#c2410c; line-height:1.1;">-6.7% of revenue</div>
+                            </div>
+                            <div class="d-flex align-items-center gap-1">
+                                <div style="width: 40px; height: 18px;">
+                                    <svg viewBox="0 0 50 20" style="width: 100%; height: 100%;">
+                                        <path d="M 0 2 L 10 6 L 20 4 L 30 8 L 40 12" stroke="#ef4444" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </div>
+                                <div class="d-flex justify-content-center align-items-center rounded-2" style="width: 28px; height: 28px; background-color: #fee2e2;">
+                                    <svg width="12" height="12" viewBox="0 0 16 16">
+                                        <path d="M 2 2 L 12 12 M 12 12 L 8 12 M 12 12 L 12 8" stroke="#ef4444" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="stat-icon bg-soft-danger"><i class="fa-solid fa-clock"></i></div>
-            </div>
+
+                <div class="col-8">
+                    <div class="card-custom card-compact d-flex flex-column" style="min-height: 390px; height: 100%; position: relative; padding: 1.2rem 1.2rem !important;">
+                        <!-- Header -->
+                        <!-- Header -->
+                        <div class="d-flex justify-content-between align-items-center mb-3" style="padding-left: 2px; padding-top: 0px;">
+    <span class="fw-semibold" style="font-size:0.95rem; color:#0f172a; letter-spacing:-0.01em;">
+        <i class="fa-regular fa-bell me-2" style="color:#c2410c;"></i> Notifications
+    </span>
+                            <div class="d-flex align-items-center gap-3">
+                                <span class="mini-badge red" style="font-size:0.7rem; padding:0.2rem 0.7rem; background:#fde8e8; color:#b91c1c; border-radius:20px; font-weight:600;">5 new</span>
+                                <a href="#" class="view-all-link" style="font-size:0.65rem; color:#1a56db; font-weight:500; text-decoration:none; white-space:nowrap;">
+                                    View all <i class="fa-solid fa-arrow-right" style="font-size:0.5rem; margin-left:2px;"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Notification List -->
+                        <div class="notif-scroll" style="flex:1; max-height: 100%; padding-left: 2px;">
+
+                            <!-- 1. Leave Requests -->
+                            <div class="notif-item" style="display:flex; align-items:center; padding:0.55rem 0; border-bottom:1px solid #f1f5f9; gap:12px;">
+                                <span class="notif-dot" style="background:#e67e22; width:10px; height:10px; border-radius:50%; flex-shrink:0;"></span>
+                                <span class="notif-text" style="flex:1; font-size:0.8rem; color:#1e293b; line-height:1.4;">
+                    <strong>5 Leave Requests</strong>
+                    <span class="notif-badge pending" style="display:inline-block; font-size:0.55rem; padding:0.1rem 0.6rem; border-radius:12px; background:#fef3c7; color:#b45309; font-weight:500; margin-left:6px;">Pending approval</span>
+                </span>
+                                <span class="notif-time" style="font-size:0.65rem; color:#94a3b8; white-space:nowrap;">10m</span>
+                            </div>
+
+                            <!-- 2. Payroll -->
+                            <div class="notif-item" style="display:flex; align-items:center; padding:0.55rem 0; border-bottom:1px solid #f1f5f9; gap:12px;">
+                                <span class="notif-dot" style="background:#1a56db; width:10px; height:10px; border-radius:50%; flex-shrink:0;"></span>
+                                <span class="notif-text" style="flex:1; font-size:0.8rem; color:#1e293b; line-height:1.4;">
+                    <strong>Payroll for July</strong>
+                    <span class="notif-badge processing" style="display:inline-block; font-size:0.55rem; padding:0.1rem 0.6rem; border-radius:12px; background:#dbeafe; color:#1d4ed8; font-weight:500; margin-left:6px;">Processing pending</span>
+                </span>
+                                <span class="notif-time" style="font-size:0.65rem; color:#94a3b8; white-space:nowrap;">30m</span>
+                            </div>
+
+                            <!-- 3. New Employees -->
+                            <div class="notif-item" style="display:flex; align-items:center; padding:0.55rem 0; border-bottom:1px solid #f1f5f9; gap:12px;">
+                                <span class="notif-dot" style="background:#0b7e3d; width:10px; height:10px; border-radius:50%; flex-shrink:0;"></span>
+                                <span class="notif-text" style="flex:1; font-size:0.8rem; color:#1e293b; line-height:1.4;">
+                    <strong>2 New Employees</strong>
+                    <span class="notif-badge joined" style="display:inline-block; font-size:0.55rem; padding:0.1rem 0.6rem; border-radius:12px; background:#d1fae5; color:#065f46; font-weight:500; margin-left:6px;">Joined today</span>
+                </span>
+                                <span class="notif-time" style="font-size:0.65rem; color:#94a3b8; white-space:nowrap;">1h</span>
+                            </div>
+
+                            <!-- 4. Project Deadline -->
+                            <div class="notif-item" style="display:flex; align-items:center; padding:0.55rem 0; border-bottom:1px solid #f1f5f9; gap:12px;">
+                                <span class="notif-dot" style="background:#b91c1c; width:10px; height:10px; border-radius:50%; flex-shrink:0;"></span>
+                                <span class="notif-text" style="flex:1; font-size:0.8rem; color:#1e293b; line-height:1.4;">
+                    <strong>Project Deadline</strong>
+                    <span class="notif-badge deadline" style="display:inline-block; font-size:0.55rem; padding:0.1rem 0.6rem; border-radius:12px; background:#fee2e2; color:#991b1b; font-weight:500; margin-left:6px;">Website Revamp</span>
+                </span>
+                                <span class="notif-time" style="font-size:0.65rem; color:#94a3b8; white-space:nowrap;">2h</span>
+                            </div>
+
+                            <!-- 5. Attendance Missing -->
+                            <div class="notif-item" style="display:flex; align-items:center; padding:0.55rem 0; border-bottom:none; gap:12px;">
+                                <span class="notif-dot" style="background:#64748b; width:10px; height:10px; border-radius:50%; flex-shrink:0;"></span>
+                                <span class="notif-text" style="flex:1; font-size:0.8rem; color:#1e293b; line-height:1.4;">
+                    <strong>Attendance Missing</strong>
+                    <span class="notif-badge missing" style="display:inline-block; font-size:0.55rem; padding:0.1rem 0.6rem; border-radius:12px; background:#f1f5f9; color:#475569; font-weight:500; margin-left:6px;">12 employees</span>
+                </span>
+                                <span class="notif-time" style="font-size:0.65rem; color:#94a3b8; white-space:nowrap;">3h</span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
         </div>
     </div>
+        <!--  ROW: Onboarding Projects – Monthly & Yearly (2×2 grid)       -->
+        <!-- ============================================================= -->
+        <!-- ============================================================= -->
+        <!--  ROW: Onboarding Projects – Monthly + Yearly + Chatbot         -->
+        <!-- ============================================================= -->
+        <div class="row g-3 mb-4">
+            <!-- LEFT: Monthly -->
+            <div class="col-lg-4">
+                <div class="row g-2">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="section-title" style="font-size:0.85rem; font-weight:600; margin:0; border-bottom:none; padding-bottom:0;">
+                        <i class="fa-regular fa-calendar-plus me-1" style="color:#1a56db;"></i> Onboarding Projects – Monthly
+                    </span>
+                            <span class="badge-trend up" style="font-size:0.6rem; padding:0.1rem 0.6rem; background:#e6f7ed; color:#0b7e3d; border-radius:12px;">
+                        <i class="fa-regular fa-circle-check"></i> +3 vs last month
+                    </span>
+                        </div>
+                    </div>
 
-    <!-- Row: Department + Recent Employees + Status -->
-    <div class="row g-3 mb-4">
-        <!-- Employees by Department -->
-        <div class="col-xl-5 col-lg-6">
-            <div class="card-custom">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <div class="card-title">Employees by Department</div>
-                    <a href="#" class="view-all-link">View all</a>
+                    <!-- 3 Stat Cards -->
+                    <div class="col-md-4">
+                        <div class="stat-card-vertical" style="padding:0.5rem 0.6rem; min-height:80px; border:1px solid #e9edf4; border-radius:8px; background:#fafcff;">
+                            <div class="stat-number" style="font-size:1.2rem; font-weight:700; color:#0f172a;">12</div>
+                            <div class="stat-label" style="font-size:0.6rem; color:#64748b; font-weight:500;">Total Projects</div>
+                            <div class="stat-sub" style="font-size:0.5rem; color:#94a3b8;"><i class="fa-regular fa-circle-check text-success"></i> +3 vs last month</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-card-vertical" style="padding:0.5rem 0.6rem; min-height:80px; border:1px solid #e9edf4; border-radius:8px; background:#fafcff;">
+                            <div class="stat-number" style="font-size:1.2rem; font-weight:700; color:#0f172a;">₹0.35M</div>
+                            <div class="stat-label" style="font-size:0.6rem; color:#64748b; font-weight:500;">Net Revenue</div>
+                            <div class="stat-sub" style="font-size:0.5rem; color:#94a3b8;">Avg ₹29K per project</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-card-vertical" style="padding:0.5rem 0.6rem; min-height:80px; border:1px solid #e9edf4; border-radius:8px; background:#fafcff;">
+                            <div class="stat-number" style="font-size:1.2rem; font-weight:700; color:#0b7e3d;">₹0.09M</div>
+                            <div class="stat-label" style="font-size:0.6rem; color:#64748b; font-weight:500;">Profit</div>
+                            <div class="stat-sub" style="font-size:0.5rem; color:#94a3b8;">25.7% margin</div>
+                        </div>
+                    </div>
+
+                    <!-- Bar Chart -->
+                    <div class="col-12">
+                        <div class="card-custom" style="padding:0.5rem 0.7rem; border:1px solid #e9edf4; border-radius:8px; background:#fafcff;">
+                            <div style="font-size:0.55rem; color:#64748b; font-weight:500; margin-bottom:0.2rem;">Monthly Distribution</div>
+                            <div class="chart-wrapper" style="height:80px; width:100%;">
+                                <canvas id="monthlyBarChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div th:each="dept : ${departmentStats}" class="dept-item">
-                    <span class="dept-name" th:text="${dept.name}">Information Technology</span>
-                    <span class="dept-stats" th:text="${dept.count} + ' (' + ${dept.percentage} + '%)'">45 (30%)</span>
+            </div>
+
+            <!-- MIDDLE: Yearly -->
+            <div class="col-lg-4">
+                <div class="row g-2">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="section-title" style="font-size:0.85rem; font-weight:600; margin:0; border-bottom:none; padding-bottom:0;">
+                        <i class="fa-solid fa-rocket me-1" style="color:#1a56db;"></i> Onboarding Projects – Yearly
+                    </span>
+                            <span class="badge-trend up" style="font-size:0.6rem; padding:0.1rem 0.6rem; background:#e6f7ed; color:#0b7e3d; border-radius:12px;">
+                        <i class="fa-regular fa-circle-check"></i> +12 vs last year
+                    </span>
+                        </div>
+                    </div>
+
+                    <!-- 3 Stat Cards -->
+                    <div class="col-md-4">
+                        <div class="stat-card-vertical" style="padding:0.5rem 0.6rem; min-height:80px; border:1px solid #e9edf4; border-radius:8px; background:#fafcff;">
+                            <div class="stat-number" style="font-size:1.2rem; font-weight:700; color:#0f172a;">48</div>
+                            <div class="stat-label" style="font-size:0.6rem; color:#64748b; font-weight:500;">Total Projects</div>
+                            <div class="stat-sub" style="font-size:0.5rem; color:#94a3b8;"><i class="fa-regular fa-circle-check text-success"></i> +12 vs last year</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-card-vertical" style="padding:0.5rem 0.6rem; min-height:80px; border:1px solid #e9edf4; border-radius:8px; background:#fafcff;">
+                            <div class="stat-number" style="font-size:1.2rem; font-weight:700; color:#0f172a;">₹2.8M</div>
+                            <div class="stat-label" style="font-size:0.6rem; color:#64748b; font-weight:500;">Net Revenue</div>
+                            <div class="stat-sub" style="font-size:0.5rem; color:#94a3b8;">Avg ₹58K per project</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-card-vertical" style="padding:0.5rem 0.6rem; min-height:80px; border:1px solid #e9edf4; border-radius:8px; background:#fafcff;">
+                            <div class="stat-number" style="font-size:1.2rem; font-weight:700; color:#0b7e3d;">₹0.9M</div>
+                            <div class="stat-label" style="font-size:0.6rem; color:#64748b; font-weight:500;">Profit</div>
+                            <div class="stat-sub" style="font-size:0.5rem; color:#94a3b8;">32% margin</div>
+                        </div>
+                    </div>
+
+                    <!-- Bar Chart -->
+                    <div class="col-12">
+                        <div class="card-custom" style="padding:0.5rem 0.7rem; border:1px solid #e9edf4; border-radius:8px; background:#fafcff;">
+                            <div style="font-size:0.55rem; color:#64748b; font-weight:500; margin-bottom:0.2rem;">Yearly Distribution</div>
+                            <div class="chart-wrapper" style="height:80px; width:100%;">
+                                <canvas id="yearlyBarChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <!-- Static fallback if no data -->
-                <div th:if="${departmentStats == null}">
-                    <div class="dept-item"><span class="dept-name">Information Technology</span><span class="dept-stats">45 (30%)</span></div>
-                    <div class="dept-item"><span class="dept-name">Human Resources</span><span class="dept-stats">20 (13.3%)</span></div>
-                    <div class="dept-item"><span class="dept-name">Finance</span><span class="dept-stats">15 (10%)</span></div>
-                    <div class="dept-item"><span class="dept-name">Marketing</span><span class="dept-stats">25 (16.7%)</span></div>
-                    <div class="dept-item"><span class="dept-name">Operations</span><span class="dept-stats">30 (20%)</span></div>
-                    <div class="dept-item"><span class="dept-name">Sales</span><span class="dept-stats">15 (10%)</span></div>
-                    <div class="dept-item"><span class="dept-name">Others</span><span class="dept-stats">5 (3.3%)</span></div>
+            </div>
+
+            <!-- RIGHT: Chatbot Card -->
+            <div class="col-lg-4">
+                <div class="card-custom" style="height:100%; padding: 0.8rem 0.9rem; display:flex; flex-direction:column; min-height:340px;">
+                    <!-- Header -->
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center text-white fw-bold" style="width:28px; height:28px; font-size:0.5rem; background-color:#1a56db;">AI</div>
+                            <span style="font-size:0.9rem; font-weight:700; color:#0f172a;">BlueThink AI</span>
+                            <span class="badge bg-success" style="font-size:0.35rem; padding:0.1rem 0.3rem; background-color:#22c55e;">ON</span>
+                        </div>
+                        <div class="d-flex gap-2 text-secondary" style="font-size:0.5rem;">
+                            <i class="fa-solid fa-ellipsis-vertical" style="cursor:pointer;"></i>
+                            <i class="fa-solid fa-rotate-right" style="cursor:pointer;"></i>
+                        </div>
+                    </div>
+
+                    <!-- Greeting -->
+                    <div style="font-size:0.75rem; color:#0f172a; font-weight:500; margin-bottom:0.5rem; line-height:1.4;">
+                        Hi Admin! 👋 <br> How can I help you today?
+                    </div>
+
+                    <!-- Suggestion Buttons -->
+                    <div class="d-flex flex-column gap-1 mb-2 flex-grow-1">
+                        <button class="btn btn-outline-primary text-start px-3 py-1 border-0 bg-light" style="font-size:0.6rem; border-radius:12px; background-color:#f8fafc !important; color:#1a56db; font-weight:500;">
+                            Show this month's revenue summary
+                        </button>
+                        <button class="btn btn-outline-primary text-start px-3 py-1 border-0 bg-light" style="font-size:0.6rem; border-radius:12px; background-color:#f8fafc !important; color:#1a56db; font-weight:500;">
+                            Which department has highest profit?
+                        </button>
+                        <button class="btn btn-outline-primary text-start px-3 py-1 border-0 bg-light" style="font-size:0.6rem; border-radius:12px; background-color:#f8fafc !important; color:#1a56db; font-weight:500;">
+                            Show pending leave requests
+                        </button>
+                        <button class="btn btn-outline-primary text-start px-3 py-1 border-0 bg-light" style="font-size:0.6rem; border-radius:12px; background-color:#f8fafc !important; color:#1a56db; font-weight:500;">
+                            Project status overview
+                        </button>
+                    </div>
+
+                    <!-- Input -->
+                    <div class="input-group" style="height:28px;">
+                        <input type="text" class="form-control" placeholder="Type your question..." style="font-size:0.6rem; border-radius:20px 0 0 20px; border-color:#e9edf4; background:#f8fafc; padding:0.1rem 0.7rem;">
+                        <button class="btn btn-primary d-flex align-items-center justify-content-center" style="font-size:0.5rem; border-radius:0 20px 20px 0; padding:0.1rem 0.5rem; background-color:#1a56db; border-color:#1a56db;">
+                            <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+                    </div>
+                    <div style="font-size:0.4rem; color:#94a3b8; text-align:right; margin-top:0.2rem;">Powered by BlueThink AI</div>
                 </div>
             </div>
         </div>
 
-        <!-- Recent Employees -->
-        <div class="col-xl-4 col-lg-6">
-            <div class="card-custom">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <div class="card-title">Recent Employees</div>
-                    <a href="#" class="view-all-link">View all</a>
-                </div>
-                <div th:each="emp : ${recentEmployees}" class="recent-employee">
-                    <div class="avatar" th:text="${#strings.substring(emp.name, 0, 1)} + ${#strings.substring(emp.name.split(' ')[1], 0, 1)}">PS</div>
-                    <div class="emp-info">
-                        <div class="emp-name" th:text="${emp.name}">Priya Sharma</div>
-                        <div class="emp-role" th:text="${emp.designation}">HR Executive</div>
+
+        <!-- ============================================================= -->
+        <!--  ROW 4: Technology-wise Onboarding (Monthly & Yearly Tables)   -->
+        <!-- ============================================================= -->
+        <div class="section-title"><i class="fa-solid fa-code"></i> Technology-wise Onboarding Projects</div>
+        <div class="row g-3 mb-4">
+            <!-- Monthly Table -->
+            <div class="col-md-6">
+                <div class="card-custom">
+                    <div class="card-title" style="font-size:0.8rem;"><i class="fa-regular fa-calendar me-1"></i> Monthly</div>
+                    <div class="table-responsive">
+                        <table class="table table-custom">
+                            <thead>
+                            <tr>
+                                <th>Technology</th>
+                                <th class="text-end">Projects</th>
+                                <th class="text-end">Revenue</th>
+                                <th class="text-end">Profit</th>
+                                <th class="text-end">Loss</th>
+                                <th class="text-end">Margin</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr><td>Java</td><td class="text-end">10</td><td class="text-end">₹0.25M</td><td class="text-end" style="color:#0b7e3d;">₹0.07M</td><td class="text-end" style="color:#b91c1c;">₹0.03M</td><td class="text-end">28%</td></tr>
+                            <tr><td>Python</td><td class="text-end">8</td><td class="text-end">₹0.06M</td><td class="text-end" style="color:#0b7e3d;">₹0.02M</td><td class="text-end" style="color:#b91c1c;">₹0.01M</td><td class="text-end">25%</td></tr>
+                            <tr><td>Salesforce</td><td class="text-end">6</td><td class="text-end">₹0.03M</td><td class="text-end" style="color:#0b7e3d;">₹0.01M</td><td class="text-end" style="color:#b91c1c;">₹0.01M</td><td class="text-end">22%</td></tr>
+                            <tr><td>Magento</td><td class="text-end">4</td><td class="text-end">₹0.01M</td><td class="text-end" style="color:#0b7e3d;">₹0.00M</td><td class="text-end" style="color:#b91c1c;">₹0.00M</td><td class="text-end">20%</td></tr>
+                            <tr><td>Dynamics</td><td class="text-end">3</td><td class="text-end">₹0.00M</td><td class="text-end" style="color:#0b7e3d;">₹0.00M</td><td class="text-end" style="color:#b91c1c;">₹0.00M</td><td class="text-end">15%</td></tr>
+                            <tr class="total-row"><td><strong>Total</strong></td><td class="text-end"><strong>31</strong></td><td class="text-end"><strong>₹0.35M</strong></td><td class="text-end" style="color:#0b7e3d;"><strong>₹0.09M</strong></td><td class="text-end" style="color:#b91c1c;"><strong>₹0.07M</strong></td><td class="text-end"><strong>25.7%</strong></td></tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-                <!-- Static fallback -->
-                <div th:if="${recentEmployees == null}">
-                    <div class="recent-employee">
-                        <div class="avatar">PS</div>
-                        <div class="emp-info"><div class="emp-name">Priya Sharma</div><div class="emp-role">HR Executive</div></div>
-                    </div>
-                    <div class="recent-employee">
-                        <div class="avatar">RP</div>
-                        <div class="emp-info"><div class="emp-name">Rohan Patel</div><div class="emp-role">Software Engineer</div></div>
-                    </div>
-                    <div class="recent-employee">
-                        <div class="avatar">NS</div>
-                        <div class="emp-info"><div class="emp-name">Neha Singh</div><div class="emp-role">Accountant</div></div>
-                    </div>
-                    <div class="recent-employee">
-                        <div class="avatar">AP</div>
-                        <div class="emp-info"><div class="emp-name">Amit Patel</div><div class="emp-role">Marketing Executive</div></div>
-                    </div>
-                    <div class="recent-employee">
-                        <div class="avatar">SV</div>
-                        <div class="emp-info"><div class="emp-name">Sneh Verma</div><div class="emp-role">UI/UX Designer</div></div>
+            </div>
+            <!-- Yearly Table -->
+            <div class="col-md-6">
+                <div class="card-custom">
+                    <div class="card-title" style="font-size:0.8rem;"><i class="fa-regular fa-calendar-plus me-1"></i> Yearly</div>
+                    <div class="table-responsive">
+                        <table class="table table-custom">
+                            <thead>
+                            <tr>
+                                <th>Technology</th>
+                                <th class="text-end">Projects</th>
+                                <th class="text-end">Revenue</th>
+                                <th class="text-end">Profit</th>
+                                <th class="text-end">Loss</th>
+                                <th class="text-end">Margin</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr><td>Java</td><td class="text-end">20</td><td class="text-end">₹1.40M</td><td class="text-end" style="color:#0b7e3d;">₹0.45M</td><td class="text-end" style="color:#b91c1c;">₹0.16M</td><td class="text-end">28%</td></tr>
+                            <tr><td>Python</td><td class="text-end">12</td><td class="text-end">₹0.70M</td><td class="text-end" style="color:#0b7e3d;">₹0.20M</td><td class="text-end" style="color:#b91c1c;">₹0.10M</td><td class="text-end">25%</td></tr>
+                            <tr><td>Salesforce</td><td class="text-end">8</td><td class="text-end">₹0.36M</td><td class="text-end" style="color:#0b7e3d;">₹0.11M</td><td class="text-end" style="color:#b91c1c;">₹0.06M</td><td class="text-end">22%</td></tr>
+                            <tr><td>Magento</td><td class="text-end">5</td><td class="text-end">₹0.20M</td><td class="text-end" style="color:#0b7e3d;">₹0.06M</td><td class="text-end" style="color:#b91c1c;">₹0.03M</td><td class="text-end">20%</td></tr>
+                            <tr><td>Dynamics</td><td class="text-end">3</td><td class="text-end">₹0.15M</td><td class="text-end" style="color:#0b7e3d;">₹0.03M</td><td class="text-end" style="color:#b91c1c;">₹0.02M</td><td class="text-end">15%</td></tr>
+                            <tr class="total-row"><td><strong>Total</strong></td><td class="text-end"><strong>48</strong></td><td class="text-end"><strong>₹2.80M</strong></td><td class="text-end" style="color:#0b7e3d;"><strong>₹0.90M</strong></td><td class="text-end" style="color:#b91c1c;"><strong>₹0.39M</strong></td><td class="text-end"><strong>32%</strong></td></tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Employee Status -->
-        <div class="col-xl-3 col-lg-12">
-            <div class="card-custom">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <div class="card-title">Employee Status</div>
-                    <a href="#" class="view-all-link">View all</a>
+        <!-- ============================================================= -->
+        <!--  ROW 5: Project Loss (Monthly + Yearly)                       -->
+        <!-- ============================================================= -->
+        <div class="section-title"><i class="fa-solid fa-triangle-exclamation"></i> Project Loss</div>
+        <div class="row g-3 mb-4">
+            <!-- Monthly Loss -->
+            <div class="col-md-6">
+                <div class="card-custom">
+                    <div class="card-title" style="font-size:0.8rem;"><i class="fa-regular fa-calendar me-1"></i> This Month</div>
+                    <div class="loss-item"><span class="loss-label"><i class="fa-solid fa-circle-exclamation"></i> Total Loss</span><span class="loss-value negative">₹0.07M</span></div>
+                    <div class="loss-item"><span class="loss-label"><i class="fa-solid fa-arrow-up"></i> Highest Loss</span><span class="loss-value">₹0.03M <span class="loss-sub">(Website Revamp)</span></span></div>
+                    <div class="loss-item"><span class="loss-label"><i class="fa-solid fa-arrow-down"></i> Lowest Loss</span><span class="loss-value">₹0.005M <span class="loss-sub">(Mobile App)</span></span></div>
                 </div>
-                <div th:each="status : ${employeeStatus}" class="status-item">
-                    <div class="status-label">
-                        <span th:text="${status.name}">Active</span>
-                        <span><strong th:text="${status.count}">120</strong> (<span th:text="${status.percentage}">80</span>%)</span>
-                    </div>
-                    <div class="progress-bar-custom">
-                        <div class="fill" th:style="'width:' + ${status.percentage} + '%'"></div>
-                    </div>
+            </div>
+            <!-- Yearly Loss -->
+            <div class="col-md-6">
+                <div class="card-custom">
+                    <div class="card-title" style="font-size:0.8rem;"><i class="fa-regular fa-calendar-plus me-1"></i> This Year</div>
+                    <div class="loss-item"><span class="loss-label"><i class="fa-solid fa-circle-exclamation"></i> Total Loss</span><span class="loss-value negative">₹0.39M</span></div>
+                    <div class="loss-item"><span class="loss-label"><i class="fa-solid fa-arrow-up"></i> Highest Loss</span><span class="loss-value">₹0.18M <span class="loss-sub">(HRMS Development)</span></span></div>
+                    <div class="loss-item"><span class="loss-label"><i class="fa-solid fa-arrow-down"></i> Lowest Loss</span><span class="loss-value">₹0.02M <span class="loss-sub">(API Integration)</span></span></div>
                 </div>
-                <!-- Static fallback -->
-                <div th:if="${employeeStatus == null}">
-                    <div class="status-item">
-                        <div class="status-label"><span>Active</span><span><strong>120</strong> (80%)</span></div>
-                        <div class="progress-bar-custom"><div class="fill" style="width:80%"></div></div>
-                    </div>
-                    <div class="status-item">
-                        <div class="status-label"><span>On Notice Period</span><span><strong>10</strong> (6.7%)</span></div>
-                        <div class="progress-bar-custom"><div class="fill" style="width:6.7%; background:#e67e22"></div></div>
-                    </div>
-                    <div class="status-item">
-                        <div class="status-label"><span>Resigned</span><span><strong>8</strong> (5.3%)</span></div>
-                        <div class="progress-bar-custom"><div class="fill" style="width:5.3%; background:#d94a4a"></div></div>
-                    </div>
-                    <div class="status-item">
-                        <div class="status-label"><span>Terminated</span><span><strong>5</strong> (3.3%)</span></div>
-                        <div class="progress-bar-custom"><div class="fill" style="width:3.3%; background:#6b7a8f"></div></div>
+            </div>
+        </div>
+
+        <!-- ============================================================= -->
+        <!--  ROW 6: Project Overview (C2C, C2M, Individual)               -->
+        <!-- ============================================================= -->
+        <div class="section-title"><i class="fa-solid fa-briefcase"></i> Project Overview</div>
+        <div class="row g-3 mb-4">
+            <div class="col-12">
+                <div class="card-custom">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h6 class="fw-bold mb-2" style="font-size:0.85rem;"><i class="fa-solid fa-handshake me-1" style="color:#1a56db;"></i> C2C</h6>
+                            <div class="row">
+                                <div class="col-6"><div class="project-metric"><div class="pm-value">₹0.75M</div><div class="pm-label">Revenue</div></div></div>
+                                <div class="col-6"><div class="project-metric"><div class="pm-value" style="color:#0b7e3d;">₹0.12M</div><div class="pm-label">Profit</div></div></div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <h6 class="fw-bold mb-2" style="font-size:0.85rem;"><i class="fa-solid fa-arrows-spin me-1" style="color:#c2410c;"></i> C2M</h6>
+                            <div class="row">
+                                <div class="col-6"><div class="project-metric"><div class="pm-value">₹0.42M</div><div class="pm-label">Revenue</div></div></div>
+                                <div class="col-6"><div class="project-metric"><div class="pm-value" style="color:#b91c1c;">₹0.08M</div><div class="pm-label">Loss</div></div></div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <h6 class="fw-bold mb-2" style="font-size:0.85rem;"><i class="fa-solid fa-user me-1" style="color:#6d28d9;"></i> Individual</h6>
+                            <div class="row">
+                                <div class="col-6"><div class="project-metric"><div class="pm-value">₹0.39M</div><div class="pm-label">Revenue</div></div></div>
+                                <div class="col-6"><div class="project-metric"><div class="pm-value" style="color:#0b7e3d;">₹0.18M</div><div class="pm-label">Profit</div></div></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Employee Directory Table -->
-    <div class="card-custom mb-4">
-        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-            <div class="card-title mb-0">Employee Directory</div>
-            <div class="d-flex gap-2 flex-wrap">
-                <div class="input-group input-group-sm" style="width:220px;">
-                    <span class="input-group-text bg-white border-end-0"><i class="fa-solid fa-search text-muted"></i></span>
-                    <input type="text" class="form-control form-control-sm border-start-0" placeholder="Search by name, email or ID...">
-                </div>
-                <select class="form-select form-select-sm" style="width:120px;"><option>All Departments</option></select>
-                <select class="form-select form-select-sm" style="width:120px;"><option>All Designation</option></select>
-                <select class="form-select form-select-sm" style="width:120px;"><option>All Status</option></select>
-            </div>
+        <!-- ===== FOOTER ===== -->
+        <div class="footer-note">
+            <span>Super Admin Dashboard</span>
+            <span class="ms-3">v2.0</span>
+            <span class="ms-3"><i class="fa-regular fa-clock"></i> 29 Jul 2026 12:30</span>
         </div>
-        <div class="table-responsive">
-            <table class="table table-custom">
-                <thead>
-                <tr>
-                    <th>Employee ID</th>
-                    <th>Employee Name</th>
-                    <th>Department</th>
-                    <th>Designation</th>
-                    <th>Email</th>
-                    <th>Phone</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="emp : ${employeeList}">
-                    <td><span class="fw-500" th:text="${emp.employeeId}">EMP001</span></td>
-                    <td th:text="${emp.name}">Rahul Sharma</td>
-                    <td th:text="${emp.department}">IT</td>
-                    <td th:text="${emp.designation}">Software Engineer</td>
-                    <td th:text="${emp.email}">rahul.sharma@email.com</td>
-                    <td th:text="${emp.phone}">9876543210</td>
-                    <td>
-                            <span class="status-badge"
-                                  th:classappend="${emp.status == 'Active' ? 'status-active' : emp.status == 'On Notice' ? 'status-notice' : emp.status == 'Resigned' ? 'status-resigned' : 'status-terminated'}"
-                                  th:text="${emp.status}">Active</span>
-                    </td>
-                    <td>
-                        <a href="#" class="text-primary me-2"><i class="fa-regular fa-eye"></i></a>
-                        <a href="#" class="text-secondary"><i class="fa-regular fa-pen-to-square"></i></a>
-                    </td>
-                </tr>
-                <!-- Static fallback rows -->
-                <tr th:if="${employeeList == null}">
-                    <td><span class="fw-500">EMP001</span></td>
-                    <td>Rahul Sharma</td>
-                    <td>IT</td>
-                    <td>Software Engineer</td>
-                    <td>rahul.sharma@email.com</td>
-                    <td>9876543210</td>
-                    <td><span class="status-badge status-active">Active</span></td>
-                    <td><a href="#" class="text-primary me-2"><i class="fa-regular fa-eye"></i></a><a href="#" class="text-secondary"><i class="fa-regular fa-pen-to-square"></i></a></td>
-                </tr>
-                <tr th:if="${employeeList == null}">
-                    <td><span class="fw-500">EMP002</span></td>
-                    <td>Neha Singh</td>
-                    <td>Finance</td>
-                    <td>Accountant</td>
-                    <td>neha.singh@email.com</td>
-                    <td>9876543211</td>
-                    <td><span class="status-badge status-active">Active</span></td>
-                    <td><a href="#" class="text-primary me-2"><i class="fa-regular fa-eye"></i></a><a href="#" class="text-secondary"><i class="fa-regular fa-pen-to-square"></i></a></td>
-                </tr>
-                <tr th:if="${employeeList == null}">
-                    <td><span class="fw-500">EMP003</span></td>
-                    <td>Amit Patel</td>
-                    <td>Marketing</td>
-                    <td>Marketing Executive</td>
-                    <td>amit.patel@email.com</td>
-                    <td>9876543212</td>
-                    <td><span class="status-badge status-notice">On Notice</span></td>
-                    <td><a href="#" class="text-primary me-2"><i class="fa-regular fa-eye"></i></a><a href="#" class="text-secondary"><i class="fa-regular fa-pen-to-square"></i></a></td>
-                </tr>
-                <tr th:if="${employeeList == null}">
-                    <td><span class="fw-500">EMP004</span></td>
-                    <td>Pooja Verma</td>
-                    <td>HR</td>
-                    <td>HR Executive</td>
-                    <td>pooja.verma@email.com</td>
-                    <td>9876543213</td>
-                    <td><span class="status-badge status-active">Active</span></td>
-                    <td><a href="#" class="text-primary me-2"><i class="fa-regular fa-eye"></i></a><a href="#" class="text-secondary"><i class="fa-regular fa-pen-to-square"></i></a></td>
-                </tr>
-                <tr th:if="${employeeList == null}">
-                    <td><span class="fw-500">EMP005</span></td>
-                    <td>Vikram Singh</td>
-                    <td>IT</td>
-                    <td>Team Lead</td>
-                    <td>vikram.singh@email.com</td>
-                    <td>9876543214</td>
-                    <td><span class="status-badge status-active">Active</span></td>
-                    <td><a href="#" class="text-primary me-2"><i class="fa-regular fa-eye"></i></a><a href="#" class="text-secondary"><i class="fa-regular fa-pen-to-square"></i></a></td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-        <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap gap-2">
-            <span class="text-muted" style="font-size:0.85rem;">Showing 1 to 5 of <span th:text="${totalEmployees != null ? totalEmployees : 150}">150</span> entries</span>
-            <nav>
-                <ul class="pagination pagination-sm mb-0">
-                    <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
-                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item"><a class="page-link" href="#">Next</a></li>
-                </ul>
-            </nav>
-        </div>
-    </div>
 
-    <!-- Bottom Row: Upcoming Birthdays + Recent Activities -->
-    <div class="row g-3">
-        <div class="col-xl-4 col-lg-6">
-            <div class="card-custom">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <div class="card-title">Upcoming Birthdays</div>
-                    <a href="#" class="view-all-link">View all</a>
-                </div>
-                <div th:each="birthday : ${upcomingBirthdays}" class="birthday-item">
-                    <span class="bday-icon"><i class="fa-solid fa-cake-candles"></i></span>
-                    <span class="bday-name" th:text="${birthday.name}">Rahul Sharma</span>
-                    <span class="bday-dept ms-auto" th:text="${birthday.department}">IT Department</span>
-                    <span class="text-muted" style="font-size:0.8rem;" th:text="${birthday.dateOfBirth }">25 May</span>
-                </div>
-                <!-- Static fallback -->
-                <div th:if="${upcomingBirthdays == null}">
-                    <div class="birthday-item">
-                        <span class="bday-icon"><i class="fa-solid fa-cake-candles"></i></span>
-                        <span class="bday-name">Rahul Sharma</span>
-                        <span class="bday-dept ms-auto">IT Department</span>
-                        <span class="text-muted" style="font-size:0.8rem;">25 May</span>
-                    </div>
-                    <div class="birthday-item">
-                        <span class="bday-icon"><i class="fa-solid fa-cake-candles"></i></span>
-                        <span class="bday-name">Neha Singh</span>
-                        <span class="bday-dept ms-auto">Finance Department</span>
-                        <span class="text-muted" style="font-size:0.8rem;">28 May</span>
-                    </div>
-                    <div class="birthday-item">
-                        <span class="bday-icon"><i class="fa-solid fa-cake-candles"></i></span>
-                        <span class="bday-name">Amit Patel</span>
-                        <span class="bday-dept ms-auto">Marketing Department</span>
-                        <span class="text-muted" style="font-size:0.8rem;">30 May</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-8 col-lg-6">
-            <div class="card-custom">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <div class="card-title">Recent Activities</div>
-                    <a href="#" class="view-all-link">View all</a>
-                </div>
-                <div th:each="activity : ${recentActivities}" class="activity-item">
-                    <span class="activity-dot" th:style="'background:' + ${activity.color}"></span>
-                    <span class="activity-text" th:utext="${activity.text}"><strong>Priya Sharma</strong> has been added as new employee</span>
-                    <span class="text-muted ms-auto" style="font-size:0.75rem;" th:text="${activity.time}">2 min ago</span>
-                </div>
-                <!-- Static fallback -->
-                <div th:if="${recentActivities == null}">
-                    <div class="activity-item">
-                        <span class="activity-dot" style="background:#2a6df4;"></span>
-                        <span class="activity-text"><strong>Priya Sharma</strong> has been added as new employee</span>
-                        <span class="text-muted ms-auto" style="font-size:0.75rem;">2 min ago</span>
-                    </div>
-                    <div class="activity-item">
-                        <span class="activity-dot" style="background:#e67e22;"></span>
-                        <span class="activity-text"><strong>Neha Singh</strong> applied for leave</span>
-                        <span class="text-muted ms-auto" style="font-size:0.75rem;">15 min ago</span>
-                    </div>
-                    <div class="activity-item">
-                        <span class="activity-dot" style="background:#0f973d;"></span>
-                        <span class="activity-text"><strong>Amit Kumar</strong> WFH request approved</span>
-                        <span class="text-muted ms-auto" style="font-size:0.75rem;">1 hour ago</span>
-                    </div>
-                    <div class="activity-item">
-                        <span class="activity-dot" style="background:#2a6df4;"></span>
-                        <span class="activity-text"><strong>Pooja Verma</strong> document uploaded</span>
-                        <span class="text-muted ms-auto" style="font-size:0.75rem;">3 hours ago</span>
-                    </div>
-                    <div class="activity-item">
-                        <span class="activity-dot" style="background:#8a9bb5;"></span>
-                        <span class="activity-text"><strong>Rohan Patel</strong>'s profile has been updated</span>
-                        <span class="text-muted ms-auto" style="font-size:0.75rem;">5 hours ago</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Footer note -->
-    <div class="mt-4 text-muted" style="font-size:0.75rem; border-top:1px solid #e9edf4; padding-top:1rem;">
-        <span>1024 | 1.4 MB</span>
-        <span class="ms-3">91%</span>
-    </div>
 
-</div>
+
+        <!-- ============================================================= -->
+<!--  CHART.JS SCRIPTS                                              -->
+<!-- ============================================================= -->
+<script>
+    // ===== SIDEBAR TOGGLE =====
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('show');
+    }
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 992) {
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('sidebarOverlay').classList.remove('show');
+        }
+    });
+
+    // ===== CHAT TOGGLE =====
+    function toggleChat() {
+        const window = document.getElementById('chatWindow');
+        window.classList.toggle('open');
+    }
+
+    // ===== COLORS =====
+    const blue = 'rgba(26, 86, 219, 1)';
+    const blueLight = 'rgba(26, 86, 219, 0.15)';
+    const green = 'rgba(11, 126, 61, 1)';
+    const greenLight = 'rgba(11, 126, 61, 0.15)';
+
+    // ===== 1. YEARLY REVENUE LINE =====
+    new Chart(document.getElementById('yearlyRevenueChart'), {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            datasets: [{
+                data: [0.6, 0.9, 1.3, 2.0, 2.8, 3.8, 5.0, 6.5, 8.2, 9.8, 11.2, 12.5],
+                borderColor: blue,
+                backgroundColor: blueLight,
+                fill: true,
+                tension: 0.35,
+                pointBackgroundColor: blue,
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2,
+                pointRadius: 2.5,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { beginAtZero: true, ticks: { font: { size: 7 }, callback: v => '₹' + v + 'M' }, grid: { color: 'rgba(0,0,0,0.04)' } },
+                x: { grid: { display: false }, ticks: { font: { size: 6 } } }
+            },
+            interaction: { intersect: false, mode: 'index' }
+        }
+    });
+
+    // ===== 2. MONTHLY REVENUE LINE =====
+    new Chart(document.getElementById('monthlyRevenueChart'), {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+            datasets: [{
+                data: [0.82, 0.86, 0.89, 0.93, 0.97, 1.00, 1.02, 1.05],
+                borderColor: green,
+                backgroundColor: greenLight,
+                fill: true,
+                tension: 0.35,
+                pointBackgroundColor: green,
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2,
+                pointRadius: 2.5,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { beginAtZero: true, ticks: { font: { size: 7 }, callback: v => '₹' + v + 'M' }, grid: { color: 'rgba(0,0,0,0.04)' } },
+                x: { grid: { display: false }, ticks: { font: { size: 6 } } }
+            },
+            interaction: { intersect: false, mode: 'index' }
+        }
+    });
+
+    // ===== MONTHLY DEPARTMENT DOUGHNUT =====
+    new Chart(document.getElementById('monthlyDeptDoughnutLeft'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Java', 'Python', 'Salesforce', 'Magento', 'Dynamics'],
+            datasets: [{
+                data: [0.35, 0.26, 0.23, 0.07, 0.05],
+                backgroundColor: ['#1a56db', '#0b7e3d', '#c2410c', '#6d28d9', '#0e7490'],
+                borderColor: '#fff',
+                borderWidth: 2,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            cutout: '55%',
+        }
+    });
+
+    // ===== YEARLY DEPARTMENT DOUGHNUT =====
+    new Chart(document.getElementById('yearlyDeptDoughnutLeft'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Java', 'Python', 'Salesforce', 'Magento', 'Dynamics'],
+            datasets: [{
+                data: [4.2, 3.1, 2.8, 0.9, 0.6],
+                backgroundColor: ['#1a56db', '#0b7e3d', '#c2410c', '#6d28d9', '#0e7490'],
+                borderColor: '#fff',
+                borderWidth: 2,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            cutout: '55%',
+        }
+    });
+
+    // ===== 3. MONTHLY PIE =====
+    new Chart(document.getElementById('monthlyPieChart'), {
+        type: 'pie',
+        data: {
+            labels: ['Java', 'Python', 'Salesforce', 'Magento', 'Dynamics'],
+            datasets: [{
+                data: [10, 8, 6, 4, 3],
+                backgroundColor: ['#1a56db', '#0b7e3d', '#c2410c', '#6d28d9', '#0e7490'],
+                borderColor: '#fff',
+                borderWidth: 2,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+        }
+    });
+
+    // ===== MONTHLY BAR CHART =====
+    new Chart(document.getElementById('monthlyBarChart'), {
+        type: 'bar',
+        data: {
+            labels: ['Java', 'Python', 'Salesforce', 'Magento', 'Dynamics'],
+            datasets: [{
+                data: [10, 8, 6, 4, 3],
+                backgroundColor: ['#1a56db', '#0b7e3d', '#c2410c', '#6d28d9', '#0e7490'],
+                borderColor: '#ffffff',
+                borderWidth: 1,
+                borderRadius: 4,
+                barPercentage: 0.5,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: 'rgba(15,23,42,0.85)',
+                    titleFont: { size: 8 },
+                    bodyFont: { size: 7 },
+                    cornerRadius: 4,
+                    padding: 4,
+                    callbacks: {
+                        label: function(ctx) {
+                            return 'Projects: ' + ctx.parsed.y;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    grid: { display: false },
+                    ticks: {
+                        font: { size: 6 },
+                        maxRotation: 0,
+                        color: '#94a3b8'
+                    }
+                },
+                y: {
+                    grid: { color: 'rgba(0,0,0,0.04)' },
+                    ticks: {
+                        font: { size: 6 },
+                        color: '#94a3b8',
+                        stepSize: 1
+                    },
+                    beginAtZero: true
+                }
+            },
+            interaction: {
+                intersect: false,
+                mode: 'index'
+            }
+        }
+    });
+
+    // ===== YEARLY BAR CHART =====
+    new Chart(document.getElementById('yearlyBarChart'), {
+        type: 'bar',
+        data: {
+            labels: ['Java', 'Python', 'Salesforce', 'Magento', 'Dynamics'],
+            datasets: [{
+                data: [20, 12, 8, 5, 3],
+                backgroundColor: ['#1a56db', '#0b7e3d', '#c2410c', '#6d28d9', '#0e7490'],
+                borderColor: '#ffffff',
+                borderWidth: 1,
+                borderRadius: 4,
+                barPercentage: 0.5,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: 'rgba(15,23,42,0.85)',
+                    titleFont: { size: 8 },
+                    bodyFont: { size: 7 },
+                    cornerRadius: 4,
+                    padding: 4,
+                    callbacks: {
+                        label: function(ctx) {
+                            return 'Projects: ' + ctx.parsed.y;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    grid: { display: false },
+                    ticks: {
+                        font: { size: 6 },
+                        maxRotation: 0,
+                        color: '#94a3b8'
+                    }
+                },
+                y: {
+                    grid: { color: 'rgba(0,0,0,0.04)' },
+                    ticks: {
+                        font: { size: 6 },
+                        color: '#94a3b8',
+                        stepSize: 1
+                    },
+                    beginAtZero: true
+                }
+            },
+            interaction: {
+                intersect: false,
+                mode: 'index'
+            }
+        }
+    });
+
+    // ===== 4. YEARLY PIE =====
+    new Chart(document.getElementById('yearlyPieChart'), {
+        type: 'pie',
+        data: {
+            labels: ['Java', 'Python', 'Salesforce', 'Magento', 'Dynamics'],
+            datasets: [{
+                data: [20, 12, 8, 5, 3],
+                backgroundColor: ['#1a56db', '#0b7e3d', '#c2410c', '#6d28d9', '#0e7490'],
+                borderColor: '#fff',
+                borderWidth: 2,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+        }
+
+    });
+</script>
 
 <!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+</script>
 </body>
 </html>
