@@ -44,6 +44,7 @@ public interface EmployeeService {
 
     List<Employee> getEmployeesByIds(List<Long> ids);
 
+
     // Fix: Change return type from Collection<Object> to List<Employee>
     List<Employee> getEmployeesByDepartment(Long departmentId);
 

@@ -21,6 +21,8 @@ public class Department {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+//    private Long departmentId;
+
     @Column(name = "department_name", nullable = false, unique = true)
     private String departmentName;  // This matches the department column in employee_profiles
 

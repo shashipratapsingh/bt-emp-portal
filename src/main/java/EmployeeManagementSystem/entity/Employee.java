@@ -1,6 +1,7 @@
 package EmployeeManagementSystem.entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,6 +13,7 @@ import java.util.List;
 @Setter
 @Entity
 @Table(name = "employees")
+@Data
 public class Employee {
 
     @Id
@@ -96,4 +98,5 @@ public class Employee {
         this.lastName = lastName;
         this.email = email;
     }
+
 }

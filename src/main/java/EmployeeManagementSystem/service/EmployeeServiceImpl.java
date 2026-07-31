@@ -7,31 +7,27 @@ import EmployeeManagementSystem.entity.Salary;
 import EmployeeManagementSystem.kafkaConfig.EmployeeEvent;
 import EmployeeManagementSystem.kafkaConfig.EmployeeProducer;
 import EmployeeManagementSystem.repository.EmployeeRepository;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService {
 
 
     @Autowired
-    private EmployeeRepository employeeRepository;
     private final EmployeeRepository employeeRepository;
     private final EmployeeProducer employeeProducer;
-
-    public EmployeeServiceImpl(
-            EmployeeRepository employeeRepository,
-            EmployeeProducer employeeProducer) {
-
-        this.employeeRepository = employeeRepository;
-        this.employeeProducer = employeeProducer;
-    }
 
 
 
@@ -51,446 +47,464 @@ public class EmployeeServiceImpl implements EmployeeService {
                             salary.setEmployee(employee)
                     );
 
-        if (employee.getSalaryDetails() != null) {
-            employee.getSalaryDetails().setEmployee(employee);
+            if (employee.getSalaries() != null) {
+                employee.getSalaries().forEach(salary -> salary.setEmployee(employee));
+            }
+
+
+            // Attendance mapping
+            if (employee.getAttendanceList() != null) {
+                employee.getAttendanceList()
+                        .forEach(a -> a.setEmployee(employee));
+            }
+
+            // Save employee
+            Employee savedEmployee =
+                    employeeRepository.save(employee);
+
+            // Prepare employee name
+            String employeeName = savedEmployee.getFullName();
+
+            if (employeeName == null || employeeName.isBlank()) {
+
+                employeeName =
+                        savedEmployee.getFirstName()
+                                + " "
+                                + savedEmployee.getLastName();
+
+                employee.getAttendanceList()
+                        .forEach(attendance ->
+                                attendance.setEmployee(employee)
+                        );
+            }
+
+
+            // Create Kafka Event
+            EmployeeEvent employeeEvent = new EmployeeEvent(savedEmployee.getId(), employeeName, savedEmployee.getEmail());
+
+            // Publish event
+            employeeProducer.sendEmployeeCreatedEvent(employeeEvent);
+
+            return savedEmployee;
+        }
+
+        return employee;
+    }
+
+
+        // =========================
+        // FIND BY DEPARTMENT
+        // =========================
+
+        @Override
+        public List<Employee> getEmployeesByDepartment (Long departmentId){
+
+            return employeeRepository.findByDepartmentId(departmentId);
         }
 
 
+        // =========================
+        // FIND ALL
+        // =========================
 
-        // Attendance mapping
-        if (employee.getAttendanceList() != null) {
-            employee.getAttendanceList()
-                    .forEach(a -> a.setEmployee(employee));
-        }
+        @Override
+        public Object findAll() {
 
-        // Save employee
-        Employee savedEmployee =
-                employeeRepository.save(employee);
-
-        // Prepare employee name
-        String employeeName = savedEmployee.getFullName();
-
-        if (employeeName == null || employeeName.isBlank()) {
-
-            employeeName =
-                    savedEmployee.getFirstName()
-                            + " "
-                            + savedEmployee.getLastName();
-
-            employee.getAttendanceList()
-                    .forEach(attendance ->
-                            attendance.setEmployee(employee)
-                    );
+            return employeeRepository.findAll();
         }
 
 
-        // Create Kafka Event
-        EmployeeEvent employeeEvent =
-                new EmployeeEvent(
-                        savedEmployee.getId(),
-                        employeeName,
-                        savedEmployee.getEmail()
-                );
+        // =========================
+        // UPDATE EMPLOYEE
+        // =========================
 
-        // Publish event
-        employeeProducer.sendEmployeeCreatedEvent(employeeEvent);
-
-        return savedEmployee;
-    }
+        @Override
+        public Employee updateEmployee (Long id, Employee employee){
 
 
+            Employee existing = employeeRepository.findById(id)
+                    .orElseThrow(() ->
+                            new RuntimeException("Employee not found"));
 
 
+            existing.setFirstName(employee.getFirstName());
+            existing.setLastName(employee.getLastName());
+            existing.setEmail(employee.getEmail());
+            existing.setPhone(employee.getPhone());
+            existing.setJoiningDate(employee.getJoiningDate());
+            existing.setDepartment(employee.getDepartment());
 
 
-    // =========================
-    // FIND BY DEPARTMENT
-    // =========================
+            // Update Salary List
 
-    @Override
-    public List<Employee> getEmployeesByDepartment(Long departmentId) {
-
-        return employeeRepository.findByDepartmentId(departmentId);
-    }
+            if (employee.getSalaries() != null) {
 
 
+                existing.getSalaries().clear();
 
 
+                employee.getSalaries()
+                        .forEach(salary -> {
 
-    // =========================
-    // FIND ALL
-    // =========================
+                            salary.setEmployee(existing);
 
-    @Override
-    public Object findAll() {
+                            existing.getSalaries()
+                                    .add(salary);
 
-        return employeeRepository.findAll();
-    }
-
-
+                        });
+            }
 
 
+            // Update Attendance List
 
-    // =========================
-    // UPDATE EMPLOYEE
-    // =========================
-
-    @Override
-    public Employee updateEmployee(Long id, Employee employee) {
+            if (employee.getAttendanceList() != null) {
 
 
-        Employee existing = employeeRepository.findById(id)
-                .orElseThrow(() ->
-                        new RuntimeException("Employee not found"));
+                existing.getAttendanceList().clear();
 
 
+                employee.getAttendanceList()
+                        .forEach(attendance -> {
 
-        existing.setFirstName(employee.getFirstName());
-        existing.setLastName(employee.getLastName());
-        existing.setEmail(employee.getEmail());
-        existing.setPhone(employee.getPhone());
-        existing.setJoiningDate(employee.getJoiningDate());
-        existing.setDepartment(employee.getDepartment());
+                            attendance.setEmployee(existing);
 
+                            existing.getAttendanceList()
+                                    .add(attendance);
 
+                        });
 
-        // Update Salary List
-
-        if(employee.getSalaries() != null) {
+            }
 
 
-            existing.getSalaries().clear();
-
-
-            employee.getSalaries()
-                    .forEach(salary -> {
-
-                        salary.setEmployee(existing);
-
-                        existing.getSalaries()
-                                .add(salary);
-
-                    });
+            return employeeRepository.save(existing);
         }
 
 
+        @Override
+        public void deleteEmployee (Long id){
 
 
-        // Update Attendance List
-
-        if(employee.getAttendanceList() != null) {
-
-
-            existing.getAttendanceList().clear();
+            Employee employee = employeeRepository.findById(id)
+                    .orElseThrow(() ->
+                            new RuntimeException("Employee not found"));
 
 
-            employee.getAttendanceList()
-                    .forEach(attendance -> {
-
-                        attendance.setEmployee(existing);
-
-                        existing.getAttendanceList()
-                                .add(attendance);
-
-                    });
+            employeeRepository.delete(employee);
 
         }
 
 
+        // =========================
+        // GET EMPLOYEE BY ID
+        // =========================
 
-        return employeeRepository.save(existing);
-    }
+        @Override
+        public Employee getEmployeeById(Long id){
 
 
+            return employeeRepository.findById(id)
+                    .orElseThrow(() ->
+                            new RuntimeException("Employee not found"));
 
-    @Override
-    public void deleteEmployee(Long id) {
+        }
 
 
-        Employee employee = employeeRepository.findById(id)
-                .orElseThrow(() ->
-                        new RuntimeException("Employee not found"));
+        // =========================
+        // ALL EMPLOYEES LIST
+        // =========================
 
+        @Override
+        public List<Employee> getAllEmployeesList(){
 
-        employeeRepository.delete(employee);
+            return Collections.singletonList((Employee) employeeRepository.findAll());
 
-    }
+        }
 
 
+        // =========================
+        // PAGINATION
+        // =========================
 
+        @Override
+        public Page<Employee> getAllEmployees(
+        int pageNo,
+        int pageSize,
+        String sortBy){
 
 
-    // =========================
-    // GET EMPLOYEE BY ID
-    // =========================
+            Pageable pageable = PageRequest.of(
+                    pageNo,
+                    pageSize,
+                    Sort.by(
+                            sortBy == null || sortBy.isBlank()
+                                    ? "id"
+                                    : sortBy
+                    ).ascending()
+            );
 
-    @Override
-    public Employee getEmployeeById(Long id) {
 
+            return employeeRepository.findAll(pageable);
 
-        return employeeRepository.findById(id)
-                .orElseThrow(() ->
-                        new RuntimeException("Employee not found"));
+        }
 
-    }
 
+        // =========================
+        // SEARCH EMPLOYEE
+        // =========================
 
+        @Override
+        public Page<Employee> searchEmployee (
+                String keyword,
+                Pageable pageable){
 
 
+            return employeeRepository.searchAll(
+                    keyword,
+                    pageable
+            );
 
-    // =========================
-    // ALL EMPLOYEES LIST
-    // =========================
+        }
 
-    @Override
-    public List<Employee> getAllEmployeesList() {
 
-        return employeeRepository.findAll();
+        // =========================
+        // FIND BY EMAIL
+        // =========================
 
-    }
+        @Override
+        public Employee findByEmail (String email){
 
 
+            return employeeRepository.findByEmail(email)
+                    .orElseThrow(() ->
+                            new RuntimeException("Employee not found"));
 
+        }
 
 
-    // =========================
-    // PAGINATION
-    // =========================
+        @Override
+        public long totalEmployees () {
 
-    @Override
-    public Page<Employee> getAllEmployees(
-            int pageNo,
-            int pageSize,
-            String sortBy) {
+            return employeeRepository.count();
 
+        }
 
-        Pageable pageable = PageRequest.of(
-                pageNo,
-                pageSize,
-                Sort.by(
-                        sortBy == null || sortBy.isBlank()
-                                ? "id"
-                                : sortBy
-                ).ascending()
-        );
 
+        @Override
+        public List<Employee> getAllEmployees () {
 
-        return employeeRepository.findAll(pageable);
+            return employeeRepository.findAll();
 
-    }
+        }
 
 
+        @Override
+        public List<Employee> getEmployeesByIds (List < Long > ids) {
 
 
+            return employeeRepository.findAllById(ids);
 
-    // =========================
-    // SEARCH EMPLOYEE
-    // =========================
+        }
 
-    @Override
-    public Page<Employee> searchEmployee(
-            String keyword,
-            Pageable pageable) {
 
+        // =========================
+        // UPCOMING BIRTHDAYS
+        // =========================
 
-        return employeeRepository.searchAll(
-                keyword,
-                pageable
-        );
+        @Override
+        public List<BirthdayDTO> getUpcomingBirthdays() {
 
-    }
 
+            LocalDate today = LocalDate.now();
 
 
+            return employeeRepository.findAll()
+                    .stream()
+                    .filter(emp ->
+                            emp.getDateOfBirth() != null
+                    )
+                    .map(emp -> {
 
 
-    // =========================
-    // FIND BY EMAIL
-    // =========================
+                        LocalDate nextBirthday =
+                                emp.getDateOfBirth()
+                                        .withYear(today.getYear());
 
-    @Override
-    public Employee findByEmail(String email) {
 
+                        if (nextBirthday.isBefore(today)) {
 
-        return employeeRepository.findByEmail(email)
-                .orElseThrow(() ->
-                        new RuntimeException("Employee not found"));
+                            nextBirthday =
+                                    nextBirthday.plusYears(1);
 
-    }
+                        }
 
 
+                        BirthdayDTO dto = new BirthdayDTO();
 
 
+                        dto.setName(emp.getFirstName());
+                        dto.setDateOfBirth(emp.getDateOfBirth());
 
-    @Override
-    public long totalEmployees() {
+                        dto.setRemainingDays(
+                                ChronoUnit.DAYS.between(
+                                        today,
+                                        nextBirthday
+                                )
+                        );
 
-        return employeeRepository.count();
+                        dto.setNextDate(nextBirthday);
 
-    }
 
+                        return dto;
 
 
-
-
-    @Override
-    public List<Employee> getAllEmployees() {
-
-        return employeeRepository.findAll();
-
-    }
-
-
-
-
-
-    @Override
-    public List<Employee> getEmployeesByIds(List<Long> ids) {
-
-        return employeeRepository.findAllById(ids);
-
-    }
-
-
-
-
-
-    // =========================
-    // UPCOMING BIRTHDAYS
-    // =========================
-
-    @Override
-    public List<BirthdayDTO> getUpcomingBirthdays() {
-
-
-        LocalDate today = LocalDate.now();
-
-
-        return employeeRepository.findAll()
-                .stream()
-                .filter(emp ->
-                        emp.getDateOfBirth() != null
-                )
-                .map(emp -> {
-
-
-                    LocalDate nextBirthday =
-                            emp.getDateOfBirth()
-                                    .withYear(today.getYear());
-
-
-
-                    if(nextBirthday.isBefore(today)) {
-
-                        nextBirthday =
-                                nextBirthday.plusYears(1);
-
-                    }
-
-
-
-                    BirthdayDTO dto = new BirthdayDTO();
-
-
-                    dto.setName(emp.getFirstName());
-                    dto.setDateOfBirth(emp.getDateOfBirth());
-
-                    dto.setRemainingDays(
-                            ChronoUnit.DAYS.between(
-                                    today,
-                                    nextBirthday
+                    })
+                    .sorted(
+                            Comparator.comparingLong(
+                                    BirthdayDTO::getRemainingDays
                             )
-                    );
+                    )
+                    .limit(5)
+                    .toList();
 
-                    dto.setNextDate(nextBirthday);
-
-
-                    return dto;
-
-
-                })
-                .sorted(
-                        Comparator.comparingLong(
-                                BirthdayDTO::getRemainingDays
-                        )
-                )
-                .limit(5)
-                .toList();
-
-    }
+        }
 
 
+        // =========================
+        // UPCOMING ANNIVERSARIES
+        // =========================
+
+        @Override
+        public List<AnniversaryDTO> getUpcomingAnniversaries () {
 
 
-
-    // =========================
-    // UPCOMING ANNIVERSARIES
-    // =========================
-
-    @Override
-    public List<AnniversaryDTO> getUpcomingAnniversaries() {
+            LocalDate today = LocalDate.now();
 
 
-        LocalDate today = LocalDate.now();
+            return employeeRepository.findAll()
+                    .stream()
+                    .filter(emp ->
+                            emp.getJoiningDate() != null
+                    )
+                    .map(emp -> {
 
 
-        return employeeRepository.findAll()
-                .stream()
-                .filter(emp ->
-                        emp.getJoiningDate() != null
-                )
-                .map(emp -> {
+                        LocalDate nextAnniversary =
+                                emp.getJoiningDate()
+                                        .withYear(today.getYear());
 
 
-                    LocalDate nextAnniversary =
-                            emp.getJoiningDate()
-                                    .withYear(today.getYear());
+                        if (nextAnniversary.isBefore(today)) {
+
+                            nextAnniversary =
+                                    nextAnniversary.plusYears(1);
+
+                        }
 
 
-
-                    if(nextAnniversary.isBefore(today)) {
-
-                        nextAnniversary =
-                                nextAnniversary.plusYears(1);
-
-                    }
+                        AnniversaryDTO dto =
+                                new AnniversaryDTO();
 
 
+                        dto.setName(emp.getFirstName());
 
-                    AnniversaryDTO dto =
-                            new AnniversaryDTO();
-
-
-                    dto.setName(emp.getFirstName());
-
-                    dto.setJoiningDate(
-                            emp.getJoiningDate()
-                    );
+                        dto.setJoiningDate(
+                                emp.getJoiningDate()
+                        );
 
 
-                    dto.setRemainingDays(
-                            ChronoUnit.DAYS.between(
-                                    today,
-                                    nextAnniversary
+                        dto.setRemainingDays(
+                                ChronoUnit.DAYS.between(
+                                        today,
+                                        nextAnniversary
+                                )
+                        );
+
+
+                        dto.setNextDate(nextAnniversary);
+
+
+                        return dto;
+
+
+                    })
+                    .sorted(
+                            Comparator.comparingLong(
+                                    AnniversaryDTO::getRemainingDays
                             )
-                    );
+                    )
+                    .limit(5)
+                    .toList();
 
-
-                    dto.setNextDate(nextAnniversary);
-
-
-                    return dto;
-
-
-                })
-                .sorted(
-                        Comparator.comparingLong(
-                                AnniversaryDTO::getRemainingDays
-                        )
-                )
-                .limit(5)
-                .toList();
+        }
 
     }
 
-}}
+//    @Override
+//    public Employee updateEmployee(Long id, Employee employee) {
+//        return null;
+//    }
+//
+//    @Override
+//    public void deleteEmployee(Long id) {
+//
+//    }
+//
+//    @Override
+//    public Employee getEmployeeById(Long id) {
+//        return null;
+//    }
+//
+//    @Override
+//    public Page<Employee> getAllEmployees(int pageNo, int pageSize, String sortBy) {
+//        return null;
+//    }
+//
+//    @Override
+//    public Page<Employee> searchEmployee(String keyword, Pageable pageable) {
+//        return null;
+//    }
+//
+//    @Override
+//    public List<Employee> getAllEmployeesList() {
+//        return List.of();
+//    }
+//
+//    @Override
+//    public Employee findByEmail(String email) {
+//        return null;
+//    }
+//
+//    @Override
+//    public long totalEmployees() {
+//        return 0;
+//    }
+//
+//    @Override
+//    public List<BirthdayDTO> getUpcomingBirthdays() {
+//        return List.of();
+//    }
+//
+//    @Override
+//    public List<AnniversaryDTO> getUpcomingAnniversaries() {
+//        return List.of();
+//    }
+//
+//    @Override
+//    public List<Employee> getAllEmployees() {
+//        return List.of();
+//    }
+//
+//    @Override
+//    public List<Employee> getEmployeesByIds(List<Long> ids) {
+//        return List.of();
+//    }
+//
+//    @Override
+//    public List<Employee> getEmployeesByDepartment(Long departmentId) {
+//        return List.of();
+//    }
+//
+//    @Override
+//    public @Nullable Object findAll() {
+//        return null;
+//    }
