@@ -184,6 +184,10 @@ public String login(@ModelAttribute("loginRequest") LoginRequest request,
             loginLocation.setLatitude(request.getLatitude());
             loginLocation.setLongitude(request.getLongitude());
             loginLocation.setDistanceFromOffice(distance);
+
+            loginLocation.setWorkMode(request.getWorkMode());      // WFO
+            loginLocation.setLoginStatus("SUCCESS");               // or LOGIN_SUCCESS
+            loginLocation.setLoginDate(LocalDate.now());           // <-- Missing
             loginLocation.setLoginTime(LocalDateTime.now());
 
             loginLocationService.save(loginLocation);
