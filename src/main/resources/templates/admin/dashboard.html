@@ -32,7 +32,7 @@
             flex-direction: row;
         }
 
-        /* ===== MAIN CONTENT (adjust for sidebar) ===== */
+        /* ===== MAIN CONTENT ===== */
         .main-content {
             flex: 1;
             padding: 1.5rem 2rem 2rem 2rem;
@@ -43,7 +43,7 @@
             transition: margin-left 0.3s ease;
         }
 
-        /* ===== SIDEBAR TOGGLE (hamburger) ===== */
+        /* ===== SIDEBAR TOGGLE ===== */
         .sidebar-toggle {
             display: none;
             background: #0f172a;
@@ -57,7 +57,7 @@
             margin-bottom: 0.5rem;
         }
 
-        /* ===== OVERLAY (for mobile sidebar) ===== */
+        /* ===== OVERLAY ===== */
         .sidebar-overlay {
             display: none;
             position: fixed;
@@ -69,9 +69,8 @@
             display: block;
         }
 
-        /* ===== RESPONSIVE BEHAVIOR (overrides fragment's internal styles) ===== */
+        /* ===== RESPONSIVE OVERRIDES ===== */
         @media (max-width: 992px) {
-            /* Force sidebar to be hidden off-canvas */
             .sidebar {
                 transform: translateX(-100%) !important;
                 transition: transform 0.3s ease !important;
@@ -111,9 +110,7 @@
             }
         }
 
-        /* ===== REST OF YOUR DASHBOARD STYLES ===== */
-        /* (Keep all your existing styles for cards, tables, notifications, etc.) */
-
+        /* ===== PAGE HEADER ===== */
         .page-header {
             display: flex;
             justify-content: space-between;
@@ -631,20 +628,6 @@
             color: #6d28d9;
         }
 
-        /* ===== THREE CARD ROW ===== */
-        .three-card-row .stat-card {
-            padding: 0.8rem 1rem;
-        }
-        .three-card-row .stat-number {
-            font-size: 1.3rem;
-        }
-        .three-card-row .stat-icon {
-            width: 38px;
-            height: 38px;
-            font-size: 1rem;
-        }
-
-        /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
             .stat-card .stat-number {
                 font-size: 1.2rem;
@@ -663,14 +646,6 @@
             .chart-wrapper-doughnut {
                 height: 130px;
                 width: 130px;
-            }
-            .three-card-row .stat-number {
-                font-size: 1.1rem;
-            }
-            .three-card-row .stat-icon {
-                width: 34px;
-                height: 34px;
-                font-size: 0.9rem;
             }
             .quick-action-grid {
                 grid-template-columns: repeat(3, 1fr);
@@ -698,7 +673,7 @@
             }
         }
 
-        /* ===== NOTIFICATION CARD HEIGHT ===== */
+        /* ===== NOTIFICATION SCROLL ===== */
         .notif-scroll {
             max-height: 200px;
             overflow-y: auto;
@@ -711,30 +686,7 @@
             border-radius: 4px;
         }
 
-        /* ===== DEPT GRID ===== */
-        .dept-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.3rem 1.5rem;
-        }
-        @media (max-width: 576px) {
-            .dept-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* ===== PIE CHART BELOW CARDS ===== */
-        .pie-row {
-            margin-top: 0.75rem;
-            padding-top: 0.75rem;
-            border-top: 1px solid #f1f5f9;
-        }
-        .pie-row .chart-wrapper-xs {
-            height: 80px;
-            width: 80px;
-        }
-
-        /* Stat card vertical */
+        /* ===== STAT CARD VERTICAL ===== */
         .stat-card-vertical {
             background: #fff;
             border-radius: 12px;
@@ -768,7 +720,7 @@
             margin-top: 1px;
         }
 
-        /* ===== COMPACT FIRST ROW ===== */
+        /* ===== COMPACT ===== */
         .card-compact {
             padding: 0.2rem 0.4rem !important;
         }
@@ -839,6 +791,88 @@
         }
         .card-compact .notif-item .notif-time {
             font-size: 0.4rem;
+        }
+
+        /* ===== EXPANDED REVENUE CARDS ===== */
+        .revenue-card-expanded {
+            height: 100% !important;
+            min-height: 240px !important;
+        }
+        .revenue-card-expanded .chart-wrapper {
+            height: 170px !important;
+            margin: 0.1rem 0;
+        }
+        .revenue-card-expanded .stat-number {
+            font-size: 1.1rem !important;
+        }
+        .revenue-card-expanded .stat-label {
+            font-size: 0.5rem !important;
+        }
+        .revenue-card-expanded .card-title {
+            font-size: 0.65rem !important;
+        }
+        .revenue-card-expanded .mini-badge {
+            font-size: 0.5rem !important;
+            padding: 0.05rem 0.4rem;
+        }
+        .revenue-card-expanded .month-labels {
+            font-size: 0.4rem !important;
+        }
+
+        /* Department cards expanded */
+        .dept-card-expanded {
+            padding: 0.8rem 0.9rem !important;
+            min-height: 240px !important;
+        }
+        .dept-card-expanded .card-title {
+            font-size: 0.75rem !important;
+            margin-bottom: 0.3rem !important;
+        }
+        .dept-card-expanded .dept-row {
+            padding: 0.2rem 0 !important;
+            font-size: 0.7rem !important;
+        }
+        .dept-card-expanded .dept-row .dept-change {
+            font-size: 0.55rem !important;
+        }
+        .dept-card-expanded .dept-row .dept-value {
+            font-size: 0.7rem !important;
+        }
+        .dept-card-expanded .dept-row .dept-name {
+            font-size: 0.7rem !important;
+        }
+        .dept-card-expanded .chart-wrapper-doughnut {
+            height: 140px !important;
+            width: 140px !important;
+        }
+
+        /* Notification card expanded */
+        .notif-card-expanded {
+            min-height: 390px !important;
+            height: 100% !important;
+            padding: 1.2rem 1.2rem !important;
+        }
+        .notif-card-expanded .notif-scroll {
+            max-height: 100% !important;
+        }
+
+        @media (max-width: 576px) {
+            .revenue-card-expanded {
+                min-height: 180px !important;
+            }
+            .revenue-card-expanded .chart-wrapper {
+                height: 70px !important;
+            }
+            .dept-card-expanded {
+                min-height: 180px !important;
+            }
+            .dept-card-expanded .chart-wrapper-doughnut {
+                height: 100px !important;
+                width: 100px !important;
+            }
+            .notif-card-expanded {
+                min-height: 280px !important;
+            }
         }
 
         /* ===== FLOATING CHATBOT ===== */
@@ -959,9 +993,6 @@
             font-weight: 500;
             margin-bottom: 0.5rem;
         }
-        .chat-window .chat-body .chat-greeting span {
-            font-size: 0.9rem;
-        }
         .chat-window .chat-body .chat-btn-list {
             display: flex;
             flex-direction: column;
@@ -1046,7 +1077,6 @@
             }
         }
 
-        /* ===== RESPONSIVE: Notification cards on mobile ===== */
         @media (max-width: 768px) {
             .notif-item {
                 padding: 0.35rem 0;
@@ -1132,32 +1162,32 @@
     </div>
 
     <!-- ============================================================= -->
-    <!--  ROW 1: Revenue Grid (Company + Dept) + Right Sidebar          -->
+    <!--  ROW 1: 2×2 Revenue Grid (Expanded) + Notifications           -->
     <!-- ============================================================= -->
     <div class="row g-3 mb-3">
-        <!-- LEFT COLUMN -->
-        <div class="col-xl-6 col-lg-6 col-md-12">
+        <!-- LEFT COLUMN: 2×2 Revenue Grid (expanded to col-xl-8) -->
+        <div class="col-xl-8 col-lg-7 col-md-12">
             <div class="row g-2">
-                <!-- Yearly Revenue -->
+                <!-- Yearly Revenue (expanded) -->
                 <div class="col-md-6 col-sm-6 col-12">
-                    <div class="card-custom card-compact h-100" style="height: 185px; align-self: flex-start;">
+                    <div class="card-custom card-compact revenue-card-expanded h-100" style="align-self: flex-start;">
                         <div class="d-flex justify-content-between align-items-center" style="margin-bottom:0.1rem; padding-top: 5px">
-                            <span class="card-title" style="font-size:0.6rem; font-weight:600;">
+                            <span class="card-title" style="font-size:0.65rem; font-weight:600;">
                                 <i class="fa-solid fa-chart-line me-1" style="color:#1a56db;"></i> Company Revenue – Yearly
                             </span>
-                            <span class="mini-badge green" style="font-size:0.45rem; padding:0.05rem 0.35rem;">
+                            <span class="mini-badge green" style="font-size:0.5rem; padding:0.05rem 0.4rem;">
                                 <i class="fa-regular fa-circle-check"></i> +18%
                             </span>
                         </div>
-                        <div class="chart-wrapper" style="height:90px; margin:0.1rem 0; padding-top: 3px">
+                        <div class="chart-wrapper" style="height:200px; margin:0.1rem 0; padding-top: 3px">
                             <canvas id="yearlyRevenueChart"></canvas>
                         </div>
                         <div class="d-flex justify-content-between align-items-center" style="margin-top:0.1rem; padding-top: 5px">
                             <div>
-                                <span class="stat-number" style="font-size:0.9rem; font-weight:700;">₹12.5M</span>
-                                <span class="stat-label" style="font-size:0.45rem; display:block; color:#64748b; line-height:1.2;">Net Revenue</span>
+                                <span class="stat-number" style="font-size:1.1rem; font-weight:700;">₹12.5M</span>
+                                <span class="stat-label" style="font-size:0.5rem; display:block; color:#64748b; line-height:1.2;">Net Revenue</span>
                             </div>
-                            <div style="font-size:0.35rem; color:#94a3b8; text-align:right; line-height:1.1;">
+                            <div style="font-size:0.4rem; color:#94a3b8; text-align:right; line-height:1.1;">
                                 <span>Jan</span> <span>Feb</span> <span>Mar</span> <span>Apr</span> <span>May</span> <span>Jun</span><br>
                                 <span>Jul</span> <span>Aug</span> <span>Sep</span> <span>Oct</span> <span>Nov</span> <span>Dec</span>
                             </div>
@@ -1165,26 +1195,26 @@
                     </div>
                 </div>
 
-                <!-- Monthly Revenue -->
+                <!-- Monthly Revenue (expanded) -->
                 <div class="col-md-6 col-sm-6 col-12">
-                    <div class="card-custom card-compact h-100" style="height: 185px; align-self: flex-start;">
+                    <div class="card-custom card-compact revenue-card-expanded h-100" style="align-self: flex-start;">
                         <div class="d-flex justify-content-between align-items-center" style="margin-bottom:0.1rem;padding-top: 5px">
-                            <span class="card-title" style="font-size:0.6rem; font-weight:600;">
+                            <span class="card-title" style="font-size:0.65rem; font-weight:600;">
                                 <i class="fa-solid fa-chart-simple me-1" style="color:#0b7e3d;"></i> Company Revenue – Monthly
                             </span>
-                            <span class="mini-badge green" style="font-size:0.45rem; padding:0.05rem 0.35rem;">
+                            <span class="mini-badge green" style="font-size:0.5rem; padding:0.05rem 0.4rem;">
                                 <i class="fa-regular fa-circle-check"></i> +4.2%
                             </span>
                         </div>
-                        <div class="chart-wrapper" style="height:90px; margin:0.1rem 0; padding-top: 3px">
+                        <div class="chart-wrapper" style="height:200px; margin:0.1rem 0; padding-top: 3px">
                             <canvas id="monthlyRevenueChart"></canvas>
                         </div>
                         <div class="d-flex justify-content-between align-items-center" style="margin-top:0.1rem;  padding-top: 5px">
                             <div>
-                                <span class="stat-number" style="font-size:0.9rem; font-weight:700;">₹1.05M</span>
-                                <span class="stat-label" style="font-size:0.45rem; display:block; color:#64748b; line-height:1.2;">Net Revenue</span>
+                                <span class="stat-number" style="font-size:1.1rem; font-weight:700;">₹1.05M</span>
+                                <span class="stat-label" style="font-size:0.5rem; display:block; color:#64748b; line-height:1.2;">Net Revenue</span>
                             </div>
-                            <div style="font-size:0.35rem; color:#94a3b8; text-align:right; line-height:1.1;">
+                            <div style="font-size:0.4rem; color:#94a3b8; text-align:right; line-height:1.1;">
                                 <span>Jan</span> <span>Feb</span> <span>Mar</span> <span>Apr</span> <span>May</span> <span>Jun</span><br>
                                 <span>Jul</span> <span>Aug</span> <span>Sep</span> <span>Oct</span> <span>Nov</span> <span>Dec</span>
                             </div>
@@ -1194,82 +1224,82 @@
 
                 <div class="col-12"><div class="section-title"><i class="fa-solid fa-building-columns"></i> Department Revenue</div></div>
 
-                <!-- Dept Monthly -->
+                <!-- Dept Monthly (expanded) -->
                 <div class="col-md-6 col-sm-6 col-12">
-                    <div class="card-custom h-100" style="padding: 0.7rem 0.9rem;">
-                        <div class="card-title" style="font-size:0.7rem; margin-bottom:0.3rem;">
+                    <div class="card-custom dept-card-expanded h-100">
+                        <div class="card-title" style="font-size:0.75rem; margin-bottom:0.3rem;">
                             <i class="fa-regular fa-calendar me-1"></i> Department Revenue – Monthly
                         </div>
-                        <div class="d-flex align-items-center" style="gap: 0.25rem; flex-wrap: wrap;">
-                            <div style="flex-shrink:0; width:120px; height:120px; margin:0 auto;">
+                        <div class="d-flex align-items-center" style="gap: 0.25rem; flex-wrap: wrap; height:100%;">
+                            <div style="flex-shrink:0; width:140px; height:140px; margin:0 auto;">
                                 <canvas id="monthlyDeptDoughnutLeft"></canvas>
                             </div>
                             <div style="flex:1; padding-left: 0.25rem; min-width:140px;">
-                                <div class="dept-row" style="padding:0.15rem 0; font-size:0.65rem;">
+                                <div class="dept-row" style="padding:0.2rem 0; font-size:0.7rem; border-bottom:1px solid #f1f5f9;">
                                     <span class="dept-name"><span style="display:inline-block; width:10px; height:10px; background:#1a56db; border-radius:3px; margin-right:4px;"></span>Java</span>
                                     <span class="dept-value">₹0.35M</span>
-                                    <span class="dept-change up" style="font-size:0.5rem;">+3%</span>
+                                    <span class="dept-change up" style="font-size:0.55rem;">+3%</span>
                                 </div>
-                                <div class="dept-row" style="padding:0.15rem 0; font-size:0.65rem;">
+                                <div class="dept-row" style="padding:0.2rem 0; font-size:0.7rem; border-bottom:1px solid #f1f5f9;">
                                     <span class="dept-name"><span style="display:inline-block; width:10px; height:10px; background:#0b7e3d; border-radius:3px; margin-right:4px;"></span>Python</span>
                                     <span class="dept-value">₹0.26M</span>
-                                    <span class="dept-change down" style="font-size:0.5rem;">-2%</span>
+                                    <span class="dept-change down" style="font-size:0.55rem;">-2%</span>
                                 </div>
-                                <div class="dept-row" style="padding:0.15rem 0; font-size:0.65rem;">
+                                <div class="dept-row" style="padding:0.2rem 0; font-size:0.7rem; border-bottom:1px solid #f1f5f9;">
                                     <span class="dept-name"><span style="display:inline-block; width:10px; height:10px; background:#c2410c; border-radius:3px; margin-right:4px;"></span>Salesforce</span>
                                     <span class="dept-value">₹0.23M</span>
-                                    <span class="dept-change up" style="font-size:0.5rem;">+6%</span>
+                                    <span class="dept-change up" style="font-size:0.55rem;">+6%</span>
                                 </div>
-                                <div class="dept-row" style="padding:0.15rem 0; font-size:0.65rem;">
+                                <div class="dept-row" style="padding:0.2rem 0; font-size:0.7rem; border-bottom:1px solid #f1f5f9;">
                                     <span class="dept-name"><span style="display:inline-block; width:10px; height:10px; background:#6d28d9; border-radius:3px; margin-right:4px;"></span>Magento</span>
                                     <span class="dept-value">₹0.07M</span>
-                                    <span class="dept-change up" style="font-size:0.5rem;">+4%</span>
+                                    <span class="dept-change up" style="font-size:0.55rem;">+4%</span>
                                 </div>
-                                <div class="dept-row" style="padding:0.15rem 0; font-size:0.65rem; border-bottom:none;">
+                                <div class="dept-row" style="padding:0.2rem 0; font-size:0.7rem; border-bottom:none;">
                                     <span class="dept-name"><span style="display:inline-block; width:10px; height:10px; background:#0e7490; border-radius:3px; margin-right:4px;"></span>Dynamics</span>
                                     <span class="dept-value">₹0.05M</span>
-                                    <span class="dept-change neutral" style="font-size:0.5rem;">+1%</span>
+                                    <span class="dept-change neutral" style="font-size:0.55rem;">+1%</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Dept Yearly -->
+                <!-- Dept Yearly (expanded) -->
                 <div class="col-md-6 col-sm-6 col-12">
-                    <div class="card-custom h-100" style="padding: 0.7rem 0.9rem;">
-                        <div class="card-title" style="font-size:0.7rem; margin-bottom:0.3rem;">
+                    <div class="card-custom dept-card-expanded h-100">
+                        <div class="card-title" style="font-size:0.75rem; margin-bottom:0.3rem;">
                             <i class="fa-regular fa-calendar-plus me-1"></i> Department Revenue – Yearly
                         </div>
-                        <div class="d-flex align-items-center" style="gap: 0.25rem; flex-wrap: wrap;">
-                            <div style="flex-shrink:0; width:120px; height:120px; margin:0 auto;">
+                        <div class="d-flex align-items-center" style="gap: 0.25rem; flex-wrap: wrap; height:100%;">
+                            <div style="flex-shrink:0; width:140px; height:140px; margin:0 auto;">
                                 <canvas id="yearlyDeptDoughnutLeft"></canvas>
                             </div>
                             <div style="flex:1; padding-left: 0.25rem; min-width:140px;">
-                                <div class="dept-row" style="padding:0.15rem 0; font-size:0.65rem;">
+                                <div class="dept-row" style="padding:0.2rem 0; font-size:0.7rem; border-bottom:1px solid #f1f5f9;">
                                     <span class="dept-name"><span style="display:inline-block; width:10px; height:10px; background:#1a56db; border-radius:3px; margin-right:4px;"></span>Java</span>
                                     <span class="dept-value">₹4.2M</span>
-                                    <span class="dept-change up" style="font-size:0.5rem;">+22%</span>
+                                    <span class="dept-change up" style="font-size:0.55rem;">+22%</span>
                                 </div>
-                                <div class="dept-row" style="padding:0.15rem 0; font-size:0.65rem;">
+                                <div class="dept-row" style="padding:0.2rem 0; font-size:0.7rem; border-bottom:1px solid #f1f5f9;">
                                     <span class="dept-name"><span style="display:inline-block; width:10px; height:10px; background:#0b7e3d; border-radius:3px; margin-right:4px;"></span>Python</span>
                                     <span class="dept-value">₹3.1M</span>
-                                    <span class="dept-change up" style="font-size:0.5rem;">+18%</span>
+                                    <span class="dept-change up" style="font-size:0.55rem;">+18%</span>
                                 </div>
-                                <div class="dept-row" style="padding:0.15rem 0; font-size:0.65rem;">
+                                <div class="dept-row" style="padding:0.2rem 0; font-size:0.7rem; border-bottom:1px solid #f1f5f9;">
                                     <span class="dept-name"><span style="display:inline-block; width:10px; height:10px; background:#c2410c; border-radius:3px; margin-right:4px;"></span>Salesforce</span>
                                     <span class="dept-value">₹2.8M</span>
-                                    <span class="dept-change up" style="font-size:0.5rem;">+16%</span>
+                                    <span class="dept-change up" style="font-size:0.55rem;">+16%</span>
                                 </div>
-                                <div class="dept-row" style="padding:0.15rem 0; font-size:0.65rem;">
+                                <div class="dept-row" style="padding:0.2rem 0; font-size:0.7rem; border-bottom:1px solid #f1f5f9;">
                                     <span class="dept-name"><span style="display:inline-block; width:10px; height:10px; background:#6d28d9; border-radius:3px; margin-right:4px;"></span>Magento</span>
                                     <span class="dept-value">₹0.9M</span>
-                                    <span class="dept-change up" style="font-size:0.5rem;">+12%</span>
+                                    <span class="dept-change up" style="font-size:0.55rem;">+12%</span>
                                 </div>
-                                <div class="dept-row" style="padding:0.15rem 0; font-size:0.65rem; border-bottom:none;">
+                                <div class="dept-row" style="padding:0.2rem 0; font-size:0.7rem; border-bottom:none;">
                                     <span class="dept-name"><span style="display:inline-block; width:10px; height:10px; background:#0e7490; border-radius:3px; margin-right:4px;"></span>Dynamics</span>
                                     <span class="dept-value">₹0.6M</span>
-                                    <span class="dept-change neutral" style="font-size:0.5rem;">+5%</span>
+                                    <span class="dept-change neutral" style="font-size:0.55rem;">+5%</span>
                                 </div>
                             </div>
                         </div>
@@ -1278,102 +1308,11 @@
             </div>
         </div>
 
-        <!-- RIGHT COLUMN: Profit/Loss + Notifications -->
-        <div class="col-xl-6 col-lg-6 col-md-12">
+        <!-- RIGHT COLUMN: Notifications (col-xl-4) -->
+        <div class="col-xl-4 col-lg-5 col-md-12">
             <div class="row g-2" style="height: 100%;">
-                <!-- Profit & Loss -->
-                <div class="col-md-4 col-sm-12 col-12">
-                    <div class="card-custom card-compact d-flex flex-column justify-content-around" style="min-height: 316px; height: 100%;">
-                        <div class="d-flex justify-content-between align-items-center py-1 border-bottom" style="border-color: #f1f5f9;">
-                            <div style="padding: 8px">
-                                <div class="d-flex align-items-center gap-2">
-                                    <span class="pl-value" style="font-size:0.85rem; font-weight:700; color:#0b7e3d;">₹3.2M</span>
-                                </div>
-                                <div class="pl-label" style="font-size:0.45rem; color:#64748b; font-weight:500; line-height:1.1;">Profit (Yearly)</div>
-                                <div class="pl-meta" style="font-size:0.4rem; color:#0b7e3d; line-height:1.1;">25.6% margin</div>
-                            </div>
-                            <div class="d-flex align-items-center gap-1">
-                                <div style="width: 40px; height: 18px;">
-                                    <svg viewBox="0 0 50 20" style="width: 100%; height: 100%;">
-                                        <path d="M 0 12 L 10 8 L 20 10 L 30 6 L 40 2" stroke="#22c55e" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
-                                </div>
-                                <div class="d-flex justify-content-center align-items-center rounded-2" style="width: 28px; height: 28px; background-color: #dcfce7;">
-                                    <svg width="12" height="12" viewBox="0 0 16 16">
-                                        <path d="M 2 12 L 12 2 M 12 2 L 8 2 M 12 2 L 12 6" stroke="#22c55e" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center py-1 border-bottom" style="border-color: #f1f5f9;">
-                            <div style="padding: 8px">
-                                <div class="d-flex align-items-center gap-2">
-                                    <span class="pl-value" style="font-size:0.85rem; font-weight:700; color:#0b7e3d;">₹0.28M</span>
-                                </div>
-                                <div class="pl-label" style="font-size:0.45rem; color:#64748b; font-weight:500; line-height:1.1;">Profit (Monthly)</div>
-                                <div class="pl-meta" style="font-size:0.4rem; color:#0b7e3d; line-height:1.1;">26.7% margin</div>
-                            </div>
-                            <div class="d-flex align-items-center gap-1">
-                                <div style="width: 40px; height: 18px;">
-                                    <svg viewBox="0 0 50 20" style="width: 100%; height: 100%;">
-                                        <path d="M 0 14 L 10 10 L 20 12 L 30 8 L 40 4" stroke="#22c55e" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
-                                </div>
-                                <div class="d-flex justify-content-center align-items-center rounded-2" style="width: 28px; height: 28px; background-color: #dcfce7;">
-                                    <svg width="12" height="12" viewBox="0 0 16 16">
-                                        <path d="M 2 12 L 12 2 M 12 2 L 8 2 M 12 2 L 12 6" stroke="#22c55e" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center py-1 border-bottom" style="border-color: #f1f5f9;">
-                            <div style="padding: 8px">
-                                <div class="d-flex align-items-center gap-2">
-                                    <span class="pl-value" style="font-size:0.85rem; font-weight:700; color:#b91c1c;">₹0.8M</span>
-                                </div>
-                                <div class="pl-label" style="font-size:0.45rem; color:#64748b; font-weight:500; line-height:1.1;">Loss (Yearly)</div>
-                                <div class="pl-meta" style="font-size:0.4rem; color:#b91c1c; line-height:1.1;">-6.4% of revenue</div>
-                            </div>
-                            <div class="d-flex align-items-center gap-1">
-                                <div style="width: 40px; height: 18px;">
-                                    <svg viewBox="0 0 50 20" style="width: 100%; height: 100%;">
-                                        <path d="M 0 4 L 10 8 L 20 6 L 30 10 L 40 12" stroke="#ef4444" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
-                                </div>
-                                <div class="d-flex justify-content-center align-items-center rounded-2" style="width: 28px; height: 28px; background-color: #fee2e2;">
-                                    <svg width="12" height="12" viewBox="0 0 16 16">
-                                        <path d="M 2 2 L 12 12 M 12 12 L 8 12 M 12 12 L 12 8" stroke="#ef4444" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center py-1">
-                            <div style="padding: 8px">
-                                <div class="d-flex align-items-center gap-2">
-                                    <span class="pl-value" style="font-size:0.85rem; font-weight:700; color:#c2410c;">₹0.07M</span>
-                                </div>
-                                <div class="pl-label" style="font-size:0.45rem; color:#64748b; font-weight:500; line-height:1.1;">Loss (Monthly)</div>
-                                <div class="pl-meta" style="font-size:0.4rem; color:#c2410c; line-height:1.1;">-6.7% of revenue</div>
-                            </div>
-                            <div class="d-flex align-items-center gap-1">
-                                <div style="width: 40px; height: 18px;">
-                                    <svg viewBox="0 0 50 20" style="width: 100%; height: 100%;">
-                                        <path d="M 0 2 L 10 6 L 20 4 L 30 8 L 40 12" stroke="#ef4444" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
-                                </div>
-                                <div class="d-flex justify-content-center align-items-center rounded-2" style="width: 28px; height: 28px; background-color: #fee2e2;">
-                                    <svg width="12" height="12" viewBox="0 0 16 16">
-                                        <path d="M 2 2 L 12 12 M 12 12 L 8 12 M 12 12 L 12 8" stroke="#ef4444" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Notifications -->
-                <div class="col-md-8 col-sm-12 col-12">
-                    <div class="card-custom card-compact d-flex flex-column" style="min-height: 390px; height: 100%; position: relative; padding: 1.2rem 1.2rem !important;">
+                <div class="col-12" style="height: 100%;">
+                    <div class="card-custom card-compact notif-card-expanded d-flex flex-column" style="height: 100%; position: relative; padding: 1.2rem 1.2rem !important;">
                         <div class="d-flex justify-content-between align-items-center mb-3" style="padding-left: 2px; padding-top: 0px;">
                             <span class="fw-semibold" style="font-size:0.95rem; color:#0f172a; letter-spacing:-0.01em;">
                                 <i class="fa-regular fa-bell me-2" style="color:#c2410c;"></i> Notifications
@@ -1707,7 +1646,6 @@
         }
     }
 
-    // Close sidebar on window resize if screen becomes large
     window.addEventListener('resize', function() {
         if (window.innerWidth > 992) {
             const sidebar = document.querySelector('.sidebar');
@@ -1731,12 +1669,10 @@
                 const target = document.querySelector(targetId);
                 if (!target) return;
 
-                // Use Bootstrap's Collapse API
                 if (typeof bootstrap !== 'undefined' && bootstrap.Collapse) {
                     const collapse = bootstrap.Collapse.getInstance(target) || new bootstrap.Collapse(target, { toggle: false });
                     collapse.toggle();
                 } else {
-                    // Fallback
                     target.classList.toggle('show');
                     this.setAttribute('aria-expanded', target.classList.contains('show'));
                     const arrow = this.querySelector('.arrow-icon');
@@ -1747,7 +1683,6 @@
             });
         });
 
-        // Auto-expand active submenu
         const currentPath = window.location.pathname;
         document.querySelectorAll('.submenu a').forEach(function(link) {
             const href = link.getAttribute('href');
@@ -1769,7 +1704,6 @@
         });
     });
 
-    // ===== CHAT TOGGLE (if needed) =====
     function toggleChat() {
         const window = document.getElementById('chatWindow');
         if (window) window.classList.toggle('open');
@@ -1781,21 +1715,28 @@
     const green = 'rgba(11, 126, 61, 1)';
     const greenLight = 'rgba(11, 126, 61, 0.15)';
 
-    // ===== 1. YEARLY REVENUE LINE =====
-    new Chart(document.getElementById('yearlyRevenueChart'), {
+    // ===== 1. YEARLY REVENUE LINE (with gradient) =====
+    const yearlyCanvas = document.getElementById('yearlyRevenueChart');
+    const yearlyCtx = yearlyCanvas.getContext('2d');
+
+    const yearlyGradient = yearlyCtx.createLinearGradient(0, 0, 0, 150);
+    yearlyGradient.addColorStop(0, 'rgba(26, 86, 219, 0.8)');
+    yearlyGradient.addColorStop(0.4, 'rgba(26, 86, 219, 0.4)');
+    yearlyGradient.addColorStop(1, 'rgba(26, 86, 219, 0)');
+
+    new Chart(yearlyCanvas, {
         type: 'line',
         data: {
             labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
             datasets: [{
-                data: [0.6, 0.9, 1.3, 2.0, 2.8, 3.8, 5.0, 6.5, 8.2, 9.8, 11.2, 12.5],
-                borderColor: blue,
-                backgroundColor: blueLight,
+                data: [4.6, 2.9, 5.3, 2.0, 7.8, 3.8, 1.0, 6.5, 2.2, 9.8, 1.2, 12.5],
+                borderColor: '#1a56db',
+                backgroundColor: yearlyGradient,
                 fill: true,
-                tension: 0.35,
-                pointBackgroundColor: blue,
-                pointBorderColor: '#fff',
-                pointBorderWidth: 2,
+                tension: 0,                      // <-- SHARP EDGES (no curve)
                 pointRadius: 2.5,
+                pointHoverRadius: 0,
+                borderWidth: 2,
             }]
         },
         options: {
@@ -1803,28 +1744,45 @@
             maintainAspectRatio: false,
             plugins: { legend: { display: false } },
             scales: {
-                y: { beginAtZero: true, ticks: { font: { size: 7 }, callback: v => '₹' + v + 'M' }, grid: { color: 'rgba(0,0,0,0.04)' } },
-                x: { grid: { display: false }, ticks: { font: { size: 6 } } }
+                y: {
+                    beginAtZero: true,
+                    ticks: { font: { size: 7 }, callback: v => '₹' + v + 'M' },
+                    grid: { color: 'rgba(0,0,0,0.04)' }
+                },
+                x: {
+                    grid: { display: false },
+                    ticks: { font: { size: 6 } }
+                }
             },
-            interaction: { intersect: false, mode: 'index' }
+            interaction: {
+                intersect: false,
+                mode: 'index'
+            }
         }
     });
 
-    // ===== 2. MONTHLY REVENUE LINE =====
-    new Chart(document.getElementById('monthlyRevenueChart'), {
+    // ===== 2. MONTHLY REVENUE LINE (with gradient) =====
+    const monthlyCanvas = document.getElementById('monthlyRevenueChart');
+    const monthlyCtx = monthlyCanvas.getContext('2d');
+
+    const monthlyGradient = monthlyCtx.createLinearGradient(0, 0, 0, 250);
+    monthlyGradient.addColorStop(0, 'rgba(11, 126, 61, 0.8)');
+    monthlyGradient.addColorStop(0.4, 'rgba(11, 126, 61, 0.4)');
+    monthlyGradient.addColorStop(1, 'rgba(11, 126, 61, 0)');
+
+    new Chart(monthlyCanvas, {
         type: 'line',
         data: {
             labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
             datasets: [{
-                data: [0.82, 0.86, 0.89, 0.93, 0.97, 1.00, 1.02, 1.05],
-                borderColor: green,
-                backgroundColor: greenLight,
+                data: [0.82, 0.40, 0.89, 0.10, 0.97, 1.00, 3.00, 1.05],
+                borderColor: '#0b7e3d',
+                backgroundColor: monthlyGradient,
                 fill: true,
-                tension: 0.35,
-                pointBackgroundColor: green,
-                pointBorderColor: '#fff',
-                pointBorderWidth: 2,
+                tension: 0,                      // <-- SHARP EDGES (no curve)
                 pointRadius: 2.5,
+                pointHoverRadius: 0,
+                borderWidth: 2,
             }]
         },
         options: {
@@ -1832,10 +1790,20 @@
             maintainAspectRatio: false,
             plugins: { legend: { display: false } },
             scales: {
-                y: { beginAtZero: true, ticks: { font: { size: 7 }, callback: v => '₹' + v + 'M' }, grid: { color: 'rgba(0,0,0,0.04)' } },
-                x: { grid: { display: false }, ticks: { font: { size: 6 } } }
+                y: {
+                    beginAtZero: true,
+                    ticks: { font: { size: 7 }, callback: v => '₹' + v + 'M' },
+                    grid: { color: 'rgba(0,0,0,0.04)' }
+                },
+                x: {
+                    grid: { display: false },
+                    ticks: { font: { size: 6 } }
+                }
             },
-            interaction: { intersect: false, mode: 'index' }
+            interaction: {
+                intersect: false,
+                mode: 'index'
+            }
         }
     });
 
@@ -1996,7 +1964,7 @@
     });
 </script>
 
-<!-- ===== BOOTSTRAP JS (must be loaded after the manual script) ===== -->
+<!-- ===== BOOTSTRAP JS ===== -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
 </script>
 </body>
