@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,101 +37,149 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         try {
 
-            // ================= SAFE SKIP =================
+            // ================= PUBLIC URLS =================
             if (isPublicPath(path)) {
                 filterChain.doFilter(request, response);
                 return;
             }
 
-            // ================= TOKEN EXTRACTION =================
+            // ================= READ JWT =================
             String token = extractTokenFromCookies(request);
 
-            // IMPORTANT: NEVER BLOCK REQUEST (NO 403 HERE)
+            System.out.println("=======================================");
+            System.out.println("REQUEST : " + request.getRequestURI());
+            System.out.println("TOKEN   : " + token);
+
             if (token == null || token.isBlank()) {
+                System.out.println("JWT token not found.");
+                SecurityContextHolder.clearContext();
                 filterChain.doFilter(request, response);
                 return;
             }
-            Optional<UserSession> session =
+
+            // ================= DATABASE SESSION =================
+            Optional<UserSession> optionalSession =
                     userSessionRepository.findByJwtTokenAndIsActiveTrue(token);
 
-            if(session.isEmpty()){
+            if (optionalSession.isEmpty()) {
+                System.out.println("Token not found in UserSession table.");
+
                 SecurityContextHolder.clearContext();
-                filterChain.doFilter(request,response);
+                filterChain.doFilter(request, response);
                 return;
             }
 
-            // ================= AUTH CHECK =================
+            UserSession session = optionalSession.get();
+
+            if (session.getExpiresAt() != null &&
+                    session.getExpiresAt().isBefore(LocalDateTime.now())) {
+
+                System.out.println("Session expired.");
+
+                session.setIsActive(false);
+                userSessionRepository.save(session);
+
+                SecurityContextHolder.clearContext();
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            // ================= AUTHENTICATE =================
             if (SecurityContextHolder.getContext().getAuthentication() == null) {
 
                 String username = jwtUtil.extractUsername(token);
                 String role = jwtUtil.extractRole(token);
 
-                if (username != null && role != null
-                        && jwtUtil.validateToken(token, username)) {
+                System.out.println("USERNAME : " + username);
+                System.out.println("ROLE     : " + role);
 
-                    // normalize role
+                if (username != null &&
+                        role != null &&
+                        jwtUtil.validateToken(token, username)) {
+
                     role = role.trim().toUpperCase();
 
                     if (!role.startsWith("ROLE_")) {
                         role = "ROLE_" + role;
                     }
 
-                    UsernamePasswordAuthenticationToken auth =
+                    UsernamePasswordAuthenticationToken authentication =
                             new UsernamePasswordAuthenticationToken(
                                     username,
                                     null,
                                     List.of(new SimpleGrantedAuthority(role))
                             );
 
-                    auth.setDetails(
-                            new WebAuthenticationDetailsSource().buildDetails(request)
+                    authentication.setDetails(
+                            new WebAuthenticationDetailsSource()
+                                    .buildDetails(request)
                     );
 
-                    SecurityContextHolder.getContext().setAuthentication(auth);
+                    SecurityContextHolder.getContext()
+                            .setAuthentication(authentication);
 
-                    System.out.println("JWT AUTH SUCCESS -> " + username + " | " + role);
+                    System.out.println("JWT AUTH SUCCESS -> "
+                            + username + " | " + role);
+
+                } else {
+
+                    System.out.println("JWT validation failed.");
+
+                    SecurityContextHolder.clearContext();
                 }
             }
 
         } catch (Exception e) {
 
-            // IMPORTANT: NEVER THROW 403 OR STOP REQUEST
             SecurityContextHolder.clearContext();
 
-            System.out.println("JWT AUTH ERROR: " + e.getMessage());
+            System.out.println("JWT AUTH ERROR");
+            e.printStackTrace();
         }
 
-        // ALWAYS CONTINUE CHAIN
         filterChain.doFilter(request, response);
     }
 
     // ================= PUBLIC PATHS =================
+
     private boolean isPublicPath(String path) {
-        if (path.equals("/auth/logout")) {
+
+        // Logout should always require authentication
+        if ("/auth/logout".equals(path)) {
             return false;
+        }
+
+        // Allow all authentication endpoints
+        if (path.startsWith("/auth/")) {
+            return true;
         }
 
         return path.startsWith("/css/")
                 || path.startsWith("/js/")
                 || path.startsWith("/images/")
                 || path.startsWith("/webjars/")
+                || path.equals("/favicon.ico")
                 || path.equals("/error")
-                || path.equals("/access-denied")
-                || path.startsWith("/h2-console"); // optional
+                || path.startsWith("/h2-console");
     }
 
-    // ================= COOKIE TOKEN =================
+    // ================= JWT COOKIE =================
+
     private String extractTokenFromCookies(HttpServletRequest request) {
 
         Cookie[] cookies = request.getCookies();
-        if (cookies == null) return null;
+
+        if (cookies == null) {
+            return null;
+        }
 
         for (Cookie cookie : cookies) {
+
             if ("jwtToken".equals(cookie.getName())) {
                 return cookie.getValue();
             }
         }
+
         return null;
     }
-
 }

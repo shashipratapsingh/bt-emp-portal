@@ -126,8 +126,16 @@
                     Log In
                 </a>
 
+<!--                <a th:if="${isUserLoggedIn != null and isUserLoggedIn}"-->
+<!--                   th:href="@{/auth/logout}"-->
+<!--                   class="btn btn-sm btn-outline-danger fw-medium px-3 py-2 rounded-2">-->
+<!--                    <i class="fa-solid fa-arrow-right-from-bracket me-2"></i>Log Out-->
+<!--                </a>-->
+
+
                 <a th:if="${isUserLoggedIn != null and isUserLoggedIn}"
-                   th:href="@{/auth/logout}"
+                   href="javascript:void(0);"
+                   onclick="resetLiveTimer(); window.location.href='/auth/logout';"
                    class="btn btn-sm btn-outline-danger fw-medium px-3 py-2 rounded-2">
                     <i class="fa-solid fa-arrow-right-from-bracket me-2"></i>Log Out
                 </a>

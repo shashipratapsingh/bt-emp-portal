@@ -9,4 +9,6 @@ public interface TimesheetService {
      List<Timesheet> getTimesheetsByEmployee(String employeeId);
      List<Timesheet> getAllTimesheet();
      void updateTimesheetStatus(Long id,String action);
+
+     Timesheet getById(Long id);
 }

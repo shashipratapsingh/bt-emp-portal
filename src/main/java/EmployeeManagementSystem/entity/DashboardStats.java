@@ -1,4 +1,4 @@
-package com.hrms.model;
+package EmployeeManagementSystem.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

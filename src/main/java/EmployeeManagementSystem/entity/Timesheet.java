@@ -55,4 +55,11 @@ public class Timesheet {
     private String workMode;
 
     private String status = "PENDING";
+
+    @ManyToOne
+    @JoinColumn(name = "project_id")
+    private Project project;
+
+    @Column(name = "project_name")
+    private String projectName;
 }

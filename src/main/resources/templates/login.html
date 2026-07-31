@@ -6,46 +6,216 @@
     <title>Employee Login</title>
 
     <link rel="stylesheet" th:href="@{/css/login.css}">
-
 </head>
+
 <body>
 
 <div class="login-container">
+
     <h2>Welcome Back</h2>
     <p class="subtitle">Please enter your details to sign in</p>
 
     <div class="error-msg" th:if="${error}" th:text="${error}"></div>
 
-    <form th:action="@{/auth/login}" th:object="${loginRequest}" method="POST">
+    <form id="loginForm"
+          th:action="@{/auth/login}"
+          th:object="${loginRequest}"
+          method="POST">
 
+        <!-- User ID -->
         <div class="form-group">
             <label for="userId">User ID</label>
-            <input type="text" id="userId" th:field="*{userId}" required placeholder="Enter your User ID"/>
+            <input type="text"
+                   id="userId"
+                   th:field="*{userId}"
+                   required
+                   placeholder="Enter your User ID"/>
         </div>
 
+        <!-- Password -->
         <div class="form-group">
             <label for="password">Password</label>
-            <input type="password" id="password" th:field="*{password}" required placeholder="Enter your password"/>
+            <input type="password"
+                   id="password"
+                   th:field="*{password}"
+                   required
+                   placeholder="Enter your password"/>
         </div>
 
+        <!-- Work Mode -->
         <div class="form-group">
             <label for="workMode">Work Mode</label>
-            <!-- Style input ki tarah hi rakha hai taaki theme match kare -->
-            <select id="workMode" th:field="*{workMode}" required
-                    style="width: 100%; padding: 12px 16px; border: 1px solid #cccccc; border-radius: 8px; font-size: 15px; background-color: #fafafa; outline: none; cursor: pointer;">
+
+            <select id="workMode"
+                    th:field="*{workMode}"
+                    required
+                    style="width:100%;
+                           padding:12px 16px;
+                           border:1px solid #cccccc;
+                           border-radius:8px;
+                           font-size:15px;
+                           background:#fafafa;
+                           outline:none;
+                           cursor:pointer;">
+
                 <option value="WFO">Work From Office</option>
                 <option value="WFH">Work From Home</option>
+
             </select>
         </div>
 
+        <!-- Hidden GPS Fields -->
+        <input type="hidden" id="latitude" th:field="*{latitude}">
+        <input type="hidden" id="longitude" th:field="*{longitude}">
+
         <button type="submit">Sign In</button>
+
     </form>
 
     <p class="footer-text">
-        Don't have an account? <a th:href="@{/auth/employeeRegisterForm}">Register here</a>
+        Don't have an account?
+        <a th:href="@{/auth/employeeRegisterForm}">
+            Register here
+        </a>
     </p>
-    <a th:href="@{/auth/forgot-password}">Forgot Password?</a>
+
+    <a th:href="@{/auth/forgot-password}">
+        Forgot Password?
+    </a>
+
 </div>
+
+<script>
+
+    const loginForm = document.getElementById("loginForm");
+
+    loginForm.addEventListener("submit", function (event) {
+
+        event.preventDefault();
+
+        const workMode = document.getElementById("workMode").value;
+
+        // Work From Home → No location required
+        if (workMode === "WFH") {
+            loginForm.submit();
+            return;
+        }
+
+        // Browser supports geolocation?
+        if (!navigator.geolocation) {
+            alert("Your browser does not support location services.");
+            return;
+        }
+
+        alert("Getting your current location...");
+
+        navigator.geolocation.getCurrentPosition(
+
+            // SUCCESS
+            function (position) {
+
+                const latitude = position.coords.latitude;
+                const longitude = position.coords.longitude;
+
+                console.log("Latitude : " + latitude);
+                console.log("Longitude: " + longitude);
+
+                fetch("/auth/check-location", {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+
+                        latitude: latitude,
+                        longitude: longitude
+
+                    })
+
+                })
+
+                .then(response => response.json())
+
+                .then(data => {
+
+                    if (data.inside) {
+
+                        alert(
+                            "✅ You are inside the office range.\n\n" +
+                            "Distance : " + Math.round(data.distance) + " metres.\n\n" +
+                            "You can login."
+                        );
+
+                        document.getElementById("latitude").value = latitude;
+                        document.getElementById("longitude").value = longitude;
+
+                        loginForm.submit();
+
+                    } else {
+
+                        alert(
+                            "❌ You are outside the office range.\n\n" +
+                            "Distance : " + Math.round(data.distance) + " metres.\n\n" +
+                            "Login is not allowed."
+                        );
+
+                    }
+
+                })
+
+                .catch(error => {
+
+                    console.error(error);
+
+                    alert("Unable to verify office location.");
+
+                });
+
+            },
+
+            // ERROR
+            function (error) {
+
+                console.error(error);
+
+                switch (error.code) {
+
+                    case error.PERMISSION_DENIED:
+                        alert("Location permission denied.\nPlease click Allow and try again.");
+                        break;
+
+                    case error.POSITION_UNAVAILABLE:
+                        alert("Location information is unavailable.");
+                        break;
+
+                    case error.TIMEOUT:
+                        alert("Location request timed out.");
+                        break;
+
+                    default:
+                        alert("Unable to fetch your current location.");
+
+                }
+
+            },
+
+            // OPTIONS
+            {
+
+                enableHighAccuracy: true,
+                timeout: 30000,
+                maximumAge: 0
+
+            }
+
+        );
+
+    });
+
+</script>
 
 </body>
 </html>
