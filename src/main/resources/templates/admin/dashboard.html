@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -32,113 +32,18 @@
             flex-direction: row;
         }
 
-        /* ===== SIDEBAR ===== */
-        .sidebar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 260px;
-            height: 100vh;
-            background: #0f172a;
-            color: #cbd5e1;
-            padding: 1.5rem 0;
-            overflow-y: auto;
-            z-index: 1050;
-            transition: transform 0.3s ease;
-        }
-        .sidebar-brand {
-            padding: 0 1.5rem 1.5rem 1.5rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-            margin-bottom: 1.5rem;
-        }
-        .sidebar-brand h5 {
-            color: #fff;
-            font-weight: 700;
-            font-size: 1.2rem;
-            letter-spacing: -0.3px;
-        }
-        .sidebar-brand h5 i {
-            color: #3b82f6;
-            margin-right: 8px;
-        }
-        .sidebar-brand small {
-            color: #94a3b8;
-            font-size: 0.65rem;
-            display: block;
-            margin-top: 2px;
-            font-weight: 400;
-        }
-        .sidebar-nav {
-            list-style: none;
-            padding: 0 0.75rem;
-            margin: 0;
-        }
-        .sidebar-nav li {
-            margin-bottom: 2px;
-        }
-        .sidebar-nav li a {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 0.6rem 1rem;
-            border-radius: 10px;
-            color: #94a3b8;
-            text-decoration: none;
-            font-size: 0.85rem;
-            font-weight: 500;
-            transition: 0.2s;
-        }
-        .sidebar-nav li a i {
-            width: 20px;
-            font-size: 0.95rem;
-            text-align: center;
-            flex-shrink: 0;
-        }
-        .sidebar-nav li a:hover {
-            background: rgba(255, 255, 255, 0.06);
-            color: #e2e8f0;
-        }
-        .sidebar-nav li a.active {
-            background: #1e293b;
-            color: #fff;
-        }
-        .sidebar-nav li a.active i {
-            color: #3b82f6;
-        }
-        .sidebar-nav .nav-label {
-            font-size: 0.6rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: #475569;
-            padding: 0.75rem 1rem 0.3rem 1rem;
-            font-weight: 600;
-        }
-
         /* ===== MAIN CONTENT ===== */
         .main-content {
             flex: 1;
             padding: 1.5rem 2rem 2rem 2rem;
             background: #f4f7fc;
             min-height: 100vh;
-            margin-left: 260px;
-            width: calc(100% - 260px);
+            margin-left: 270px;
+            width: calc(100% - 270px);
+            transition: margin-left 0.3s ease;
         }
-        @media (max-width: 992px) {
-            .sidebar {
-                transform: translateX(-100%);
-            }
-            .sidebar.open {
-                transform: translateX(0);
-            }
-            .main-content {
-                margin-left: 0;
-                width: 100%;
-                padding: 1rem;
-            }
-            .sidebar-toggle {
-                display: flex !important;
-            }
-        }
+
+        /* ===== SIDEBAR TOGGLE ===== */
         .sidebar-toggle {
             display: none;
             background: #0f172a;
@@ -149,7 +54,10 @@
             font-size: 1.1rem;
             align-items: center;
             justify-content: center;
+            margin-bottom: 0.5rem;
         }
+
+        /* ===== OVERLAY ===== */
         .sidebar-overlay {
             display: none;
             position: fixed;
@@ -159,6 +67,47 @@
         }
         .sidebar-overlay.show {
             display: block;
+        }
+
+        /* ===== RESPONSIVE OVERRIDES ===== */
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%) !important;
+                transition: transform 0.3s ease !important;
+                position: fixed !important;
+                width: 280px !important;
+                max-width: 280px !important;
+                height: 100vh !important;
+                top: 0 !important;
+                left: 0 !important;
+                z-index: 1050 !important;
+                border-right: 1px solid #334155 !important;
+                overflow-y: auto !important;
+            }
+            .sidebar.open {
+                transform: translateX(0) !important;
+            }
+            .main-content {
+                margin-left: 0 !important;
+                width: 100% !important;
+                padding: 1rem;
+            }
+            .sidebar-toggle {
+                display: flex !important;
+            }
+            .sidebar-overlay.show {
+                display: block;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .sidebar {
+                width: 100% !important;
+                max-width: 320px !important;
+            }
+            .main-content {
+                padding: 0.75rem;
+            }
         }
 
         /* ===== PAGE HEADER ===== */
@@ -239,7 +188,6 @@
             margin-bottom: -8px;
             margin-top: 8px;
             padding-bottom: 0.4rem;
-            /* border-bottom: 2px solid #e9edf4; */
             display: flex;
             align-items: center;
             gap: 8px;
@@ -299,7 +247,7 @@
             font-weight: 700;
             color: #0f172a;
             line-height: 1.2;
-            padding-top:7px;
+            padding-top: 7px;
         }
         .stat-card .stat-label {
             font-size: 0.8rem;
@@ -680,20 +628,6 @@
             color: #6d28d9;
         }
 
-        /* ===== THREE CARD ROW ===== */
-        .three-card-row .stat-card {
-            padding: 0.8rem 1rem;
-        }
-        .three-card-row .stat-number {
-            font-size: 1.3rem;
-        }
-        .three-card-row .stat-icon {
-            width: 38px;
-            height: 38px;
-            font-size: 1rem;
-        }
-
-        /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
             .stat-card .stat-number {
                 font-size: 1.2rem;
@@ -712,14 +646,6 @@
             .chart-wrapper-doughnut {
                 height: 130px;
                 width: 130px;
-            }
-            .three-card-row .stat-number {
-                font-size: 1.1rem;
-            }
-            .three-card-row .stat-icon {
-                width: 34px;
-                height: 34px;
-                font-size: 0.9rem;
             }
             .quick-action-grid {
                 grid-template-columns: repeat(3, 1fr);
@@ -747,7 +673,7 @@
             }
         }
 
-        /* ===== NOTIFICATION CARD HEIGHT ===== */
+        /* ===== NOTIFICATION SCROLL ===== */
         .notif-scroll {
             max-height: 200px;
             overflow-y: auto;
@@ -760,30 +686,7 @@
             border-radius: 4px;
         }
 
-        /* ===== DEPT GRID ===== */
-        .dept-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.3rem 1.5rem;
-        }
-        @media (max-width: 576px) {
-            .dept-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* ===== PIE CHART BELOW CARDS ===== */
-        .pie-row {
-            margin-top: 0.75rem;
-            padding-top: 0.75rem;
-            border-top: 1px solid #f1f5f9;
-        }
-        .pie-row .chart-wrapper-xs {
-            height: 80px;
-            width: 80px;
-        }
-
-        /* Stat card vertical */
+        /* ===== STAT CARD VERTICAL ===== */
         .stat-card-vertical {
             background: #fff;
             border-radius: 12px;
@@ -817,7 +720,7 @@
             margin-top: 1px;
         }
 
-        /* ===== COMPACT FIRST ROW ===== */
+        /* ===== COMPACT ===== */
         .card-compact {
             padding: 0.2rem 0.4rem !important;
         }
@@ -888,6 +791,88 @@
         }
         .card-compact .notif-item .notif-time {
             font-size: 0.4rem;
+        }
+
+        /* ===== EXPANDED REVENUE CARDS ===== */
+        .revenue-card-expanded {
+            height: 100% !important;
+            min-height: 240px !important;
+        }
+        .revenue-card-expanded .chart-wrapper {
+            height: 170px !important;
+            margin: 0.1rem 0;
+        }
+        .revenue-card-expanded .stat-number {
+            font-size: 1.1rem !important;
+        }
+        .revenue-card-expanded .stat-label {
+            font-size: 0.5rem !important;
+        }
+        .revenue-card-expanded .card-title {
+            font-size: 0.65rem !important;
+        }
+        .revenue-card-expanded .mini-badge {
+            font-size: 0.5rem !important;
+            padding: 0.05rem 0.4rem;
+        }
+        .revenue-card-expanded .month-labels {
+            font-size: 0.4rem !important;
+        }
+
+        /* Department cards expanded */
+        .dept-card-expanded {
+            padding: 0.8rem 0.9rem !important;
+            min-height: 240px !important;
+        }
+        .dept-card-expanded .card-title {
+            font-size: 0.75rem !important;
+            margin-bottom: 0.3rem !important;
+        }
+        .dept-card-expanded .dept-row {
+            padding: 0.2rem 0 !important;
+            font-size: 0.7rem !important;
+        }
+        .dept-card-expanded .dept-row .dept-change {
+            font-size: 0.55rem !important;
+        }
+        .dept-card-expanded .dept-row .dept-value {
+            font-size: 0.7rem !important;
+        }
+        .dept-card-expanded .dept-row .dept-name {
+            font-size: 0.7rem !important;
+        }
+        .dept-card-expanded .chart-wrapper-doughnut {
+            height: 140px !important;
+            width: 140px !important;
+        }
+
+        /* Notification card expanded */
+        .notif-card-expanded {
+            min-height: 390px !important;
+            height: 100% !important;
+            padding: 1.2rem 1.2rem !important;
+        }
+        .notif-card-expanded .notif-scroll {
+            max-height: 100% !important;
+        }
+
+        @media (max-width: 576px) {
+            .revenue-card-expanded {
+                min-height: 180px !important;
+            }
+            .revenue-card-expanded .chart-wrapper {
+                height: 70px !important;
+            }
+            .dept-card-expanded {
+                min-height: 180px !important;
+            }
+            .dept-card-expanded .chart-wrapper-doughnut {
+                height: 100px !important;
+                width: 100px !important;
+            }
+            .notif-card-expanded {
+                min-height: 280px !important;
+            }
         }
 
         /* ===== FLOATING CHATBOT ===== */
@@ -1008,9 +993,6 @@
             font-weight: 500;
             margin-bottom: 0.5rem;
         }
-        .chat-window .chat-body .chat-greeting span {
-            font-size: 0.9rem;
-        }
         .chat-window .chat-body .chat-btn-list {
             display: flex;
             flex-direction: column;
@@ -1094,12 +1076,60 @@
                 font-size: 1.1rem;
             }
         }
+
+        @media (max-width: 768px) {
+            .notif-item {
+                padding: 0.35rem 0;
+                gap: 8px;
+            }
+            .notif-item .notif-text {
+                font-size: 0.7rem;
+            }
+            .notif-item .notif-time {
+                font-size: 0.55rem;
+            }
+            .notif-item .notif-badge {
+                font-size: 0.45rem;
+                padding: 0.05rem 0.35rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .card-compact .chart-wrapper {
+                height: 60px !important;
+            }
+            .card-compact .stat-number {
+                font-size: 0.75rem !important;
+            }
+            .card-compact .card-title {
+                font-size: 0.5rem !important;
+            }
+            .card-compact .mini-badge {
+                font-size: 0.35rem !important;
+                padding: 0.03rem 0.25rem;
+            }
+            .stat-card-vertical {
+                padding: 0.5rem 0.6rem;
+            }
+            .stat-card-vertical .stat-number {
+                font-size: 1rem;
+            }
+            .stat-card-vertical .stat-label {
+                font-size: 0.5rem;
+            }
+            .stat-card-vertical .stat-sub {
+                font-size: 0.4rem;
+            }
+        }
     </style>
 </head>
 <body>
 
+<!-- ===== IMPORT SIDEBAR FRAGMENT ===== -->
 <div th:replace="~{fragments/sidebar-admin :: sidebar-component}"></div>
 
+<!-- ===== SIDEBAR OVERLAY (for mobile) ===== -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
 <!-- ===== MAIN CONTENT ===== -->
 <div class="main-content">
@@ -1110,7 +1140,10 @@
             <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">
                 <i class="fa-solid fa-bars"></i>
             </button>
-            <h4 th:text="'Hi, ' + (${loggedInUser} ?: 'Super Admin')">Hi, Super Admin</h4>
+            <h4>
+                Hi, Sujit Kumar
+                <small>Here's what's happening with your company today.</small>
+            </h4>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
@@ -1129,32 +1162,32 @@
     </div>
 
     <!-- ============================================================= -->
-    <!--  ROW 1: 2×2 Revenue Grid (Company + Dept) + Right Sidebar      -->
+    <!--  ROW 1: 2×2 Revenue Grid (Expanded) + Notifications           -->
     <!-- ============================================================= -->
     <div class="row g-3 mb-3">
-        <!-- LEFT COLUMN: Company Revenue (Yearly/Monthly) + Department Revenue (Monthly/Yearly) -->
-        <div class="col-lg-6">
+        <!-- LEFT COLUMN: 2×2 Revenue Grid (expanded to col-xl-8) -->
+        <div class="col-xl-8 col-lg-7 col-md-12">
             <div class="row g-2">
-                <!-- Yearly Revenue -->
-                <div class="col-md-6">
-                    <div class="card-custom card-compact h-100" style="height: 185px; align-self: flex-start;">
+                <!-- Yearly Revenue (expanded) -->
+                <div class="col-md-6 col-sm-6 col-12">
+                    <div class="card-custom card-compact revenue-card-expanded h-100" style="align-self: flex-start;">
                         <div class="d-flex justify-content-between align-items-center" style="margin-bottom:0.1rem; padding-top: 5px">
-                            <span class="card-title" style="font-size:0.6rem; font-weight:600;">
+                            <span class="card-title" style="font-size:0.65rem; font-weight:600;">
                                 <i class="fa-solid fa-chart-line me-1" style="color:#1a56db;"></i> Company Revenue – Yearly
                             </span>
-                            <span class="mini-badge green" style="font-size:0.45rem; padding:0.05rem 0.35rem;">
+                            <span class="mini-badge green" style="font-size:0.5rem; padding:0.05rem 0.4rem;">
                                 <i class="fa-regular fa-circle-check"></i> +18%
                             </span>
                         </div>
-                        <div class="chart-wrapper" style="height:90px; margin:0.1rem 0; padding-top: 3px">
+                        <div class="chart-wrapper" style="height:200px; margin:0.1rem 0; padding-top: 3px">
                             <canvas id="yearlyRevenueChart"></canvas>
                         </div>
                         <div class="d-flex justify-content-between align-items-center" style="margin-top:0.1rem; padding-top: 5px">
                             <div>
-                                <span class="stat-number" style="font-size:0.9rem; font-weight:700;">₹12.5M</span>
-                                <span class="stat-label" style="font-size:0.45rem; display:block; color:#64748b; line-height:1.2;">Net Revenue</span>
+                                <span class="stat-number" style="font-size:1.1rem; font-weight:700;">₹12.5M</span>
+                                <span class="stat-label" style="font-size:0.5rem; display:block; color:#64748b; line-height:1.2;">Net Revenue</span>
                             </div>
-                            <div style="font-size:0.35rem; color:#94a3b8; text-align:right; line-height:1.1;">
+                            <div style="font-size:0.4rem; color:#94a3b8; text-align:right; line-height:1.1;">
                                 <span>Jan</span> <span>Feb</span> <span>Mar</span> <span>Apr</span> <span>May</span> <span>Jun</span><br>
                                 <span>Jul</span> <span>Aug</span> <span>Sep</span> <span>Oct</span> <span>Nov</span> <span>Dec</span>
                             </div>
@@ -1162,224 +1195,128 @@
                     </div>
                 </div>
 
-                <!-- Monthly Revenue -->
-                <div class="col-md-6">
-                    <div class="card-custom card-compact h-100" style="height: 185px; align-self: flex-start;">
+                <!-- Monthly Revenue (expanded) -->
+                <div class="col-md-6 col-sm-6 col-12">
+                    <div class="card-custom card-compact revenue-card-expanded h-100" style="align-self: flex-start;">
                         <div class="d-flex justify-content-between align-items-center" style="margin-bottom:0.1rem;padding-top: 5px">
-                            <span class="card-title" style="font-size:0.6rem; font-weight:600;">
+                            <span class="card-title" style="font-size:0.65rem; font-weight:600;">
                                 <i class="fa-solid fa-chart-simple me-1" style="color:#0b7e3d;"></i> Company Revenue – Monthly
                             </span>
-                            <span class="mini-badge green" style="font-size:0.45rem; padding:0.05rem 0.35rem;">
+                            <span class="mini-badge green" style="font-size:0.5rem; padding:0.05rem 0.4rem;">
                                 <i class="fa-regular fa-circle-check"></i> +4.2%
                             </span>
                         </div>
-                        <div class="chart-wrapper" style="height:90px; margin:0.1rem 0; padding-top: 3px">
+                        <div class="chart-wrapper" style="height:200px; margin:0.1rem 0; padding-top: 3px">
                             <canvas id="monthlyRevenueChart"></canvas>
                         </div>
                         <div class="d-flex justify-content-between align-items-center" style="margin-top:0.1rem;  padding-top: 5px">
                             <div>
-                                <span class="stat-number" style="font-size:0.9rem; font-weight:700;">₹1.05M</span>
-                                <span class="stat-label" style="font-size:0.45rem; display:block; color:#64748b; line-height:1.2;">Net Revenue</span>
+                                <span class="stat-number" style="font-size:1.1rem; font-weight:700;">₹1.05M</span>
+                                <span class="stat-label" style="font-size:0.5rem; display:block; color:#64748b; line-height:1.2;">Net Revenue</span>
                             </div>
-                            <div style="font-size:0.35rem; color:#94a3b8; text-align:right; line-height:1.1;">
+                            <div style="font-size:0.4rem; color:#94a3b8; text-align:right; line-height:1.1;">
                                 <span>Jan</span> <span>Feb</span> <span>Mar</span> <span>Apr</span> <span>May</span> <span>Jun</span><br>
                                 <span>Jul</span> <span>Aug</span> <span>Sep</span> <span>Oct</span> <span>Nov</span> <span>Dec</span>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="section-title"><i class="fa-solid fa-building-columns"></i> Department Revenue</div>
-                <!-- Dept Monthly -->
-                <div class="col-md-6">
-                    <div class="card-custom h-100" style="padding: 0.7rem 0.9rem;">
-                        <div class="card-title" style="font-size:0.7rem; margin-bottom:0.3rem;">
+
+                <div class="col-12"><div class="section-title"><i class="fa-solid fa-building-columns"></i> Department Revenue</div></div>
+
+                <!-- Dept Monthly (expanded) -->
+                <div class="col-md-6 col-sm-6 col-12">
+                    <div class="card-custom dept-card-expanded h-100">
+                        <div class="card-title" style="font-size:0.75rem; margin-bottom:0.3rem;">
                             <i class="fa-regular fa-calendar me-1"></i> Department Revenue – Monthly
                         </div>
-                        <div class="d-flex align-items-center" style="gap: 0.25rem;">
-                            <div style="flex-shrink:0; width:120px; height:120px;">
+                        <div class="d-flex align-items-center" style="gap: 0.25rem; flex-wrap: wrap; height:100%;">
+                            <div style="flex-shrink:0; width:140px; height:140px; margin:0 auto;">
                                 <canvas id="monthlyDeptDoughnutLeft"></canvas>
                             </div>
-                            <div style="flex:1; padding-left: 0.25rem;">
-                                <div class="dept-row" style="padding:0.15rem 0; font-size:0.65rem;">
+                            <div style="flex:1; padding-left: 0.25rem; min-width:140px;">
+                                <div class="dept-row" style="padding:0.2rem 0; font-size:0.7rem; border-bottom:1px solid #f1f5f9;">
                                     <span class="dept-name"><span style="display:inline-block; width:10px; height:10px; background:#1a56db; border-radius:3px; margin-right:4px;"></span>Java</span>
                                     <span class="dept-value">₹0.35M</span>
-                                    <span class="dept-change up" style="font-size:0.5rem;">+3%</span>
+                                    <span class="dept-change up" style="font-size:0.55rem;">+3%</span>
                                 </div>
-                                <div class="dept-row" style="padding:0.15rem 0; font-size:0.65rem;">
+                                <div class="dept-row" style="padding:0.2rem 0; font-size:0.7rem; border-bottom:1px solid #f1f5f9;">
                                     <span class="dept-name"><span style="display:inline-block; width:10px; height:10px; background:#0b7e3d; border-radius:3px; margin-right:4px;"></span>Python</span>
                                     <span class="dept-value">₹0.26M</span>
-                                    <span class="dept-change down" style="font-size:0.5rem;">-2%</span>
+                                    <span class="dept-change down" style="font-size:0.55rem;">-2%</span>
                                 </div>
-                                <div class="dept-row" style="padding:0.15rem 0; font-size:0.65rem;">
+                                <div class="dept-row" style="padding:0.2rem 0; font-size:0.7rem; border-bottom:1px solid #f1f5f9;">
                                     <span class="dept-name"><span style="display:inline-block; width:10px; height:10px; background:#c2410c; border-radius:3px; margin-right:4px;"></span>Salesforce</span>
                                     <span class="dept-value">₹0.23M</span>
-                                    <span class="dept-change up" style="font-size:0.5rem;">+6%</span>
+                                    <span class="dept-change up" style="font-size:0.55rem;">+6%</span>
                                 </div>
-                                <div class="dept-row" style="padding:0.15rem 0; font-size:0.65rem;">
+                                <div class="dept-row" style="padding:0.2rem 0; font-size:0.7rem; border-bottom:1px solid #f1f5f9;">
                                     <span class="dept-name"><span style="display:inline-block; width:10px; height:10px; background:#6d28d9; border-radius:3px; margin-right:4px;"></span>Magento</span>
                                     <span class="dept-value">₹0.07M</span>
-                                    <span class="dept-change up" style="font-size:0.5rem;">+4%</span>
+                                    <span class="dept-change up" style="font-size:0.55rem;">+4%</span>
                                 </div>
-                                <div class="dept-row" style="padding:0.15rem 0; font-size:0.65rem; border-bottom:none;">
+                                <div class="dept-row" style="padding:0.2rem 0; font-size:0.7rem; border-bottom:none;">
                                     <span class="dept-name"><span style="display:inline-block; width:10px; height:10px; background:#0e7490; border-radius:3px; margin-right:4px;"></span>Dynamics</span>
                                     <span class="dept-value">₹0.05M</span>
-                                    <span class="dept-change neutral" style="font-size:0.5rem;">+1%</span>
+                                    <span class="dept-change neutral" style="font-size:0.55rem;">+1%</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Dept Yearly -->
-                <div class="col-md-6">
-                    <div class="card-custom h-100" style="padding: 0.7rem 0.9rem;">
-                        <div class="card-title" style="font-size:0.7rem; margin-bottom:0.3rem;">
+                <!-- Dept Yearly (expanded) -->
+                <div class="col-md-6 col-sm-6 col-12">
+                    <div class="card-custom dept-card-expanded h-100">
+                        <div class="card-title" style="font-size:0.75rem; margin-bottom:0.3rem;">
                             <i class="fa-regular fa-calendar-plus me-1"></i> Department Revenue – Yearly
                         </div>
-                        <div class="d-flex align-items-center" style="gap: 0.25rem;">
-                            <div style="flex-shrink:0; width:120px; height:120px;">
+                        <div class="d-flex align-items-center" style="gap: 0.25rem; flex-wrap: wrap; height:100%;">
+                            <div style="flex-shrink:0; width:140px; height:140px; margin:0 auto;">
                                 <canvas id="yearlyDeptDoughnutLeft"></canvas>
                             </div>
-                            <div style="flex:1; padding-left: 0.25rem;">
-                                <div class="dept-row" style="padding:0.15rem 0; font-size:0.65rem;">
+                            <div style="flex:1; padding-left: 0.25rem; min-width:140px;">
+                                <div class="dept-row" style="padding:0.2rem 0; font-size:0.7rem; border-bottom:1px solid #f1f5f9;">
                                     <span class="dept-name"><span style="display:inline-block; width:10px; height:10px; background:#1a56db; border-radius:3px; margin-right:4px;"></span>Java</span>
                                     <span class="dept-value">₹4.2M</span>
-                                    <span class="dept-change up" style="font-size:0.5rem;">+22%</span>
+                                    <span class="dept-change up" style="font-size:0.55rem;">+22%</span>
                                 </div>
-                                <div class="dept-row" style="padding:0.15rem 0; font-size:0.65rem;">
+                                <div class="dept-row" style="padding:0.2rem 0; font-size:0.7rem; border-bottom:1px solid #f1f5f9;">
                                     <span class="dept-name"><span style="display:inline-block; width:10px; height:10px; background:#0b7e3d; border-radius:3px; margin-right:4px;"></span>Python</span>
                                     <span class="dept-value">₹3.1M</span>
-                                    <span class="dept-change up" style="font-size:0.5rem;">+18%</span>
+                                    <span class="dept-change up" style="font-size:0.55rem;">+18%</span>
                                 </div>
-                                <div class="dept-row" style="padding:0.15rem 0; font-size:0.65rem;">
+                                <div class="dept-row" style="padding:0.2rem 0; font-size:0.7rem; border-bottom:1px solid #f1f5f9;">
                                     <span class="dept-name"><span style="display:inline-block; width:10px; height:10px; background:#c2410c; border-radius:3px; margin-right:4px;"></span>Salesforce</span>
                                     <span class="dept-value">₹2.8M</span>
-                                    <span class="dept-change up" style="font-size:0.5rem;">+16%</span>
+                                    <span class="dept-change up" style="font-size:0.55rem;">+16%</span>
                                 </div>
-                                <div class="dept-row" style="padding:0.15rem 0; font-size:0.65rem;">
+                                <div class="dept-row" style="padding:0.2rem 0; font-size:0.7rem; border-bottom:1px solid #f1f5f9;">
                                     <span class="dept-name"><span style="display:inline-block; width:10px; height:10px; background:#6d28d9; border-radius:3px; margin-right:4px;"></span>Magento</span>
                                     <span class="dept-value">₹0.9M</span>
-                                    <span class="dept-change up" style="font-size:0.5rem;">+12%</span>
+                                    <span class="dept-change up" style="font-size:0.55rem;">+12%</span>
                                 </div>
-                                <div class="dept-row" style="padding:0.15rem 0; font-size:0.65rem; border-bottom:none;">
+                                <div class="dept-row" style="padding:0.2rem 0; font-size:0.7rem; border-bottom:none;">
                                     <span class="dept-name"><span style="display:inline-block; width:10px; height:10px; background:#0e7490; border-radius:3px; margin-right:4px;"></span>Dynamics</span>
                                     <span class="dept-value">₹0.6M</span>
-                                    <span class="dept-change neutral" style="font-size:0.5rem;">+5%</span>
+                                    <span class="dept-change neutral" style="font-size:0.55rem;">+5%</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <!-- Overview (Full Width) – remains below the 2×2 grid -->
             </div>
         </div>
 
-        <!-- RIGHT COLUMN: Profit/Loss + Notifications SIDE BY SIDE (horizontal) -->
-        <div class="col-lg-6">
-            <div class="row g-2" style="height: 90%;">
-                <!-- Profit & Loss (left half) -->
-                <div class="col-4">
-                    <div class="card-custom card-compact d-flex flex-column justify-content-around" style="min-height: 316px; height: 100%;">
-                        <!-- Profit Yearly -->
-                        <div class="d-flex justify-content-between align-items-center py-1 border-bottom" style="border-color: #f1f5f9;">
-                            <div style="padding: 8px">
-                                <div class="d-flex align-items-center gap-2">
-                                    <span class="pl-value" style="font-size:0.85rem; font-weight:700; color:#0b7e3d;">₹3.2M</span>
-                                </div>
-                                <div class="pl-label" style="font-size:0.45rem; color:#64748b; font-weight:500; line-height:1.1;">Profit (Yearly)</div>
-                                <div class="pl-meta" style="font-size:0.4rem; color:#0b7e3d; line-height:1.1;">25.6% margin</div>
-                            </div>
-                            <div class="d-flex align-items-center gap-1">
-                                <div style="width: 40px; height: 18px;">
-                                    <svg viewBox="0 0 50 20" style="width: 100%; height: 100%;">
-                                        <path d="M 0 12 L 10 8 L 20 10 L 30 6 L 40 2" stroke="#22c55e" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
-                                </div>
-                                <div class="d-flex justify-content-center align-items-center rounded-2" style="width: 28px; height: 28px; background-color: #dcfce7;">
-                                    <svg width="12" height="12" viewBox="0 0 16 16">
-                                        <path d="M 2 12 L 12 2 M 12 2 L 8 2 M 12 2 L 12 6" stroke="#22c55e" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Profit Monthly -->
-                        <div class="d-flex justify-content-between align-items-center py-1 border-bottom" style="border-color: #f1f5f9;">
-                            <div style="padding: 8px">
-                                <div class="d-flex align-items-center gap-2">
-                                    <span class="pl-value" style="font-size:0.85rem; font-weight:700; color:#0b7e3d;">₹0.28M</span>
-                                </div>
-                                <div class="pl-label" style="font-size:0.45rem; color:#64748b; font-weight:500; line-height:1.1;">Profit (Monthly)</div>
-                                <div class="pl-meta" style="font-size:0.4rem; color:#0b7e3d; line-height:1.1;">26.7% margin</div>
-                            </div>
-                            <div class="d-flex align-items-center gap-1">
-                                <div style="width: 40px; height: 18px;">
-                                    <svg viewBox="0 0 50 20" style="width: 100%; height: 100%;">
-                                        <path d="M 0 14 L 10 10 L 20 12 L 30 8 L 40 4" stroke="#22c55e" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
-                                </div>
-                                <div class="d-flex justify-content-center align-items-center rounded-2" style="width: 28px; height: 28px; background-color: #dcfce7;">
-                                    <svg width="12" height="12" viewBox="0 0 16 16">
-                                        <path d="M 2 12 L 12 2 M 12 2 L 8 2 M 12 2 L 12 6" stroke="#22c55e" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Loss Yearly -->
-                        <div class="d-flex justify-content-between align-items-center py-1 border-bottom" style="border-color: #f1f5f9;">
-                            <div style="padding: 8px">
-                                <div class="d-flex align-items-center gap-2 ">
-                                    <span class="pl-value" style="font-size:0.85rem; font-weight:700; color:#b91c1c;">₹0.8M</span>
-                                </div>
-                                <div class="pl-label" style="font-size:0.45rem; color:#64748b; font-weight:500; line-height:1.1;">Loss (Yearly)</div>
-                                <div class="pl-meta" style="font-size:0.4rem; color:#b91c1c; line-height:1.1;">-6.4% of revenue</div>
-                            </div>
-                            <div class="d-flex align-items-center gap-1">
-                                <div style="width: 40px; height: 18px;">
-                                    <svg viewBox="0 0 50 20" style="width: 100%; height: 100%;">
-                                        <path d="M 0 4 L 10 8 L 20 6 L 30 10 L 40 12" stroke="#ef4444" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
-                                </div>
-                                <div class="d-flex justify-content-center align-items-center rounded-2" style="width: 28px; height: 28px; background-color: #fee2e2;">
-                                    <svg width="12" height="12" viewBox="0 0 16 16">
-                                        <path d="M 2 2 L 12 12 M 12 12 L 8 12 M 12 12 L 12 8" stroke="#ef4444" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Loss Monthly -->
-                        <div class="d-flex justify-content-between align-items-center py-1">
-                            <div style="padding: 8px">
-                                <div class="d-flex align-items-center gap-2">
-                                    <span class="pl-value" style="font-size:0.85rem; font-weight:700; color:#c2410c;">₹0.07M</span>
-                                </div>
-                                <div class="pl-label" style="font-size:0.45rem; color:#64748b; font-weight:500; line-height:1.1;">Loss (Monthly)</div>
-                                <div class="pl-meta" style="font-size:0.4rem; color:#c2410c; line-height:1.1;">-6.7% of revenue</div>
-                            </div>
-                            <div class="d-flex align-items-center gap-1">
-                                <div style="width: 40px; height: 18px;">
-                                    <svg viewBox="0 0 50 20" style="width: 100%; height: 100%;">
-                                        <path d="M 0 2 L 10 6 L 20 4 L 30 8 L 40 12" stroke="#ef4444" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
-                                </div>
-                                <div class="d-flex justify-content-center align-items-center rounded-2" style="width: 28px; height: 28px; background-color: #fee2e2;">
-                                    <svg width="12" height="12" viewBox="0 0 16 16">
-                                        <path d="M 2 2 L 12 12 M 12 12 L 8 12 M 12 12 L 12 8" stroke="#ef4444" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-8">
-                    <div class="card-custom card-compact d-flex flex-column" style="min-height: 390px; height: 100%; position: relative; padding: 1.2rem 1.2rem !important;">
-                        <!-- Header -->
-                        <!-- Header -->
+        <!-- RIGHT COLUMN: Notifications (col-xl-4) -->
+        <div class="col-xl-4 col-lg-5 col-md-12">
+            <div class="row g-2" style="height: 100%;">
+                <div class="col-12" style="height: 100%;">
+                    <div class="card-custom card-compact notif-card-expanded d-flex flex-column" style="height: 100%; position: relative; padding: 1.2rem 1.2rem !important;">
                         <div class="d-flex justify-content-between align-items-center mb-3" style="padding-left: 2px; padding-top: 0px;">
-    <span class="fw-semibold" style="font-size:0.95rem; color:#0f172a; letter-spacing:-0.01em;">
-        <i class="fa-regular fa-bell me-2" style="color:#c2410c;"></i> Notifications
-    </span>
+                            <span class="fw-semibold" style="font-size:0.95rem; color:#0f172a; letter-spacing:-0.01em;">
+                                <i class="fa-regular fa-bell me-2" style="color:#c2410c;"></i> Notifications
+                            </span>
                             <div class="d-flex align-items-center gap-3">
                                 <span class="mini-badge red" style="font-size:0.7rem; padding:0.2rem 0.7rem; background:#fde8e8; color:#b91c1c; border-radius:20px; font-weight:600;">5 new</span>
                                 <a href="#" class="view-all-link" style="font-size:0.65rem; color:#1a56db; font-weight:500; text-decoration:none; white-space:nowrap;">
@@ -1387,396 +1324,419 @@
                                 </a>
                             </div>
                         </div>
-
-                        <!-- Notification List -->
                         <div class="notif-scroll" style="flex:1; max-height: 100%; padding-left: 2px;">
-
-                            <!-- 1. Leave Requests -->
                             <div class="notif-item" style="display:flex; align-items:center; padding:0.55rem 0; border-bottom:1px solid #f1f5f9; gap:12px;">
                                 <span class="notif-dot" style="background:#e67e22; width:10px; height:10px; border-radius:50%; flex-shrink:0;"></span>
                                 <span class="notif-text" style="flex:1; font-size:0.8rem; color:#1e293b; line-height:1.4;">
-                    <strong>5 Leave Requests</strong>
-                    <span class="notif-badge pending" style="display:inline-block; font-size:0.55rem; padding:0.1rem 0.6rem; border-radius:12px; background:#fef3c7; color:#b45309; font-weight:500; margin-left:6px;">Pending approval</span>
-                </span>
+                                    <strong>5 Leave Requests</strong>
+                                    <span class="notif-badge pending" style="display:inline-block; font-size:0.55rem; padding:0.1rem 0.6rem; border-radius:12px; background:#fef3c7; color:#b45309; font-weight:500; margin-left:6px;">Pending</span>
+                                </span>
                                 <span class="notif-time" style="font-size:0.65rem; color:#94a3b8; white-space:nowrap;">10m</span>
                             </div>
-
-                            <!-- 2. Payroll -->
                             <div class="notif-item" style="display:flex; align-items:center; padding:0.55rem 0; border-bottom:1px solid #f1f5f9; gap:12px;">
                                 <span class="notif-dot" style="background:#1a56db; width:10px; height:10px; border-radius:50%; flex-shrink:0;"></span>
                                 <span class="notif-text" style="flex:1; font-size:0.8rem; color:#1e293b; line-height:1.4;">
-                    <strong>Payroll for July</strong>
-                    <span class="notif-badge processing" style="display:inline-block; font-size:0.55rem; padding:0.1rem 0.6rem; border-radius:12px; background:#dbeafe; color:#1d4ed8; font-weight:500; margin-left:6px;">Processing pending</span>
-                </span>
+                                    <strong>Payroll for July</strong>
+                                    <span class="notif-badge processing" style="display:inline-block; font-size:0.55rem; padding:0.1rem 0.6rem; border-radius:12px; background:#dbeafe; color:#1d4ed8; font-weight:500; margin-left:6px;">Processing</span>
+                                </span>
                                 <span class="notif-time" style="font-size:0.65rem; color:#94a3b8; white-space:nowrap;">30m</span>
                             </div>
-
-                            <!-- 3. New Employees -->
                             <div class="notif-item" style="display:flex; align-items:center; padding:0.55rem 0; border-bottom:1px solid #f1f5f9; gap:12px;">
                                 <span class="notif-dot" style="background:#0b7e3d; width:10px; height:10px; border-radius:50%; flex-shrink:0;"></span>
                                 <span class="notif-text" style="flex:1; font-size:0.8rem; color:#1e293b; line-height:1.4;">
-                    <strong>2 New Employees</strong>
-                    <span class="notif-badge joined" style="display:inline-block; font-size:0.55rem; padding:0.1rem 0.6rem; border-radius:12px; background:#d1fae5; color:#065f46; font-weight:500; margin-left:6px;">Joined today</span>
-                </span>
+                                    <strong>2 New Employees</strong>
+                                    <span class="notif-badge joined" style="display:inline-block; font-size:0.55rem; padding:0.1rem 0.6rem; border-radius:12px; background:#d1fae5; color:#065f46; font-weight:500; margin-left:6px;">Joined</span>
+                                </span>
                                 <span class="notif-time" style="font-size:0.65rem; color:#94a3b8; white-space:nowrap;">1h</span>
                             </div>
-
-                            <!-- 4. Project Deadline -->
                             <div class="notif-item" style="display:flex; align-items:center; padding:0.55rem 0; border-bottom:1px solid #f1f5f9; gap:12px;">
                                 <span class="notif-dot" style="background:#b91c1c; width:10px; height:10px; border-radius:50%; flex-shrink:0;"></span>
                                 <span class="notif-text" style="flex:1; font-size:0.8rem; color:#1e293b; line-height:1.4;">
-                    <strong>Project Deadline</strong>
-                    <span class="notif-badge deadline" style="display:inline-block; font-size:0.55rem; padding:0.1rem 0.6rem; border-radius:12px; background:#fee2e2; color:#991b1b; font-weight:500; margin-left:6px;">Website Revamp</span>
-                </span>
+                                    <strong>Project Deadline</strong>
+                                    <span class="notif-badge deadline" style="display:inline-block; font-size:0.55rem; padding:0.1rem 0.6rem; border-radius:12px; background:#fee2e2; color:#991b1b; font-weight:500; margin-left:6px;">Website</span>
+                                </span>
                                 <span class="notif-time" style="font-size:0.65rem; color:#94a3b8; white-space:nowrap;">2h</span>
                             </div>
-
-                            <!-- 5. Attendance Missing -->
                             <div class="notif-item" style="display:flex; align-items:center; padding:0.55rem 0; border-bottom:none; gap:12px;">
                                 <span class="notif-dot" style="background:#64748b; width:10px; height:10px; border-radius:50%; flex-shrink:0;"></span>
                                 <span class="notif-text" style="flex:1; font-size:0.8rem; color:#1e293b; line-height:1.4;">
-                    <strong>Attendance Missing</strong>
-                    <span class="notif-badge missing" style="display:inline-block; font-size:0.55rem; padding:0.1rem 0.6rem; border-radius:12px; background:#f1f5f9; color:#475569; font-weight:500; margin-left:6px;">12 employees</span>
-                </span>
+                                    <strong>Attendance Missing</strong>
+                                    <span class="notif-badge missing" style="display:inline-block; font-size:0.55rem; padding:0.1rem 0.6rem; border-radius:12px; background:#f1f5f9; color:#475569; font-weight:500; margin-left:6px;">12 employees</span>
+                                </span>
                                 <span class="notif-time" style="font-size:0.65rem; color:#94a3b8; white-space:nowrap;">3h</span>
                             </div>
-
                         </div>
                     </div>
                 </div>
+            </div>
         </div>
     </div>
-        <!--  ROW: Onboarding Projects – Monthly & Yearly (2×2 grid)       -->
-        <!-- ============================================================= -->
-        <!-- ============================================================= -->
-        <!--  ROW: Onboarding Projects – Monthly + Yearly + Chatbot         -->
-        <!-- ============================================================= -->
-        <div class="row g-3 mb-4">
-            <!-- LEFT: Monthly -->
-            <div class="col-lg-4">
-                <div class="row g-2">
-                    <div class="col-12">
-                        <div class="d-flex justify-content-between align-items-center mb-1">
-                    <span class="section-title" style="font-size:0.85rem; font-weight:600; margin:0; border-bottom:none; padding-bottom:0;">
-                        <i class="fa-regular fa-calendar-plus me-1" style="color:#1a56db;"></i> Onboarding Projects – Monthly
-                    </span>
-                            <span class="badge-trend up" style="font-size:0.6rem; padding:0.1rem 0.6rem; background:#e6f7ed; color:#0b7e3d; border-radius:12px;">
-                        <i class="fa-regular fa-circle-check"></i> +3 vs last month
-                    </span>
-                        </div>
-                    </div>
 
-                    <!-- 3 Stat Cards -->
-                    <div class="col-md-4">
-                        <div class="stat-card-vertical" style="padding:0.5rem 0.6rem; min-height:80px; border:1px solid #e9edf4; border-radius:8px; background:#fafcff;">
-                            <div class="stat-number" style="font-size:1.2rem; font-weight:700; color:#0f172a;">12</div>
-                            <div class="stat-label" style="font-size:0.6rem; color:#64748b; font-weight:500;">Total Projects</div>
-                            <div class="stat-sub" style="font-size:0.5rem; color:#94a3b8;"><i class="fa-regular fa-circle-check text-success"></i> +3 vs last month</div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="stat-card-vertical" style="padding:0.5rem 0.6rem; min-height:80px; border:1px solid #e9edf4; border-radius:8px; background:#fafcff;">
-                            <div class="stat-number" style="font-size:1.2rem; font-weight:700; color:#0f172a;">₹0.35M</div>
-                            <div class="stat-label" style="font-size:0.6rem; color:#64748b; font-weight:500;">Net Revenue</div>
-                            <div class="stat-sub" style="font-size:0.5rem; color:#94a3b8;">Avg ₹29K per project</div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="stat-card-vertical" style="padding:0.5rem 0.6rem; min-height:80px; border:1px solid #e9edf4; border-radius:8px; background:#fafcff;">
-                            <div class="stat-number" style="font-size:1.2rem; font-weight:700; color:#0b7e3d;">₹0.09M</div>
-                            <div class="stat-label" style="font-size:0.6rem; color:#64748b; font-weight:500;">Profit</div>
-                            <div class="stat-sub" style="font-size:0.5rem; color:#94a3b8;">25.7% margin</div>
-                        </div>
-                    </div>
-
-                    <!-- Bar Chart -->
-                    <div class="col-12">
-                        <div class="card-custom" style="padding:0.5rem 0.7rem; border:1px solid #e9edf4; border-radius:8px; background:#fafcff;">
-                            <div style="font-size:0.55rem; color:#64748b; font-weight:500; margin-bottom:0.2rem;">Monthly Distribution</div>
-                            <div class="chart-wrapper" style="height:80px; width:100%;">
-                                <canvas id="monthlyBarChart"></canvas>
-                            </div>
-                        </div>
+    <!-- ============================================================= -->
+    <!--  ROW: Onboarding Projects – Monthly + Yearly + Chatbot        -->
+    <!-- ============================================================= -->
+    <div class="row g-3 mb-4">
+        <!-- Monthly -->
+        <div class="col-xl-4 col-lg-4 col-md-12">
+            <div class="row g-2">
+                <div class="col-12">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="section-title" style="font-size:0.85rem; font-weight:600; margin:0; border-bottom:none; padding-bottom:0;">
+                            <i class="fa-regular fa-calendar-plus me-1" style="color:#1a56db;"></i> Onboarding Projects – Monthly
+                        </span>
+                        <span class="badge-trend up" style="font-size:0.6rem; padding:0.1rem 0.6rem; background:#e6f7ed; color:#0b7e3d; border-radius:12px;">
+                            <i class="fa-regular fa-circle-check"></i> +3
+                        </span>
                     </div>
                 </div>
-            </div>
-
-            <!-- MIDDLE: Yearly -->
-            <div class="col-lg-4">
-                <div class="row g-2">
-                    <div class="col-12">
-                        <div class="d-flex justify-content-between align-items-center mb-1">
-                    <span class="section-title" style="font-size:0.85rem; font-weight:600; margin:0; border-bottom:none; padding-bottom:0;">
-                        <i class="fa-solid fa-rocket me-1" style="color:#1a56db;"></i> Onboarding Projects – Yearly
-                    </span>
-                            <span class="badge-trend up" style="font-size:0.6rem; padding:0.1rem 0.6rem; background:#e6f7ed; color:#0b7e3d; border-radius:12px;">
-                        <i class="fa-regular fa-circle-check"></i> +12 vs last year
-                    </span>
-                        </div>
-                    </div>
-
-                    <!-- 3 Stat Cards -->
-                    <div class="col-md-4">
-                        <div class="stat-card-vertical" style="padding:0.5rem 0.6rem; min-height:80px; border:1px solid #e9edf4; border-radius:8px; background:#fafcff;">
-                            <div class="stat-number" style="font-size:1.2rem; font-weight:700; color:#0f172a;">48</div>
-                            <div class="stat-label" style="font-size:0.6rem; color:#64748b; font-weight:500;">Total Projects</div>
-                            <div class="stat-sub" style="font-size:0.5rem; color:#94a3b8;"><i class="fa-regular fa-circle-check text-success"></i> +12 vs last year</div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="stat-card-vertical" style="padding:0.5rem 0.6rem; min-height:80px; border:1px solid #e9edf4; border-radius:8px; background:#fafcff;">
-                            <div class="stat-number" style="font-size:1.2rem; font-weight:700; color:#0f172a;">₹2.8M</div>
-                            <div class="stat-label" style="font-size:0.6rem; color:#64748b; font-weight:500;">Net Revenue</div>
-                            <div class="stat-sub" style="font-size:0.5rem; color:#94a3b8;">Avg ₹58K per project</div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="stat-card-vertical" style="padding:0.5rem 0.6rem; min-height:80px; border:1px solid #e9edf4; border-radius:8px; background:#fafcff;">
-                            <div class="stat-number" style="font-size:1.2rem; font-weight:700; color:#0b7e3d;">₹0.9M</div>
-                            <div class="stat-label" style="font-size:0.6rem; color:#64748b; font-weight:500;">Profit</div>
-                            <div class="stat-sub" style="font-size:0.5rem; color:#94a3b8;">32% margin</div>
-                        </div>
-                    </div>
-
-                    <!-- Bar Chart -->
-                    <div class="col-12">
-                        <div class="card-custom" style="padding:0.5rem 0.7rem; border:1px solid #e9edf4; border-radius:8px; background:#fafcff;">
-                            <div style="font-size:0.55rem; color:#64748b; font-weight:500; margin-bottom:0.2rem;">Yearly Distribution</div>
-                            <div class="chart-wrapper" style="height:80px; width:100%;">
-                                <canvas id="yearlyBarChart"></canvas>
-                            </div>
-                        </div>
+                <div class="col-md-4 col-sm-4 col-6">
+                    <div class="stat-card-vertical" style="padding:0.5rem 0.6rem; min-height:80px; border:1px solid #e9edf4; border-radius:8px; background:#fafcff;">
+                        <div class="stat-number" style="font-size:1.2rem; font-weight:700; color:#0f172a;">12</div>
+                        <div class="stat-label" style="font-size:0.6rem; color:#64748b; font-weight:500;">Total Projects</div>
+                        <div class="stat-sub" style="font-size:0.5rem; color:#94a3b8;"><i class="fa-regular fa-circle-check text-success"></i> +3 vs last month</div>
                     </div>
                 </div>
-            </div>
-
-            <!-- RIGHT: Chatbot Card -->
-            <div class="col-lg-4">
-                <div class="card-custom" style="height:100%; padding: 0.8rem 0.9rem; display:flex; flex-direction:column; min-height:340px;">
-                    <!-- Header -->
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <div class="d-flex align-items-center gap-2">
-                            <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center text-white fw-bold" style="width:28px; height:28px; font-size:0.5rem; background-color:#1a56db;">AI</div>
-                            <span style="font-size:0.9rem; font-weight:700; color:#0f172a;">BlueThink AI</span>
-                            <span class="badge bg-success" style="font-size:0.35rem; padding:0.1rem 0.3rem; background-color:#22c55e;">ON</span>
-                        </div>
-                        <div class="d-flex gap-2 text-secondary" style="font-size:0.5rem;">
-                            <i class="fa-solid fa-ellipsis-vertical" style="cursor:pointer;"></i>
-                            <i class="fa-solid fa-rotate-right" style="cursor:pointer;"></i>
-                        </div>
-                    </div>
-
-                    <!-- Greeting -->
-                    <div style="font-size:0.75rem; color:#0f172a; font-weight:500; margin-bottom:0.5rem; line-height:1.4;">
-                        Hi Admin! 👋 <br> How can I help you today?
-                    </div>
-
-                    <!-- Suggestion Buttons -->
-                    <div class="d-flex flex-column gap-1 mb-2 flex-grow-1">
-                        <button class="btn btn-outline-primary text-start px-3 py-1 border-0 bg-light" style="font-size:0.6rem; border-radius:12px; background-color:#f8fafc !important; color:#1a56db; font-weight:500;">
-                            Show this month's revenue summary
-                        </button>
-                        <button class="btn btn-outline-primary text-start px-3 py-1 border-0 bg-light" style="font-size:0.6rem; border-radius:12px; background-color:#f8fafc !important; color:#1a56db; font-weight:500;">
-                            Which department has highest profit?
-                        </button>
-                        <button class="btn btn-outline-primary text-start px-3 py-1 border-0 bg-light" style="font-size:0.6rem; border-radius:12px; background-color:#f8fafc !important; color:#1a56db; font-weight:500;">
-                            Show pending leave requests
-                        </button>
-                        <button class="btn btn-outline-primary text-start px-3 py-1 border-0 bg-light" style="font-size:0.6rem; border-radius:12px; background-color:#f8fafc !important; color:#1a56db; font-weight:500;">
-                            Project status overview
-                        </button>
-                    </div>
-
-                    <!-- Input -->
-                    <div class="input-group" style="height:28px;">
-                        <input type="text" class="form-control" placeholder="Type your question..." style="font-size:0.6rem; border-radius:20px 0 0 20px; border-color:#e9edf4; background:#f8fafc; padding:0.1rem 0.7rem;">
-                        <button class="btn btn-primary d-flex align-items-center justify-content-center" style="font-size:0.5rem; border-radius:0 20px 20px 0; padding:0.1rem 0.5rem; background-color:#1a56db; border-color:#1a56db;">
-                            <i class="fa-solid fa-paper-plane"></i>
-                        </button>
-                    </div>
-                    <div style="font-size:0.4rem; color:#94a3b8; text-align:right; margin-top:0.2rem;">Powered by BlueThink AI</div>
-                </div>
-            </div>
-        </div>
-
-
-        <!-- ============================================================= -->
-        <!--  ROW 4: Technology-wise Onboarding (Monthly & Yearly Tables)   -->
-        <!-- ============================================================= -->
-        <div class="section-title"><i class="fa-solid fa-code"></i> Technology-wise Onboarding Projects</div>
-        <div class="row g-3 mb-4">
-            <!-- Monthly Table -->
-            <div class="col-md-6">
-                <div class="card-custom">
-                    <div class="card-title" style="font-size:0.8rem;"><i class="fa-regular fa-calendar me-1"></i> Monthly</div>
-                    <div class="table-responsive">
-                        <table class="table table-custom">
-                            <thead>
-                            <tr>
-                                <th>Technology</th>
-                                <th class="text-end">Projects</th>
-                                <th class="text-end">Revenue</th>
-                                <th class="text-end">Profit</th>
-                                <th class="text-end">Loss</th>
-                                <th class="text-end">Margin</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr><td>Java</td><td class="text-end">10</td><td class="text-end">₹0.25M</td><td class="text-end" style="color:#0b7e3d;">₹0.07M</td><td class="text-end" style="color:#b91c1c;">₹0.03M</td><td class="text-end">28%</td></tr>
-                            <tr><td>Python</td><td class="text-end">8</td><td class="text-end">₹0.06M</td><td class="text-end" style="color:#0b7e3d;">₹0.02M</td><td class="text-end" style="color:#b91c1c;">₹0.01M</td><td class="text-end">25%</td></tr>
-                            <tr><td>Salesforce</td><td class="text-end">6</td><td class="text-end">₹0.03M</td><td class="text-end" style="color:#0b7e3d;">₹0.01M</td><td class="text-end" style="color:#b91c1c;">₹0.01M</td><td class="text-end">22%</td></tr>
-                            <tr><td>Magento</td><td class="text-end">4</td><td class="text-end">₹0.01M</td><td class="text-end" style="color:#0b7e3d;">₹0.00M</td><td class="text-end" style="color:#b91c1c;">₹0.00M</td><td class="text-end">20%</td></tr>
-                            <tr><td>Dynamics</td><td class="text-end">3</td><td class="text-end">₹0.00M</td><td class="text-end" style="color:#0b7e3d;">₹0.00M</td><td class="text-end" style="color:#b91c1c;">₹0.00M</td><td class="text-end">15%</td></tr>
-                            <tr class="total-row"><td><strong>Total</strong></td><td class="text-end"><strong>31</strong></td><td class="text-end"><strong>₹0.35M</strong></td><td class="text-end" style="color:#0b7e3d;"><strong>₹0.09M</strong></td><td class="text-end" style="color:#b91c1c;"><strong>₹0.07M</strong></td><td class="text-end"><strong>25.7%</strong></td></tr>
-                            </tbody>
-                        </table>
+                <div class="col-md-4 col-sm-4 col-6">
+                    <div class="stat-card-vertical" style="padding:0.5rem 0.6rem; min-height:80px; border:1px solid #e9edf4; border-radius:8px; background:#fafcff;">
+                        <div class="stat-number" style="font-size:1.2rem; font-weight:700; color:#0f172a;">₹0.35M</div>
+                        <div class="stat-label" style="font-size:0.6rem; color:#64748b; font-weight:500;">Net Revenue</div>
+                        <div class="stat-sub" style="font-size:0.5rem; color:#94a3b8;">Avg ₹29K</div>
                     </div>
                 </div>
-            </div>
-            <!-- Yearly Table -->
-            <div class="col-md-6">
-                <div class="card-custom">
-                    <div class="card-title" style="font-size:0.8rem;"><i class="fa-regular fa-calendar-plus me-1"></i> Yearly</div>
-                    <div class="table-responsive">
-                        <table class="table table-custom">
-                            <thead>
-                            <tr>
-                                <th>Technology</th>
-                                <th class="text-end">Projects</th>
-                                <th class="text-end">Revenue</th>
-                                <th class="text-end">Profit</th>
-                                <th class="text-end">Loss</th>
-                                <th class="text-end">Margin</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr><td>Java</td><td class="text-end">20</td><td class="text-end">₹1.40M</td><td class="text-end" style="color:#0b7e3d;">₹0.45M</td><td class="text-end" style="color:#b91c1c;">₹0.16M</td><td class="text-end">28%</td></tr>
-                            <tr><td>Python</td><td class="text-end">12</td><td class="text-end">₹0.70M</td><td class="text-end" style="color:#0b7e3d;">₹0.20M</td><td class="text-end" style="color:#b91c1c;">₹0.10M</td><td class="text-end">25%</td></tr>
-                            <tr><td>Salesforce</td><td class="text-end">8</td><td class="text-end">₹0.36M</td><td class="text-end" style="color:#0b7e3d;">₹0.11M</td><td class="text-end" style="color:#b91c1c;">₹0.06M</td><td class="text-end">22%</td></tr>
-                            <tr><td>Magento</td><td class="text-end">5</td><td class="text-end">₹0.20M</td><td class="text-end" style="color:#0b7e3d;">₹0.06M</td><td class="text-end" style="color:#b91c1c;">₹0.03M</td><td class="text-end">20%</td></tr>
-                            <tr><td>Dynamics</td><td class="text-end">3</td><td class="text-end">₹0.15M</td><td class="text-end" style="color:#0b7e3d;">₹0.03M</td><td class="text-end" style="color:#b91c1c;">₹0.02M</td><td class="text-end">15%</td></tr>
-                            <tr class="total-row"><td><strong>Total</strong></td><td class="text-end"><strong>48</strong></td><td class="text-end"><strong>₹2.80M</strong></td><td class="text-end" style="color:#0b7e3d;"><strong>₹0.90M</strong></td><td class="text-end" style="color:#b91c1c;"><strong>₹0.39M</strong></td><td class="text-end"><strong>32%</strong></td></tr>
-                            </tbody>
-                        </table>
+                <div class="col-md-4 col-sm-4 col-12">
+                    <div class="stat-card-vertical" style="padding:0.5rem 0.6rem; min-height:80px; border:1px solid #e9edf4; border-radius:8px; background:#fafcff;">
+                        <div class="stat-number" style="font-size:1.2rem; font-weight:700; color:#0b7e3d;">₹0.09M</div>
+                        <div class="stat-label" style="font-size:0.6rem; color:#64748b; font-weight:500;">Profit</div>
+                        <div class="stat-sub" style="font-size:0.5rem; color:#94a3b8;">25.7% margin</div>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <!-- ============================================================= -->
-        <!--  ROW 5: Project Loss (Monthly + Yearly)                       -->
-        <!-- ============================================================= -->
-        <div class="section-title"><i class="fa-solid fa-triangle-exclamation"></i> Project Loss</div>
-        <div class="row g-3 mb-4">
-            <!-- Monthly Loss -->
-            <div class="col-md-6">
-                <div class="card-custom">
-                    <div class="card-title" style="font-size:0.8rem;"><i class="fa-regular fa-calendar me-1"></i> This Month</div>
-                    <div class="loss-item"><span class="loss-label"><i class="fa-solid fa-circle-exclamation"></i> Total Loss</span><span class="loss-value negative">₹0.07M</span></div>
-                    <div class="loss-item"><span class="loss-label"><i class="fa-solid fa-arrow-up"></i> Highest Loss</span><span class="loss-value">₹0.03M <span class="loss-sub">(Website Revamp)</span></span></div>
-                    <div class="loss-item"><span class="loss-label"><i class="fa-solid fa-arrow-down"></i> Lowest Loss</span><span class="loss-value">₹0.005M <span class="loss-sub">(Mobile App)</span></span></div>
-                </div>
-            </div>
-            <!-- Yearly Loss -->
-            <div class="col-md-6">
-                <div class="card-custom">
-                    <div class="card-title" style="font-size:0.8rem;"><i class="fa-regular fa-calendar-plus me-1"></i> This Year</div>
-                    <div class="loss-item"><span class="loss-label"><i class="fa-solid fa-circle-exclamation"></i> Total Loss</span><span class="loss-value negative">₹0.39M</span></div>
-                    <div class="loss-item"><span class="loss-label"><i class="fa-solid fa-arrow-up"></i> Highest Loss</span><span class="loss-value">₹0.18M <span class="loss-sub">(HRMS Development)</span></span></div>
-                    <div class="loss-item"><span class="loss-label"><i class="fa-solid fa-arrow-down"></i> Lowest Loss</span><span class="loss-value">₹0.02M <span class="loss-sub">(API Integration)</span></span></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ============================================================= -->
-        <!--  ROW 6: Project Overview (C2C, C2M, Individual)               -->
-        <!-- ============================================================= -->
-        <div class="section-title"><i class="fa-solid fa-briefcase"></i> Project Overview</div>
-        <div class="row g-3 mb-4">
-            <div class="col-12">
-                <div class="card-custom">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <h6 class="fw-bold mb-2" style="font-size:0.85rem;"><i class="fa-solid fa-handshake me-1" style="color:#1a56db;"></i> C2C</h6>
-                            <div class="row">
-                                <div class="col-6"><div class="project-metric"><div class="pm-value">₹0.75M</div><div class="pm-label">Revenue</div></div></div>
-                                <div class="col-6"><div class="project-metric"><div class="pm-value" style="color:#0b7e3d;">₹0.12M</div><div class="pm-label">Profit</div></div></div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <h6 class="fw-bold mb-2" style="font-size:0.85rem;"><i class="fa-solid fa-arrows-spin me-1" style="color:#c2410c;"></i> C2M</h6>
-                            <div class="row">
-                                <div class="col-6"><div class="project-metric"><div class="pm-value">₹0.42M</div><div class="pm-label">Revenue</div></div></div>
-                                <div class="col-6"><div class="project-metric"><div class="pm-value" style="color:#b91c1c;">₹0.08M</div><div class="pm-label">Loss</div></div></div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <h6 class="fw-bold mb-2" style="font-size:0.85rem;"><i class="fa-solid fa-user me-1" style="color:#6d28d9;"></i> Individual</h6>
-                            <div class="row">
-                                <div class="col-6"><div class="project-metric"><div class="pm-value">₹0.39M</div><div class="pm-label">Revenue</div></div></div>
-                                <div class="col-6"><div class="project-metric"><div class="pm-value" style="color:#0b7e3d;">₹0.18M</div><div class="pm-label">Profit</div></div></div>
-                            </div>
+                <div class="col-12">
+                    <div class="card-custom" style="padding:0.5rem 0.7rem; border:1px solid #e9edf4; border-radius:8px; background:#fafcff;">
+                        <div style="font-size:0.55rem; color:#64748b; font-weight:500; margin-bottom:0.2rem;">Monthly Distribution</div>
+                        <div class="chart-wrapper" style="height:80px; width:100%;">
+                            <canvas id="monthlyBarChart"></canvas>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- ===== FOOTER ===== -->
-        <div class="footer-note">
-            <span>Super Admin Dashboard</span>
-            <span class="ms-3">v2.0</span>
-            <span class="ms-3"><i class="fa-regular fa-clock"></i> 29 Jul 2026 12:30</span>
+        <!-- Yearly -->
+        <div class="col-xl-4 col-lg-4 col-md-12">
+            <div class="row g-2">
+                <div class="col-12">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="section-title" style="font-size:0.85rem; font-weight:600; margin:0; border-bottom:none; padding-bottom:0;">
+                            <i class="fa-solid fa-rocket me-1" style="color:#1a56db;"></i> Onboarding Projects – Yearly
+                        </span>
+                        <span class="badge-trend up" style="font-size:0.6rem; padding:0.1rem 0.6rem; background:#e6f7ed; color:#0b7e3d; border-radius:12px;">
+                            <i class="fa-regular fa-circle-check"></i> +12
+                        </span>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-4 col-6">
+                    <div class="stat-card-vertical" style="padding:0.5rem 0.6rem; min-height:80px; border:1px solid #e9edf4; border-radius:8px; background:#fafcff;">
+                        <div class="stat-number" style="font-size:1.2rem; font-weight:700; color:#0f172a;">48</div>
+                        <div class="stat-label" style="font-size:0.6rem; color:#64748b; font-weight:500;">Total Projects</div>
+                        <div class="stat-sub" style="font-size:0.5rem; color:#94a3b8;"><i class="fa-regular fa-circle-check text-success"></i> +12 vs last year</div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-4 col-6">
+                    <div class="stat-card-vertical" style="padding:0.5rem 0.6rem; min-height:80px; border:1px solid #e9edf4; border-radius:8px; background:#fafcff;">
+                        <div class="stat-number" style="font-size:1.2rem; font-weight:700; color:#0f172a;">₹2.8M</div>
+                        <div class="stat-label" style="font-size:0.6rem; color:#64748b; font-weight:500;">Net Revenue</div>
+                        <div class="stat-sub" style="font-size:0.5rem; color:#94a3b8;">Avg ₹58K</div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-4 col-12">
+                    <div class="stat-card-vertical" style="padding:0.5rem 0.6rem; min-height:80px; border:1px solid #e9edf4; border-radius:8px; background:#fafcff;">
+                        <div class="stat-number" style="font-size:1.2rem; font-weight:700; color:#0b7e3d;">₹0.9M</div>
+                        <div class="stat-label" style="font-size:0.6rem; color:#64748b; font-weight:500;">Profit</div>
+                        <div class="stat-sub" style="font-size:0.5rem; color:#94a3b8;">32% margin</div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="card-custom" style="padding:0.5rem 0.7rem; border:1px solid #e9edf4; border-radius:8px; background:#fafcff;">
+                        <div style="font-size:0.55rem; color:#64748b; font-weight:500; margin-bottom:0.2rem;">Yearly Distribution</div>
+                        <div class="chart-wrapper" style="height:80px; width:100%;">
+                            <canvas id="yearlyBarChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
+        <!-- Chatbot Card -->
+        <div class="col-xl-4 col-lg-4 col-md-12">
+            <div class="card-custom" style="height:100%; padding: 0.8rem 0.9rem; display:flex; flex-direction:column; min-height:340px;">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center text-white fw-bold" style="width:28px; height:28px; font-size:0.5rem; background-color:#1a56db;">AI</div>
+                        <span style="font-size:0.9rem; font-weight:700; color:#0f172a;">BlueThink AI</span>
+                        <span class="badge bg-success" style="font-size:0.35rem; padding:0.1rem 0.3rem; background-color:#22c55e;">ON</span>
+                    </div>
+                    <div class="d-flex gap-2 text-secondary" style="font-size:0.5rem;">
+                        <i class="fa-solid fa-ellipsis-vertical" style="cursor:pointer;"></i>
+                        <i class="fa-solid fa-rotate-right" style="cursor:pointer;"></i>
+                    </div>
+                </div>
+                <div style="font-size:0.75rem; color:#0f172a; font-weight:500; margin-bottom:0.5rem; line-height:1.4;">
+                    Hi Admin! 👋 <br> How can I help you today?
+                </div>
+                <div class="d-flex flex-column gap-1 mb-2 flex-grow-1">
+                    <button class="btn btn-outline-primary text-start px-3 py-1 border-0 bg-light" style="font-size:0.6rem; border-radius:12px; background-color:#f8fafc !important; color:#1a56db; font-weight:500;">Show this month's revenue summary</button>
+                    <button class="btn btn-outline-primary text-start px-3 py-1 border-0 bg-light" style="font-size:0.6rem; border-radius:12px; background-color:#f8fafc !important; color:#1a56db; font-weight:500;">Which department has highest profit?</button>
+                    <button class="btn btn-outline-primary text-start px-3 py-1 border-0 bg-light" style="font-size:0.6rem; border-radius:12px; background-color:#f8fafc !important; color:#1a56db; font-weight:500;">Show pending leave requests</button>
+                    <button class="btn btn-outline-primary text-start px-3 py-1 border-0 bg-light" style="font-size:0.6rem; border-radius:12px; background-color:#f8fafc !important; color:#1a56db; font-weight:500;">Project status overview</button>
+                </div>
+                <div class="input-group" style="height:28px;">
+                    <input type="text" class="form-control" placeholder="Type your question..." style="font-size:0.6rem; border-radius:20px 0 0 20px; border-color:#e9edf4; background:#f8fafc; padding:0.1rem 0.7rem;">
+                    <button class="btn btn-primary d-flex align-items-center justify-content-center" style="font-size:0.5rem; border-radius:0 20px 20px 0; padding:0.1rem 0.5rem; background-color:#1a56db; border-color:#1a56db;">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </div>
+                <div style="font-size:0.4rem; color:#94a3b8; text-align:right; margin-top:0.2rem;">Powered by BlueThink AI</div>
+            </div>
+        </div>
+    </div>
 
+    <!-- ============================================================= -->
+    <!--  ROW: Technology-wise Onboarding Tables                       -->
+    <!-- ============================================================= -->
+    <div class="section-title"><i class="fa-solid fa-code"></i> Technology-wise Onboarding Projects</div>
+    <div class="row g-3 mb-4">
+        <div class="col-md-6 col-12">
+            <div class="card-custom">
+                <div class="card-title" style="font-size:0.8rem;"><i class="fa-regular fa-calendar me-1"></i> Monthly</div>
+                <div class="table-responsive">
+                    <table class="table table-custom">
+                        <thead>
+                        <tr>
+                            <th>Technology</th>
+                            <th class="text-end">Projects</th>
+                            <th class="text-end">Revenue</th>
+                            <th class="text-end">Profit</th>
+                            <th class="text-end">Loss</th>
+                            <th class="text-end">Margin</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr><td>Java</td><td class="text-end">10</td><td class="text-end">₹0.25M</td><td class="text-end" style="color:#0b7e3d;">₹0.07M</td><td class="text-end" style="color:#b91c1c;">₹0.03M</td><td class="text-end">28%</td></tr>
+                        <tr><td>Python</td><td class="text-end">8</td><td class="text-end">₹0.06M</td><td class="text-end" style="color:#0b7e3d;">₹0.02M</td><td class="text-end" style="color:#b91c1c;">₹0.01M</td><td class="text-end">25%</td></tr>
+                        <tr><td>Salesforce</td><td class="text-end">6</td><td class="text-end">₹0.03M</td><td class="text-end" style="color:#0b7e3d;">₹0.01M</td><td class="text-end" style="color:#b91c1c;">₹0.01M</td><td class="text-end">22%</td></tr>
+                        <tr><td>Magento</td><td class="text-end">4</td><td class="text-end">₹0.01M</td><td class="text-end" style="color:#0b7e3d;">₹0.00M</td><td class="text-end" style="color:#b91c1c;">₹0.00M</td><td class="text-end">20%</td></tr>
+                        <tr><td>Dynamics</td><td class="text-end">3</td><td class="text-end">₹0.00M</td><td class="text-end" style="color:#0b7e3d;">₹0.00M</td><td class="text-end" style="color:#b91c1c;">₹0.00M</td><td class="text-end">15%</td></tr>
+                        <tr class="total-row"><td><strong>Total</strong></td><td class="text-end"><strong>31</strong></td><td class="text-end"><strong>₹0.35M</strong></td><td class="text-end" style="color:#0b7e3d;"><strong>₹0.09M</strong></td><td class="text-end" style="color:#b91c1c;"><strong>₹0.07M</strong></td><td class="text-end"><strong>25.7%</strong></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-12">
+            <div class="card-custom">
+                <div class="card-title" style="font-size:0.8rem;"><i class="fa-regular fa-calendar-plus me-1"></i> Yearly</div>
+                <div class="table-responsive">
+                    <table class="table table-custom">
+                        <thead>
+                        <tr>
+                            <th>Technology</th>
+                            <th class="text-end">Projects</th>
+                            <th class="text-end">Revenue</th>
+                            <th class="text-end">Profit</th>
+                            <th class="text-end">Loss</th>
+                            <th class="text-end">Margin</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr><td>Java</td><td class="text-end">20</td><td class="text-end">₹1.40M</td><td class="text-end" style="color:#0b7e3d;">₹0.45M</td><td class="text-end" style="color:#b91c1c;">₹0.16M</td><td class="text-end">28%</td></tr>
+                        <tr><td>Python</td><td class="text-end">12</td><td class="text-end">₹0.70M</td><td class="text-end" style="color:#0b7e3d;">₹0.20M</td><td class="text-end" style="color:#b91c1c;">₹0.10M</td><td class="text-end">25%</td></tr>
+                        <tr><td>Salesforce</td><td class="text-end">8</td><td class="text-end">₹0.36M</td><td class="text-end" style="color:#0b7e3d;">₹0.11M</td><td class="text-end" style="color:#b91c1c;">₹0.06M</td><td class="text-end">22%</td></tr>
+                        <tr><td>Magento</td><td class="text-end">5</td><td class="text-end">₹0.20M</td><td class="text-end" style="color:#0b7e3d;">₹0.06M</td><td class="text-end" style="color:#b91c1c;">₹0.03M</td><td class="text-end">20%</td></tr>
+                        <tr><td>Dynamics</td><td class="text-end">3</td><td class="text-end">₹0.15M</td><td class="text-end" style="color:#0b7e3d;">₹0.03M</td><td class="text-end" style="color:#b91c1c;">₹0.02M</td><td class="text-end">15%</td></tr>
+                        <tr class="total-row"><td><strong>Total</strong></td><td class="text-end"><strong>48</strong></td><td class="text-end"><strong>₹2.80M</strong></td><td class="text-end" style="color:#0b7e3d;"><strong>₹0.90M</strong></td><td class="text-end" style="color:#b91c1c;"><strong>₹0.39M</strong></td><td class="text-end"><strong>32%</strong></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <!-- ============================================================= -->
+    <!--  ROW: Project Loss (Monthly + Yearly)                         -->
+    <!-- ============================================================= -->
+    <div class="section-title"><i class="fa-solid fa-triangle-exclamation"></i> Project Loss</div>
+    <div class="row g-3 mb-4">
+        <div class="col-md-6 col-12">
+            <div class="card-custom">
+                <div class="card-title" style="font-size:0.8rem;"><i class="fa-regular fa-calendar me-1"></i> This Month</div>
+                <div class="loss-item"><span class="loss-label"><i class="fa-solid fa-circle-exclamation"></i> Total Loss</span><span class="loss-value negative">₹0.07M</span></div>
+                <div class="loss-item"><span class="loss-label"><i class="fa-solid fa-arrow-up"></i> Highest Loss</span><span class="loss-value">₹0.03M <span class="loss-sub">(Website Revamp)</span></span></div>
+                <div class="loss-item"><span class="loss-label"><i class="fa-solid fa-arrow-down"></i> Lowest Loss</span><span class="loss-value">₹0.005M <span class="loss-sub">(Mobile App)</span></span></div>
+            </div>
+        </div>
+        <div class="col-md-6 col-12">
+            <div class="card-custom">
+                <div class="card-title" style="font-size:0.8rem;"><i class="fa-regular fa-calendar-plus me-1"></i> This Year</div>
+                <div class="loss-item"><span class="loss-label"><i class="fa-solid fa-circle-exclamation"></i> Total Loss</span><span class="loss-value negative">₹0.39M</span></div>
+                <div class="loss-item"><span class="loss-label"><i class="fa-solid fa-arrow-up"></i> Highest Loss</span><span class="loss-value">₹0.18M <span class="loss-sub">(HRMS Development)</span></span></div>
+                <div class="loss-item"><span class="loss-label"><i class="fa-solid fa-arrow-down"></i> Lowest Loss</span><span class="loss-value">₹0.02M <span class="loss-sub">(API Integration)</span></span></div>
+            </div>
+        </div>
+    </div>
 
-        <!-- ============================================================= -->
-<!--  CHART.JS SCRIPTS                                              -->
+    <!-- ============================================================= -->
+    <!--  ROW: Project Overview (C2C, C2M, Individual)                 -->
+    <!-- ============================================================= -->
+    <div class="section-title"><i class="fa-solid fa-briefcase"></i> Project Overview</div>
+    <div class="row g-3 mb-4">
+        <div class="col-12">
+            <div class="card-custom">
+                <div class="row">
+                    <div class="col-md-4 col-sm-6 col-12">
+                        <h6 class="fw-bold mb-2" style="font-size:0.85rem;"><i class="fa-solid fa-handshake me-1" style="color:#1a56db;"></i> C2C</h6>
+                        <div class="row">
+                            <div class="col-6"><div class="project-metric"><div class="pm-value">₹0.75M</div><div class="pm-label">Revenue</div></div></div>
+                            <div class="col-6"><div class="project-metric"><div class="pm-value" style="color:#0b7e3d;">₹0.12M</div><div class="pm-label">Profit</div></div></div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-6 col-12">
+                        <h6 class="fw-bold mb-2" style="font-size:0.85rem;"><i class="fa-solid fa-arrows-spin me-1" style="color:#c2410c;"></i> C2M</h6>
+                        <div class="row">
+                            <div class="col-6"><div class="project-metric"><div class="pm-value">₹0.42M</div><div class="pm-label">Revenue</div></div></div>
+                            <div class="col-6"><div class="project-metric"><div class="pm-value" style="color:#b91c1c;">₹0.08M</div><div class="pm-label">Loss</div></div></div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12 col-12">
+                        <h6 class="fw-bold mb-2" style="font-size:0.85rem;"><i class="fa-solid fa-user me-1" style="color:#6d28d9;"></i> Individual</h6>
+                        <div class="row">
+                            <div class="col-6"><div class="project-metric"><div class="pm-value">₹0.39M</div><div class="pm-label">Revenue</div></div></div>
+                            <div class="col-6"><div class="project-metric"><div class="pm-value" style="color:#0b7e3d;">₹0.18M</div><div class="pm-label">Profit</div></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== FOOTER ===== -->
+    <div class="footer-note">
+        <span>Super Admin Dashboard</span>
+        <span class="ms-3">v2.0</span>
+        <span class="ms-3"><i class="fa-regular fa-clock"></i> 30 Jul 2026</span>
+    </div>
+
+</div><!-- end main-content -->
+
+<!-- ===== CHAT FLOATING BUTTON (commented out) ===== -->
+<!-- <button class="chat-float-btn" id="chatToggle" onclick="toggleChat()"> ... </button> -->
+
+<!-- ============================================================= -->
+<!--  SCRIPTS                                                      -->
 <!-- ============================================================= -->
 <script>
     // ===== SIDEBAR TOGGLE =====
     function toggleSidebar() {
-        const sidebar = document.getElementById('sidebar');
+        const sidebar = document.querySelector('.sidebar');
         const overlay = document.getElementById('sidebarOverlay');
-        sidebar.classList.toggle('open');
-        overlay.classList.toggle('show');
+        if (sidebar) {
+            sidebar.classList.toggle('open');
+        }
+        if (overlay) {
+            overlay.classList.toggle('show');
+        }
     }
+
     window.addEventListener('resize', function() {
         if (window.innerWidth > 992) {
-            document.getElementById('sidebar').classList.remove('open');
-            document.getElementById('sidebarOverlay').classList.remove('show');
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            if (sidebar) sidebar.classList.remove('open');
+            if (overlay) overlay.classList.remove('show');
         }
     });
 
-    // ===== CHAT TOGGLE =====
+    // ===== FIX: MANUAL COLLAPSE TOGGLE FOR SIDEBAR DROPDOWNS =====
+    document.addEventListener('DOMContentLoaded', function() {
+        const triggers = document.querySelectorAll('.sidebar [data-bs-toggle="collapse"]');
+
+        triggers.forEach(function(trigger) {
+            trigger.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                const targetId = this.getAttribute('data-bs-target');
+                if (!targetId) return;
+
+                const target = document.querySelector(targetId);
+                if (!target) return;
+
+                if (typeof bootstrap !== 'undefined' && bootstrap.Collapse) {
+                    const collapse = bootstrap.Collapse.getInstance(target) || new bootstrap.Collapse(target, { toggle: false });
+                    collapse.toggle();
+                } else {
+                    target.classList.toggle('show');
+                    this.setAttribute('aria-expanded', target.classList.contains('show'));
+                    const arrow = this.querySelector('.arrow-icon');
+                    if (arrow) {
+                        arrow.style.transform = target.classList.contains('show') ? 'rotate(90deg)' : 'rotate(0deg)';
+                    }
+                }
+            });
+        });
+
+        const currentPath = window.location.pathname;
+        document.querySelectorAll('.submenu a').forEach(function(link) {
+            const href = link.getAttribute('href');
+            if (href && href !== '#') {
+                const linkUrl = new URL(href, window.location.origin);
+                if (linkUrl.pathname === currentPath) {
+                    const collapseEl = link.closest('.collapse');
+                    if (collapseEl && !collapseEl.classList.contains('show')) {
+                        collapseEl.classList.add('show');
+                        const trigger = document.querySelector('[data-bs-target="#' + collapseEl.id + '"]');
+                        if (trigger) {
+                            trigger.setAttribute('aria-expanded', 'true');
+                            const arrow = trigger.querySelector('.arrow-icon');
+                            if (arrow) arrow.style.transform = 'rotate(90deg)';
+                        }
+                    }
+                }
+            }
+        });
+    });
+
     function toggleChat() {
         const window = document.getElementById('chatWindow');
-        window.classList.toggle('open');
+        if (window) window.classList.toggle('open');
     }
 
-    // ===== COLORS =====
+    // ===== COLORS (for charts) =====
     const blue = 'rgba(26, 86, 219, 1)';
     const blueLight = 'rgba(26, 86, 219, 0.15)';
     const green = 'rgba(11, 126, 61, 1)';
     const greenLight = 'rgba(11, 126, 61, 0.15)';
 
-    // ===== 1. YEARLY REVENUE LINE =====
-    new Chart(document.getElementById('yearlyRevenueChart'), {
+    // ===== 1. YEARLY REVENUE LINE (with gradient) =====
+    const yearlyCanvas = document.getElementById('yearlyRevenueChart');
+    const yearlyCtx = yearlyCanvas.getContext('2d');
+
+    const yearlyGradient = yearlyCtx.createLinearGradient(0, 0, 0, 150);
+    yearlyGradient.addColorStop(0, 'rgba(26, 86, 219, 0.8)');
+    yearlyGradient.addColorStop(0.4, 'rgba(26, 86, 219, 0.4)');
+    yearlyGradient.addColorStop(1, 'rgba(26, 86, 219, 0)');
+
+    new Chart(yearlyCanvas, {
         type: 'line',
         data: {
             labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
             datasets: [{
-                data: [0.6, 0.9, 1.3, 2.0, 2.8, 3.8, 5.0, 6.5, 8.2, 9.8, 11.2, 12.5],
-                borderColor: blue,
-                backgroundColor: blueLight,
+                data: [4.6, 2.9, 5.3, 2.0, 7.8, 3.8, 1.0, 6.5, 2.2, 9.8, 1.2, 12.5],
+                borderColor: '#1a56db',
+                backgroundColor: yearlyGradient,
                 fill: true,
-                tension: 0.35,
-                pointBackgroundColor: blue,
-                pointBorderColor: '#fff',
-                pointBorderWidth: 2,
+                tension: 0,                      // <-- SHARP EDGES (no curve)
                 pointRadius: 2.5,
+                pointHoverRadius: 0,
+                borderWidth: 2,
             }]
         },
         options: {
@@ -1784,28 +1744,45 @@
             maintainAspectRatio: false,
             plugins: { legend: { display: false } },
             scales: {
-                y: { beginAtZero: true, ticks: { font: { size: 7 }, callback: v => '₹' + v + 'M' }, grid: { color: 'rgba(0,0,0,0.04)' } },
-                x: { grid: { display: false }, ticks: { font: { size: 6 } } }
+                y: {
+                    beginAtZero: true,
+                    ticks: { font: { size: 7 }, callback: v => '₹' + v + 'M' },
+                    grid: { color: 'rgba(0,0,0,0.04)' }
+                },
+                x: {
+                    grid: { display: false },
+                    ticks: { font: { size: 6 } }
+                }
             },
-            interaction: { intersect: false, mode: 'index' }
+            interaction: {
+                intersect: false,
+                mode: 'index'
+            }
         }
     });
 
-    // ===== 2. MONTHLY REVENUE LINE =====
-    new Chart(document.getElementById('monthlyRevenueChart'), {
+    // ===== 2. MONTHLY REVENUE LINE (with gradient) =====
+    const monthlyCanvas = document.getElementById('monthlyRevenueChart');
+    const monthlyCtx = monthlyCanvas.getContext('2d');
+
+    const monthlyGradient = monthlyCtx.createLinearGradient(0, 0, 0, 250);
+    monthlyGradient.addColorStop(0, 'rgba(11, 126, 61, 0.8)');
+    monthlyGradient.addColorStop(0.4, 'rgba(11, 126, 61, 0.4)');
+    monthlyGradient.addColorStop(1, 'rgba(11, 126, 61, 0)');
+
+    new Chart(monthlyCanvas, {
         type: 'line',
         data: {
             labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
             datasets: [{
-                data: [0.82, 0.86, 0.89, 0.93, 0.97, 1.00, 1.02, 1.05],
-                borderColor: green,
-                backgroundColor: greenLight,
+                data: [0.82, 0.40, 0.89, 0.10, 0.97, 1.00, 3.00, 1.05],
+                borderColor: '#0b7e3d',
+                backgroundColor: monthlyGradient,
                 fill: true,
-                tension: 0.35,
-                pointBackgroundColor: green,
-                pointBorderColor: '#fff',
-                pointBorderWidth: 2,
+                tension: 0,                      // <-- SHARP EDGES (no curve)
                 pointRadius: 2.5,
+                pointHoverRadius: 0,
+                borderWidth: 2,
             }]
         },
         options: {
@@ -1813,10 +1790,20 @@
             maintainAspectRatio: false,
             plugins: { legend: { display: false } },
             scales: {
-                y: { beginAtZero: true, ticks: { font: { size: 7 }, callback: v => '₹' + v + 'M' }, grid: { color: 'rgba(0,0,0,0.04)' } },
-                x: { grid: { display: false }, ticks: { font: { size: 6 } } }
+                y: {
+                    beginAtZero: true,
+                    ticks: { font: { size: 7 }, callback: v => '₹' + v + 'M' },
+                    grid: { color: 'rgba(0,0,0,0.04)' }
+                },
+                x: {
+                    grid: { display: false },
+                    ticks: { font: { size: 6 } }
+                }
             },
-            interaction: { intersect: false, mode: 'index' }
+            interaction: {
+                intersect: false,
+                mode: 'index'
+            }
         }
     });
 
@@ -1857,25 +1844,6 @@
             maintainAspectRatio: false,
             plugins: { legend: { display: false } },
             cutout: '55%',
-        }
-    });
-
-    // ===== 3. MONTHLY PIE =====
-    new Chart(document.getElementById('monthlyPieChart'), {
-        type: 'pie',
-        data: {
-            labels: ['Java', 'Python', 'Salesforce', 'Magento', 'Dynamics'],
-            datasets: [{
-                data: [10, 8, 6, 4, 3],
-                backgroundColor: ['#1a56db', '#0b7e3d', '#c2410c', '#6d28d9', '#0e7490'],
-                borderColor: '#fff',
-                borderWidth: 2,
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
         }
     });
 
@@ -1994,29 +1962,9 @@
             }
         }
     });
-
-    // ===== 4. YEARLY PIE =====
-    new Chart(document.getElementById('yearlyPieChart'), {
-        type: 'pie',
-        data: {
-            labels: ['Java', 'Python', 'Salesforce', 'Magento', 'Dynamics'],
-            datasets: [{
-                data: [20, 12, 8, 5, 3],
-                backgroundColor: ['#1a56db', '#0b7e3d', '#c2410c', '#6d28d9', '#0e7490'],
-                borderColor: '#fff',
-                borderWidth: 2,
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-        }
-
-    });
 </script>
 
-<!-- Bootstrap JS -->
+<!-- ===== BOOTSTRAP JS ===== -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
 </script>
 </body>
