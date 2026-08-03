@@ -10,6 +10,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -29,11 +31,18 @@ public class LeaveServiceImpl implements LeaveService{
         RegisterEmployee employee=repository.findByUserId(currentEmpId);
         leaveRequest.setEmployeeId(currentEmpId);
         leaveRequest.setEmployeeName(employee.getName());
+        leaveRequest.setCreatedAt(LocalDateTime.now());
         return leaveRepository.save(leaveRequest);
     }
     @Override
     public List<LeaveRequest> getAllLeaveRequest(){
         return leaveRepository.findAll();
+    }
+    public List<LeaveRequest> getTodayAllLeaveRequest(){
+        LocalDateTime start = LocalDate.now().atStartOfDay();
+        LocalDateTime end = LocalDate.now().plusDays(1).atStartOfDay();
+
+        return leaveRepository.findByCreatedAtBetween(start, end);
     }
     @Override
     public void updateleaveStatus(Long id, String action) {

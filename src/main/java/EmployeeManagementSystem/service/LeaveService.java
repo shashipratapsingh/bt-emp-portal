@@ -11,6 +11,7 @@ public interface LeaveService {
     List<LeaveRequest> getLeavesByEmployeeId(String employeeId);
     LeaveRequest applyLeave(LeaveRequest leaveRequest);
     List<LeaveRequest> getAllLeaveRequest();
+    List<LeaveRequest> getTodayAllLeaveRequest();
     void updateleaveStatus(Long id,String action);
 
 

@@ -24,6 +24,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -59,5 +60,7 @@ public interface LeaveRepository extends JpaRepository<LeaveRequest, Long> {
             LocalDate calendarStartDate
     );
     List<LeaveRequest> findByLeaveType(String leaveType);
+    List<LeaveRequest> findByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
+
 
 }

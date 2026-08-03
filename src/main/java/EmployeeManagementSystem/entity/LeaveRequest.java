@@ -42,6 +42,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "leave_request")
@@ -64,6 +65,7 @@ public class LeaveRequest {
 
     @Column(length = 1000)
     private String reason;
+    private LocalDateTime createdAt;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

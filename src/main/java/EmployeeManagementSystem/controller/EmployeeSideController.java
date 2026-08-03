@@ -86,7 +86,7 @@ public class EmployeeSideController {
         model.addAttribute("attendance", attendanceService.getTodayAttendance());
         model.addAttribute("wfhList", attendanceService.getTodayWFHEmployees());
         model.addAttribute("wfhList",wfhService.getWFHEmployees());
-        model.addAttribute("leaveList",leaveService.getAllLeaveRequest());
+        model.addAttribute("leaveList",leaveService.getTodayAllLeaveRequest());
         model.addAttribute("totalWFH",wfhRequestRepository.countByStatus("APPROVED"));
         model.addAttribute("totalLeaves",leaveRepository.countByStatus(LeaveStatus.APPROVED));
 

@@ -197,7 +197,7 @@
                                     <th class="py-2">Emp ID</th>
                                     <th class="py-2">Employee Name</th>
                                     <th class="py-2 d-none d-sm-table-cell">Duration</th>
-                                    <th class="py-2 text-end px-3">Status</th>
+
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -206,11 +206,11 @@
                                     <td class="py-3 text-mono text-muted" th:text="${leave?.employeeId}">BT0000</td>
                                     <td class="py-3 fw-medium" th:text="${leave?.employeeName}">Employee Name</td>
                                     <td class="py-3 text-muted d-none d-sm-table-cell" th:text="${(leave?.startDate + ' to ' + leave?.endDate)}">Dates</td>
-                                    <td class="py-3 text-end px-3">
-                                        <span th:classappend="${leave?.status == 'Approved' || leave?.status == 'APPROVED'} ? 'bg-success-subtle text-success border-success' : 'bg-warning-subtle text-warning border-warning'"
-                                              class="badge border rounded-pill px-2"
-                                              th:text="${leave?.status != null ? leave.status : 'Pending'}">Pending</span>
-                                    </td>
+<!--                                    <td class="py-3 text-end px-3">-->
+<!--                                        <span th:classappend="${leave?.status == 'Approved' || leave?.status == 'APPROVED'} ? 'bg-success-subtle text-success border-success' : 'bg-warning-subtle text-warning border-warning'"-->
+<!--                                              class="badge border rounded-pill px-2"-->
+<!--                                              th:text="${leave?.status != null ? leave.status : 'Pending'}">Pending</span>-->
+<!--                                    </td>-->
                                 </tr>
                                 <tr th:if="${#lists.isEmpty(leaveList)}">
                                     <td colspan="5" class="text-center text-muted py-4">No leave records found</td>
