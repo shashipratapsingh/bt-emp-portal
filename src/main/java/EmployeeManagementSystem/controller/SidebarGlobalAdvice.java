@@ -6,6 +6,7 @@ import EmployeeManagementSystem.jwt.JwtUtil;
 import EmployeeManagementSystem.repository.EmployeeProfileRepository;
 import EmployeeManagementSystem.service.AttendanceService;
 import EmployeeManagementSystem.service.AttendanceTrackingService;
+import EmployeeManagementSystem.service.EmployeeProfileService;
 import EmployeeManagementSystem.service.RegisterEmployeeService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,6 +25,7 @@ public class SidebarGlobalAdvice {
     private final RegisterEmployeeService employeeService;
     private final EmployeeProfileRepository employeeProfileRepository;
     private final AttendanceTrackingService attendanceTrackingService;
+    private final EmployeeProfileService employeeProfileService;
 
     @ModelAttribute
     public void addSidebarData(HttpServletRequest request, Model model) {
@@ -33,11 +35,11 @@ public class SidebarGlobalAdvice {
                 if ("jwtToken".equals(cookie.getName()) && cookie.getValue() != null && !cookie.getValue().isEmpty()) {
                     try {
                         String employeeId = jwtUtil.extractUsername(cookie.getValue());
-                        RegisterEmployee emp = employeeService.getEmployeeById(employeeId);
+                        EmployeeProfile emp = employeeProfileService.getEmployeeProfileByUserId(employeeId);
 
                         if (emp != null) {
                             // 1. Name aur ID set karein
-                            model.addAttribute("loggedInEmpName", emp.getName());
+                            model.addAttribute("loggedInEmpName", emp.getFullName());
                             model.addAttribute("loggedInEmpId", emp.getId());
                             model.addAttribute("loggedInEmpDesignation", emp.getDesignation());
 

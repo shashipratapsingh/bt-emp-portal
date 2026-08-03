@@ -58,4 +58,6 @@ public interface LeaveRepository extends JpaRepository<LeaveRequest, Long> {
             LocalDate calendarEndDate,
             LocalDate calendarStartDate
     );
+    List<LeaveRequest> findByLeaveType(String leaveType);
+
 }
