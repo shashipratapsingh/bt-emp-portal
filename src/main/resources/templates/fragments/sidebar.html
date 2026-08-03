@@ -367,14 +367,6 @@
         <li th:classappend="${currentPage == 'wfh'} ? 'active'">
             <a th:href="@{/employee/wfh/apply}"><i class="fa-solid fa-house-laptop"></i>Work From Home</a>
         </li>
-        <li th:classappend="${currentPage == 'signoff'} ? 'active'">
-            <form th:action="@{/employee/attendance/perform-signoff}" method="post" class="d-inline w-100">
-                <button type="submit" class="nav-link border-0 bg-transparent text-start w-100 p-0" style="color: inherit; cursor: pointer;">
-                    <i class="fa-solid fa-right-from-bracket text-danger me-2"></i>
-                    <span>Signoff Logs</span>
-                </button>
-            </form>
-        </li>
         <li>
             <button class="dropdown-trigger" type="button" data-bs-toggle="collapse" data-bs-target="#policySubmenu" aria-expanded="false">
                 <i class="fa-solid fa-shield-halved"></i>
