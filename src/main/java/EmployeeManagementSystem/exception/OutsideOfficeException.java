@@ -1,9 +1,11 @@
-package EmployeeManagementSystem.exception;
+// Login location storage is currently disabled.
 
-public class OutsideOfficeException extends RuntimeException {
-
-    public OutsideOfficeException(String message) {
-        super(message);
-    }
-
-}
+//package EmployeeManagementSystem.exception;
+//
+//public class OutsideOfficeException extends RuntimeException {
+//
+//    public OutsideOfficeException(String message) {
+//        super(message);
+//    }
+//
+//}

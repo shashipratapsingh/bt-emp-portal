@@ -1,43 +1,45 @@
-//package EmployeeManagementSystem.dto;
-//
-//import lombok.Data;
-//
-//@Data
-//public class LoginRequest {
-//    public String userId;
-//    public String password;
-//    private String workMode;
-//}
-
-
-
 package EmployeeManagementSystem.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Data
 public class LoginRequest {
-
-//    // Employee/User ID
-//    private String userId;
-//
-//    // Login Password
-//    private String password;
-//
-//    // Browser GPS Location
-//    private Double latitude;
-//
-//    private Double longitude;
-
-    private String userId;
-    private String password;
+    public String userId;
+    public String password;
     private String workMode;
-    private Double latitude;
-    private Double longitude;
 }
+
+
+// Login location storage is currently disabled.
+
+
+//package EmployeeManagementSystem.dto;
+//
+//import lombok.AllArgsConstructor;
+//import lombok.Getter;
+//import lombok.NoArgsConstructor;
+//import lombok.Setter;
+//
+//@Getter
+//@Setter
+//@NoArgsConstructor
+//@AllArgsConstructor
+//public class LoginRequest {
+//
+////    // Employee/User ID
+////    private String userId;
+////
+////    // Login Password
+////    private String password;
+////
+////    // Browser GPS Location
+////    private Double latitude;
+////
+////    private Double longitude;
+//
+//    private String userId;
+//    private String password;
+//    private String workMode;
+//    private Double latitude;
+//    private Double longitude;
+//}
