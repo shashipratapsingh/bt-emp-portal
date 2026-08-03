@@ -64,9 +64,12 @@
             </select>
         </div>
 
-        <!-- Hidden GPS Fields -->
-        <input type="hidden" id="latitude" th:field="*{latitude}">
-        <input type="hidden" id="longitude" th:field="*{longitude}">
+
+<!--        // Login location storage is currently disabled.-->
+
+<!--        &lt;!&ndash; Hidden GPS Fields &ndash;&gt;-->
+<!--        <input type="hidden" id="latitude" th:field="*{latitude}">-->
+<!--        <input type="hidden" id="longitude" th:field="*{longitude}">-->
 
         <button type="submit">Sign In</button>
 
@@ -85,137 +88,140 @@
 
 </div>
 
-<script>
 
-    const loginForm = document.getElementById("loginForm");
+<!--// Login location storage is currently disabled.-->
 
-    loginForm.addEventListener("submit", function (event) {
+<!--<script>-->
 
-        event.preventDefault();
+<!--    const loginForm = document.getElementById("loginForm");-->
 
-        const workMode = document.getElementById("workMode").value;
+<!--    loginForm.addEventListener("submit", function (event) {-->
 
-        // Work From Home → No location required
-        if (workMode === "WFH") {
-            loginForm.submit();
-            return;
-        }
+<!--        event.preventDefault();-->
 
-        // Browser supports geolocation?
-        if (!navigator.geolocation) {
-            alert("Your browser does not support location services.");
-            return;
-        }
+<!--        const workMode = document.getElementById("workMode").value;-->
 
-        alert("Getting your current location...");
+<!--        // Work From Home → No location required-->
+<!--        if (workMode === "WFH") {-->
+<!--            loginForm.submit();-->
+<!--            return;-->
+<!--        }-->
 
-        navigator.geolocation.getCurrentPosition(
+<!--        // Browser supports geolocation?-->
+<!--        if (!navigator.geolocation) {-->
+<!--            alert("Your browser does not support location services.");-->
+<!--            return;-->
+<!--        }-->
 
-            // SUCCESS
-            function (position) {
+<!--        alert("Getting your current location...");-->
 
-                const latitude = position.coords.latitude;
-                const longitude = position.coords.longitude;
+<!--        navigator.geolocation.getCurrentPosition(-->
 
-                console.log("Latitude : " + latitude);
-                console.log("Longitude: " + longitude);
+<!--            // SUCCESS-->
+<!--            function (position) {-->
 
-                fetch("/auth/check-location", {
+<!--                const latitude = position.coords.latitude;-->
+<!--                const longitude = position.coords.longitude;-->
 
-                    method: "POST",
+<!--                console.log("Latitude : " + latitude);-->
+<!--                console.log("Longitude: " + longitude);-->
 
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
+<!--                fetch("/auth/check-location", {-->
 
-                    body: JSON.stringify({
+<!--                    method: "POST",-->
 
-                        latitude: latitude,
-                        longitude: longitude
+<!--                    headers: {-->
+<!--                        "Content-Type": "application/json"-->
+<!--                    },-->
 
-                    })
+<!--                    body: JSON.stringify({-->
 
-                })
+<!--                        latitude: latitude,-->
+<!--                        longitude: longitude-->
 
-                .then(response => response.json())
+<!--                    })-->
 
-                .then(data => {
+<!--                })-->
 
-                    if (data.inside) {
+<!--                .then(response => response.json())-->
 
-                        alert(
-                            "✅ You are inside the office range.\n\n" +
-                            "Distance : " + Math.round(data.distance) + " metres.\n\n" +
-                            "You can login."
-                        );
+<!--                .then(data => {-->
 
-                        document.getElementById("latitude").value = latitude;
-                        document.getElementById("longitude").value = longitude;
+<!--                    if (data.inside) {-->
 
-                        loginForm.submit();
+<!--                        alert(-->
+<!--                            "✅ You are inside the office range.\n\n" +-->
+<!--                            "Distance : " + Math.round(data.distance) + " metres.\n\n" +-->
+<!--                            "You can login."-->
+<!--                        );-->
 
-                    } else {
+<!--                        document.getElementById("latitude").value = latitude;-->
+<!--                        document.getElementById("longitude").value = longitude;-->
 
-                        alert(
-                            "❌ You are outside the office range.\n\n" +
-                            "Distance : " + Math.round(data.distance) + " metres.\n\n" +
-                            "Login is not allowed."
-                        );
+<!--                        loginForm.submit();-->
 
-                    }
+<!--                    } else {-->
 
-                })
+<!--                        alert(-->
+<!--                            "❌ You are outside the office range.\n\n" +-->
+<!--                            "Distance : " + Math.round(data.distance) + " metres.\n\n" +-->
+<!--                            "Login is not allowed."-->
+<!--                        );-->
 
-                .catch(error => {
+<!--                    }-->
 
-                    console.error(error);
+<!--                })-->
 
-                    alert("Unable to verify office location.");
+<!--                .catch(error => {-->
 
-                });
+<!--                    console.error(error);-->
 
-            },
+<!--                    alert("Unable to verify office location.");-->
 
-            // ERROR
-            function (error) {
+<!--                });-->
 
-                console.error(error);
+<!--            },-->
 
-                switch (error.code) {
+<!--            // ERROR-->
+<!--            function (error) {-->
 
-                    case error.PERMISSION_DENIED:
-                        alert("Location permission denied.\nPlease click Allow and try again.");
-                        break;
+<!--                console.error(error);-->
 
-                    case error.POSITION_UNAVAILABLE:
-                        alert("Location information is unavailable.");
-                        break;
+<!--                switch (error.code) {-->
 
-                    case error.TIMEOUT:
-                        alert("Location request timed out.");
-                        break;
+<!--                    case error.PERMISSION_DENIED:-->
+<!--                        alert("Location permission denied.\nPlease click Allow and try again.");-->
+<!--                        break;-->
 
-                    default:
-                        alert("Unable to fetch your current location.");
+<!--                    case error.POSITION_UNAVAILABLE:-->
+<!--                        alert("Location information is unavailable.");-->
+<!--                        break;-->
 
-                }
+<!--                    case error.TIMEOUT:-->
+<!--                        alert("Location request timed out.");-->
+<!--                        break;-->
 
-            },
+<!--                    default:-->
+<!--                        alert("Unable to fetch your current location.");-->
 
-            // OPTIONS
-            {
+<!--                }-->
 
-                enableHighAccuracy: true,
-                timeout: 30000,
-                maximumAge: 0
+<!--            },-->
 
-            }
+<!--            // OPTIONS-->
+<!--            {-->
 
-        );
+<!--                enableHighAccuracy: true,-->
+<!--                timeout: 30000,-->
+<!--                maximumAge: 0-->
 
-    });
+<!--            }-->
 
-</script>
+<!--        );-->
+
+<!--    });-->
+
+<!--</script>-->
 
 </body>
 </html>
