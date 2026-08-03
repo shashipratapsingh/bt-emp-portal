@@ -380,7 +380,10 @@
             </div>
         </li>
         <li th:classappend="${currentPage == 'signoff'} ? 'active'">
-            <form th:action="@{/employee/attendance/perform-signoff}" method="post" class="d-inline w-100">
+            <form th:action="@{/employee/attendance/perform-signoff}"
+                  method="post"
+                  onsubmit="resetLiveTimer();"
+                  class="d-inline w-100">
                 <button type="submit" class="nav-link border-0 bg-transparent text-start w-100 p-0" style="color: inherit; cursor: pointer;">
                     <i class="fa-solid fa-right-from-bracket text-danger me-2"></i>
                     <span>Signoff Logs</span>

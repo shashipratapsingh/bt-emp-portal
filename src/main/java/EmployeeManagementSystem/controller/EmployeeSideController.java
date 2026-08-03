@@ -3,10 +3,7 @@ package EmployeeManagementSystem.controller;
 import EmployeeManagementSystem.dto.AnniversaryDTO;
 import EmployeeManagementSystem.dto.BirthdayDTO;
 import EmployeeManagementSystem.dto.CelebrationDto;
-import EmployeeManagementSystem.entity.EmployeeProfile;
-import EmployeeManagementSystem.entity.Policy;
-import EmployeeManagementSystem.entity.RegisterEmployee;
-import EmployeeManagementSystem.entity.WfhRequest;
+import EmployeeManagementSystem.entity.*;
 import EmployeeManagementSystem.enums.LeaveStatus;
 import EmployeeManagementSystem.jwt.JwtUtil;
 import EmployeeManagementSystem.repository.EmployeeProfileRepository;
@@ -93,8 +90,9 @@ public class EmployeeSideController {
         model.addAttribute("totalWFH",wfhRequestRepository.countByStatus("APPROVED"));
         model.addAttribute("totalLeaves",leaveRepository.countByStatus(LeaveStatus.APPROVED));
 
-
-        model.addAttribute("projectOffLogs", projectOffService.getTodayProjectOffLogs());
+        List<LeaveRequest> projectOffRequests =
+                leaveRepository.findByLeaveType("Project Off");
+        model.addAttribute("projectOffLogs",projectOffRequests);
 
         model.addAttribute("loggedInEmpId", loggedInEmpId);
         //model.addAttribute("loggedInEmpId", loggedInEmpId);

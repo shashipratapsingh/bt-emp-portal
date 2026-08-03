@@ -263,18 +263,32 @@
 
                     <!-- Project Off Logs Card -->
                     <div class="bg-white rounded-3 border p-3 p-lg-4">
-                        <h6 class="fw-bold mb-3" style="font-size: 14px;"><i class="fa-solid fa-toggle-off text-muted me-2"></i>Project Off Logs</h6>
-                        <ul class="list-group list-group-flush" style="font-size: 13px;">
-                            <li th:each="offLog : ${projectOffLogs}" class="list-group-item d-flex justify-content-between align-items-center px-0 border-light py-2">
-                                <div>
-                                    <span class="fw-medium d-block" th:text="${offLog?.employeeName}">Employee Name</span>
-                                    <small class="text-muted" th:text="${offLog?.employeeId}">BT0000</small>
-                                </div>
-                            </li>
-                            <li th:if="${#lists.isEmpty(projectOffLogs)}" class="list-group-item text-center text-muted px-0 py-2">
-                                No project off logs recorded
-                            </li>
-                        </ul>
+                        <h6 class="fw-bold mb-3" style="font-size: 14px;">
+                            <i class="fa-solid fa-toggle-off text-muted me-2"></i>Project Off Logs
+                        </h6>
+                        <div class="table-responsive" style="max-height: 430px; overflow-y: auto;">
+                            <table class="table table-sm align-middle mb-0" style="font-size: 13px; border-color: var(--border-color);">
+                                <thead class="table-light sticky-top bg-white" style="font-size: 11px; text-transform: uppercase; color: var(--text-muted);">
+                                <tr>
+                                    <th class="py-2 px-3" style="width: 15%;">S.No.</th>
+                                    <th class="py-2" style="width: 30%;">Emp ID</th>
+                                    <th class="py-2">Employee Name</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="offLog, stat : ${projectOffLogs}">
+                                    <td class="py-3 px-3 fw-semibold text-muted" th:text="${stat.count}">1</td>
+                                    <td class="py-3 text-mono text-muted" th:text="${offLog?.employeeId}">BT0000</td>
+                                    <td class="py-3 fw-medium" th:text="${offLog?.employeeName}">Employee Name</td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(projectOffLogs)}">
+                                    <td colspan="3" class="text-center text-muted py-4">
+                                        No project off logs recorded
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
