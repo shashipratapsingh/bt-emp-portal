@@ -1122,8 +1122,11 @@
             }
         }
     </style>
+
 </head>
 <body>
+
+
 
 <!-- ===== IMPORT SIDEBAR FRAGMENT ===== -->
 <div th:replace="~{fragments/sidebar-admin :: sidebar-component}"></div>
@@ -1134,28 +1137,33 @@
 <!-- ===== MAIN CONTENT ===== -->
 <div class="main-content">
 
+    <!-- ===== IMPORT NAVBAR FRAGMENT INSIDE MAIN CONTENT ===== -->
+<!--    <div th:replace="~{fragments/navbar :: navbar-component}"></div>-->
+
     <!-- ===== PAGE HEADER ===== -->
     <div class="page-header">
-        <div>
-            <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">
-                <i class="fa-solid fa-bars"></i>
-            </button>
-            <h4 th:text="'Hi, ' + (${loggedInUser} ?: 'Super Admin')">Hi, Super Admin</h4>
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Super Admin</li>
-                </ol>
-            </nav>
-        </div>
-        <div class="header-actions">
-            <span class="today-badge">
-                <i class="fa-regular fa-calendar"></i> Today
-            </span>
-            <a href="#" class="logout-btn">
-                <i class="fa-solid fa-right-from-bracket"></i> Logout
-            </a>
-        </div>
+        <!--        <div>-->
+        <!--            <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">-->
+        <!--                <i class="fa-solid fa-bars"></i>-->
+        <!--            </button>-->
+        <!--            <h4 th:text="'Hi, ' + (${loggedInUser} ?: 'Super Admin')">Hi, Super Admin</h4>-->
+        <!--            <nav aria-label="breadcrumb">-->
+        <!--                <ol class="breadcrumb">-->
+        <!--                    <li class="breadcrumb-item"><a href="#">Dashboard</a></li>-->
+        <!--                    <li class="breadcrumb-item active" aria-current="page">Super Admin</li>-->
+        <!--                </ol>-->
+        <!--            </nav>-->
+        <!--        </div>-->
+
+
+        <!--        <div class="header-actions">-->
+        <!--            <span class="today-badge">-->
+        <!--                <i class="fa-regular fa-calendar"></i> Today-->
+        <!--            </span>-->
+        <!--            <a href="#" class="logout-btn">-->
+        <!--                <i class="fa-solid fa-right-from-bracket"></i> Logout-->
+        <!--            </a>-->
+        <!--        </div>-->
     </div>
 
     <!-- ============================================================= -->
