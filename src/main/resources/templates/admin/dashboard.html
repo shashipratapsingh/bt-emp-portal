@@ -20,8 +20,7 @@
             padding: 0;
             box-sizing: border-box;
         }
-        html,
-        body {
+        html, body {
             font-family: 'Inter', sans-serif;
             background: #f4f7fc;
             height: 100%;
@@ -62,12 +61,10 @@
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(0,0,0,0.4);
             z-index: 1040;
         }
-        .sidebar-overlay.show {
-            display: block;
-        }
+        .sidebar-overlay.show { display: block; }
 
         /* ===== RESPONSIVE OVERRIDES ===== */
         @media (max-width: 992px) {
@@ -84,30 +81,18 @@
                 border-right: 1px solid #334155 !important;
                 overflow-y: auto !important;
             }
-            .sidebar.open {
-                transform: translateX(0) !important;
-            }
+            .sidebar.open { transform: translateX(0) !important; }
             .main-content {
                 margin-left: 0 !important;
                 width: 100% !important;
                 padding: 1rem;
             }
-            .sidebar-toggle {
-                display: flex !important;
-            }
-            .sidebar-overlay.show {
-                display: block;
-            }
+            .sidebar-toggle { display: flex !important; }
+            .sidebar-overlay.show { display: block; }
         }
-
         @media (max-width: 576px) {
-            .sidebar {
-                width: 100% !important;
-                max-width: 320px !important;
-            }
-            .main-content {
-                padding: 0.75rem;
-            }
+            .sidebar { width: 100% !important; max-width: 320px !important; }
+            .main-content { padding: 0.75rem; }
         }
 
         /* ===== PAGE HEADER ===== */
@@ -138,16 +123,9 @@
             margin: 0;
             font-size: 0.85rem;
         }
-        .page-header .breadcrumb-item+.breadcrumb-item::before {
-            content: "›";
-        }
-        .page-header .breadcrumb-item a {
-            color: #6b7a8f;
-            text-decoration: none;
-        }
-        .page-header .breadcrumb-item.active {
-            color: #0f172a;
-        }
+        .page-header .breadcrumb-item+.breadcrumb-item::before { content: "›"; }
+        .page-header .breadcrumb-item a { color: #6b7a8f; text-decoration: none; }
+        .page-header .breadcrumb-item.active { color: #0f172a; }
         .header-actions {
             display: flex;
             align-items: center;
@@ -155,7 +133,7 @@
             flex-wrap: wrap;
         }
         .today-badge {
-            background: rgba(42, 109, 244, 0.1);
+            background: rgba(42,109,244,0.1);
             color: #2a6df4;
             padding: 0.35rem 1rem;
             border-radius: 20px;
@@ -175,10 +153,7 @@
             align-items: center;
             gap: 6px;
         }
-        .logout-btn:hover {
-            background: #fde8e8;
-            color: #d94a4a;
-        }
+        .logout-btn:hover { background: #fde8e8; color: #d94a4a; }
 
         /* ===== SECTION TITLE ===== */
         .section-title {
@@ -193,9 +168,7 @@
             gap: 8px;
             flex-wrap: wrap;
         }
-        .section-title i {
-            color: #1a56db;
-        }
+        .section-title i { color: #1a56db; }
         .section-title .badge-trend {
             font-size: 0.65rem;
             font-weight: 500;
@@ -203,25 +176,16 @@
             padding-bottom: 3px;
             margin-left: 0.3rem;
         }
-        .badge-trend.up {
-            background: #e6f7ed;
-            color: #0b7e3d;
-        }
-        .badge-trend.down {
-            background: #fde8e8;
-            color: #b91c1c;
-        }
-        .badge-trend.neutral {
-            background: #f1f5f9;
-            color: #64748b;
-        }
+        .badge-trend.up { background: #e6f7ed; color: #0b7e3d; }
+        .badge-trend.down { background: #fde8e8; color: #b91c1c; }
+        .badge-trend.neutral { background: #f1f5f9; color: #64748b; }
 
         /* ===== STAT CARDS ===== */
         .stat-card {
             background: #fff;
             border-radius: 12px;
             padding: 1rem 1.3rem;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
             border: 1px solid #e9edf4;
             height: 100%;
             display: flex;
@@ -229,12 +193,9 @@
             justify-content: space-between;
             transition: 0.2s;
         }
-        .stat-card:hover {
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
-        }
+        .stat-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
         .stat-card .stat-icon {
-            width: 44px;
-            height: 44px;
+            width: 44px; height: 44px;
             border-radius: 12px;
             display: flex;
             align-items: center;
@@ -259,45 +220,21 @@
             color: #94a3b8;
             margin-top: 1px;
         }
-        .bg-soft-primary {
-            background: #e8f0fe;
-            color: #1a56db;
-        }
-        .bg-soft-success {
-            background: #e6f7ed;
-            color: #0b7e3d;
-        }
-        .bg-soft-danger {
-            background: #fde8e8;
-            color: #b91c1c;
-        }
-        .bg-soft-warning {
-            background: #fef3e2;
-            color: #c2410c;
-        }
-        .bg-soft-purple {
-            background: #ede7f6;
-            color: #6d28d9;
-        }
-        .bg-soft-info {
-            background: #e0f2fe;
-            color: #0369a1;
-        }
-        .bg-soft-teal {
-            background: #e0f7fa;
-            color: #0e7490;
-        }
-        .bg-soft-secondary {
-            background: #f1f5f9;
-            color: #64748b;
-        }
+        .bg-soft-primary { background: #e8f0fe; color: #1a56db; }
+        .bg-soft-success { background: #e6f7ed; color: #0b7e3d; }
+        .bg-soft-danger { background: #fde8e8; color: #b91c1c; }
+        .bg-soft-warning { background: #fef3e2; color: #c2410c; }
+        .bg-soft-purple { background: #ede7f6; color: #6d28d9; }
+        .bg-soft-info { background: #e0f2fe; color: #0369a1; }
+        .bg-soft-teal { background: #e0f7fa; color: #0e7490; }
+        .bg-soft-secondary { background: #f1f5f9; color: #64748b; }
 
         /* ===== CARD CUSTOM ===== */
         .card-custom {
             background: #fff;
             border-radius: 12px;
             border: 1px solid #e9edf4;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.03);
             padding: 1.2rem 1.3rem;
             height: 100%;
             display: flex;
@@ -316,19 +253,9 @@
             height: 180px;
             width: 100%;
         }
-        .chart-wrapper-sm {
-            height: 140px;
-        }
-        .chart-wrapper-xs {
-            height: 100px;
-            width: 100px;
-            margin: 0 auto;
-        }
-        .chart-wrapper-doughnut {
-            height: 160px;
-            width: 160px;
-            margin: 0 auto;
-        }
+        .chart-wrapper-sm { height: 140px; }
+        .chart-wrapper-xs { height: 100px; width: 100px; margin: 0 auto; }
+        .chart-wrapper-doughnut { height: 160px; width: 160px; margin: 0 auto; }
 
         /* ===== DEPT ROW ===== */
         .dept-row {
@@ -339,35 +266,18 @@
             border-bottom: 1px solid #f1f5f9;
             font-size: 0.82rem;
         }
-        .dept-row:last-child {
-            border-bottom: none;
-        }
-        .dept-row .dept-name {
-            color: #334155;
-            font-weight: 500;
-        }
-        .dept-row .dept-value {
-            font-weight: 600;
-            color: #0f172a;
-        }
+        .dept-row:last-child { border-bottom: none; }
+        .dept-row .dept-name { color: #334155; font-weight: 500; }
+        .dept-row .dept-value { font-weight: 600; color: #0f172a; }
         .dept-row .dept-change {
             font-size: 0.6rem;
             font-weight: 600;
             padding: 0.05rem 0.45rem;
             border-radius: 12px;
         }
-        .dept-change.up {
-            background: #e6f7ed;
-            color: #0b7e3d;
-        }
-        .dept-change.down {
-            background: #fde8e8;
-            color: #b91c1c;
-        }
-        .dept-change.neutral {
-            background: #f1f5f9;
-            color: #64748b;
-        }
+        .dept-change.up { background: #e6f7ed; color: #0b7e3d; }
+        .dept-change.down { background: #fde8e8; color: #b91c1c; }
+        .dept-change.neutral { background: #f1f5f9; color: #64748b; }
 
         /* ===== NOTIFICATION ===== */
         .notif-item {
@@ -378,22 +288,14 @@
             border-bottom: 1px solid #f1f5f9;
             font-size: 0.8rem;
         }
-        .notif-item:last-child {
-            border-bottom: none;
-        }
+        .notif-item:last-child { border-bottom: none; }
         .notif-item .notif-dot {
-            width: 7px;
-            height: 7px;
+            width: 7px; height: 7px;
             border-radius: 50%;
             flex-shrink: 0;
         }
-        .notif-item .notif-text {
-            color: #334155;
-            flex: 1;
-        }
-        .notif-item .notif-text strong {
-            color: #0f172a;
-        }
+        .notif-item .notif-text { color: #334155; flex: 1; }
+        .notif-item .notif-text strong { color: #0f172a; }
         .notif-item .notif-badge {
             font-size: 0.55rem;
             padding: 0.1rem 0.45rem;
@@ -401,26 +303,11 @@
             font-weight: 500;
             white-space: nowrap;
         }
-        .notif-badge.pending {
-            background: #fef3e2;
-            color: #c2410c;
-        }
-        .notif-badge.processing {
-            background: #e8f0fe;
-            color: #1a56db;
-        }
-        .notif-badge.joined {
-            background: #e6f7ed;
-            color: #0b7e3d;
-        }
-        .notif-badge.deadline {
-            background: #fde8e8;
-            color: #b91c1c;
-        }
-        .notif-badge.missing {
-            background: #f1f5f9;
-            color: #64748b;
-        }
+        .notif-badge.pending { background: #fef3e2; color: #c2410c; }
+        .notif-badge.processing { background: #e8f0fe; color: #1a56db; }
+        .notif-badge.joined { background: #e6f7ed; color: #0b7e3d; }
+        .notif-badge.deadline { background: #fde8e8; color: #b91c1c; }
+        .notif-badge.missing { background: #f1f5f9; color: #64748b; }
         .notif-item .notif-time {
             color: #94a3b8;
             font-size: 0.65rem;
@@ -436,23 +323,11 @@
             border-bottom: 1px solid #f1f5f9;
             font-size: 0.8rem;
         }
-        .loss-item:last-child {
-            border-bottom: none;
-        }
-        .loss-item .loss-label {
-            color: #475569;
-        }
-        .loss-item .loss-label i {
-            color: #1a56db;
-            width: 18px;
-        }
-        .loss-item .loss-value {
-            font-weight: 700;
-            color: #0f172a;
-        }
-        .loss-item .loss-value.negative {
-            color: #b91c1c;
-        }
+        .loss-item:last-child { border-bottom: none; }
+        .loss-item .loss-label { color: #475569; }
+        .loss-item .loss-label i { color: #1a56db; width: 18px; }
+        .loss-item .loss-value { font-weight: 700; color: #0f172a; }
+        .loss-item .loss-value.negative { color: #b91c1c; }
         .loss-item .loss-sub {
             font-size: 0.65rem;
             color: #94a3b8;
@@ -530,9 +405,7 @@
             align-items: center;
             gap: 6px;
         }
-        .report-list li:last-child {
-            border-bottom: none;
-        }
+        .report-list li:last-child { border-bottom: none; }
         .report-list li i {
             color: #1a56db;
             font-size: 0.65rem;
@@ -542,13 +415,8 @@
             max-height: 110px;
             overflow-y: auto;
         }
-        .report-scroll::-webkit-scrollbar {
-            width: 3px;
-        }
-        .report-scroll::-webkit-scrollbar-thumb {
-            background: #d1d5db;
-            border-radius: 4px;
-        }
+        .report-scroll::-webkit-scrollbar { width: 3px; }
+        .report-scroll::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
 
         /* ===== TABLE ===== */
         .table-custom {
@@ -569,16 +437,12 @@
             vertical-align: middle;
             border-bottom: 1px solid #f1f5f9;
         }
-        .table-custom tbody tr:hover {
-            background: #fafcff;
-        }
+        .table-custom tbody tr:hover { background: #fafcff; }
         .table-custom .total-row {
             background: #f8fafc;
             font-weight: 700;
         }
-        .table-custom .total-row td {
-            border-top: 2px solid #e9edf4;
-        }
+        .table-custom .total-row td { border-top: 2px solid #e9edf4; }
 
         /* ===== VIEW ALL ===== */
         .view-all-link {
@@ -587,9 +451,7 @@
             color: #1a56db;
             text-decoration: none;
         }
-        .view-all-link:hover {
-            text-decoration: underline;
-        }
+        .view-all-link:hover { text-decoration: underline; }
 
         /* ===== FOOTER ===== */
         .footer-note {
@@ -607,70 +469,28 @@
             border-radius: 10px;
             font-weight: 600;
         }
-        .mini-badge.green {
-            background: #e6f7ed;
-            color: #0b7e3d;
-        }
-        .mini-badge.red {
-            background: #fde8e8;
-            color: #b91c1c;
-        }
-        .mini-badge.blue {
-            background: #e8f0fe;
-            color: #1a56db;
-        }
-        .mini-badge.gray {
-            background: #f1f5f9;
-            color: #64748b;
-        }
-        .mini-badge.purple {
-            background: #ede7f6;
-            color: #6d28d9;
-        }
+        .mini-badge.green { background: #e6f7ed; color: #0b7e3d; }
+        .mini-badge.red { background: #fde8e8; color: #b91c1c; }
+        .mini-badge.blue { background: #e8f0fe; color: #1a56db; }
+        .mini-badge.gray { background: #f1f5f9; color: #64748b; }
+        .mini-badge.purple { background: #ede7f6; color: #6d28d9; }
 
+        /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
-            .stat-card .stat-number {
-                font-size: 1.2rem;
-            }
-            .stat-card .stat-icon {
-                width: 38px;
-                height: 38px;
-                font-size: 1rem;
-            }
-            .page-header h4 {
-                font-size: 1.1rem;
-            }
-            .chart-wrapper {
-                height: 140px;
-            }
-            .chart-wrapper-doughnut {
-                height: 130px;
-                width: 130px;
-            }
-            .quick-action-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
+            .stat-card .stat-number { font-size: 1.5rem; }
+            .stat-card .stat-icon { width: 38px; height: 38px; font-size: 1rem; }
+            .page-header h4 { font-size: 1.1rem; }
+            .chart-wrapper { height: 140px; }
+            .chart-wrapper-doughnut { height: 130px; width: 130px; }
+            .quick-action-grid { grid-template-columns: repeat(3, 1fr); }
         }
         @media (max-width: 576px) {
-            .main-content {
-                padding: 0.75rem;
-            }
-            .stat-card {
-                padding: 0.7rem 0.9rem;
-            }
-            .card-custom {
-                padding: 0.9rem;
-            }
-            .quick-action-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            .report-list {
-                grid-template-columns: 1fr;
-            }
-            .chart-wrapper-doughnut {
-                height: 110px;
-                width: 110px;
-            }
+            .main-content { padding: 0.75rem; }
+            .stat-card { padding: 0.7rem 0.9rem; }
+            .card-custom { padding: 0.9rem; }
+            .quick-action-grid { grid-template-columns: repeat(2, 1fr); }
+            .report-list { grid-template-columns: 1fr; }
+            .chart-wrapper-doughnut { height: 110px; width: 110px; }
         }
 
         /* ===== NOTIFICATION SCROLL ===== */
@@ -678,20 +498,15 @@
             max-height: 200px;
             overflow-y: auto;
         }
-        .notif-scroll::-webkit-scrollbar {
-            width: 3px;
-        }
-        .notif-scroll::-webkit-scrollbar-thumb {
-            background: #d1d5db;
-            border-radius: 4px;
-        }
+        .notif-scroll::-webkit-scrollbar { width: 3px; }
+        .notif-scroll::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
 
         /* ===== STAT CARD VERTICAL ===== */
         .stat-card-vertical {
             background: #fff;
             border-radius: 12px;
             padding: 1rem 1.2rem;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
             border: 1px solid #e9edf4;
             height: 100%;
             display: flex;
@@ -700,11 +515,9 @@
             justify-content: center;
             transition: 0.2s;
         }
-        .stat-card-vertical:hover {
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
-        }
+        .stat-card-vertical:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
         .stat-card-vertical .stat-number {
-            font-size: 1.5rem;
+            font-size: 0.8rem;
             font-weight: 700;
             color: #0f172a;
             line-height: 1.2;
@@ -759,9 +572,7 @@
             padding: 0.15rem 0;
             border-bottom: 1px solid #f1f5f9;
         }
-        .card-compact .pl-item:last-child {
-            border-bottom: none;
-        }
+        .card-compact .pl-item:last-child { border-bottom: none; }
         .card-compact .pl-value {
             font-size: 0.85rem !important;
             font-weight: 700;
@@ -782,16 +593,12 @@
             font-size: 0.5rem;
             border-bottom: 1px solid #f1f5f9;
         }
-        .card-compact .notif-item .notif-text {
-            font-size: 0.5rem;
-        }
+        .card-compact .notif-item .notif-text { font-size: 0.5rem; }
         .card-compact .notif-item .notif-badge {
             font-size: 0.35rem;
             padding: 0.05rem 0.3rem;
         }
-        .card-compact .notif-item .notif-time {
-            font-size: 0.4rem;
-        }
+        .card-compact .notif-item .notif-time { font-size: 0.4rem; }
 
         /* ===== EXPANDED REVENUE CARDS ===== */
         .revenue-card-expanded {
@@ -857,22 +664,14 @@
         }
 
         @media (max-width: 576px) {
-            .revenue-card-expanded {
-                min-height: 180px !important;
-            }
-            .revenue-card-expanded .chart-wrapper {
-                height: 70px !important;
-            }
-            .dept-card-expanded {
-                min-height: 180px !important;
-            }
+            .revenue-card-expanded { min-height: 180px !important; }
+            .revenue-card-expanded .chart-wrapper { height: 70px !important; }
+            .dept-card-expanded { min-height: 180px !important; }
             .dept-card-expanded .chart-wrapper-doughnut {
                 height: 100px !important;
                 width: 100px !important;
             }
-            .notif-card-expanded {
-                min-height: 280px !important;
-            }
+            .notif-card-expanded { min-height: 280px !important; }
         }
 
         /* ===== FLOATING CHATBOT ===== */
@@ -887,7 +686,7 @@
             background: #1a56db;
             color: #fff;
             border: none;
-            box-shadow: 0 4px 20px rgba(26, 86, 219, 0.4);
+            box-shadow: 0 4px 20px rgba(26,86,219,0.4);
             font-size: 1.4rem;
             display: flex;
             align-items: center;
@@ -898,7 +697,7 @@
         .chat-float-btn:hover {
             transform: scale(1.08);
             background: #1e4bb5;
-            box-shadow: 0 6px 28px rgba(26, 86, 219, 0.5);
+            box-shadow: 0 6px 28px rgba(26,86,219,0.5);
         }
         .chat-float-btn .badge-dot {
             position: absolute;
@@ -920,7 +719,7 @@
             max-height: 520px;
             background: #fff;
             border-radius: 16px;
-            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 8px 40px rgba(0,0,0,0.15);
             border: 1px solid #e9edf4;
             z-index: 1060;
             display: none;
@@ -933,14 +732,8 @@
             animation: slideUp 0.3s ease;
         }
         @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .chat-window .chat-header {
@@ -977,9 +770,7 @@
             cursor: pointer;
             transition: 0.2s;
         }
-        .chat-window .chat-header .chat-close:hover {
-            color: #fff;
-        }
+        .chat-window .chat-header .chat-close:hover { color: #fff; }
 
         .chat-window .chat-body {
             padding: 0.8rem 1rem;
@@ -993,6 +784,7 @@
             font-weight: 500;
             margin-bottom: 0.5rem;
         }
+        .chat-window .chat-body .chat-greeting span { font-size: 0.9rem; }
         .chat-window .chat-body .chat-btn-list {
             display: flex;
             flex-direction: column;
@@ -1007,7 +799,7 @@
             color: #1a56db;
             font-size: 0.65rem;
             font-weight: 500;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
             transition: 0.2s;
             border: 1px solid #e9edf4;
         }
@@ -1051,9 +843,7 @@
             cursor: pointer;
             transition: 0.2s;
         }
-        .chat-window .chat-footer button:hover {
-            background: #1e4bb5;
-        }
+        .chat-window .chat-footer button:hover { background: #1e4bb5; }
         .chat-window .chat-footer .powered {
             font-size: 0.35rem;
             color: #94a3b8;
@@ -1082,12 +872,8 @@
                 padding: 0.35rem 0;
                 gap: 8px;
             }
-            .notif-item .notif-text {
-                font-size: 0.7rem;
-            }
-            .notif-item .notif-time {
-                font-size: 0.55rem;
-            }
+            .notif-item .notif-text { font-size: 0.7rem; }
+            .notif-item .notif-time { font-size: 0.55rem; }
             .notif-item .notif-badge {
                 font-size: 0.45rem;
                 padding: 0.05rem 0.35rem;
@@ -1095,15 +881,9 @@
         }
 
         @media (max-width: 576px) {
-            .card-compact .chart-wrapper {
-                height: 60px !important;
-            }
-            .card-compact .stat-number {
-                font-size: 0.75rem !important;
-            }
-            .card-compact .card-title {
-                font-size: 0.5rem !important;
-            }
+            .card-compact .chart-wrapper { height: 60px !important; }
+            .card-compact .stat-number { font-size: 0.75rem !important; }
+            .card-compact .card-title { font-size: 0.5rem !important; }
             .card-compact .mini-badge {
                 font-size: 0.35rem !important;
                 padding: 0.03rem 0.25rem;
@@ -1111,15 +891,9 @@
             .stat-card-vertical {
                 padding: 0.5rem 0.6rem;
             }
-            .stat-card-vertical .stat-number {
-                font-size: 1rem;
-            }
-            .stat-card-vertical .stat-label {
-                font-size: 0.5rem;
-            }
-            .stat-card-vertical .stat-sub {
-                font-size: 0.4rem;
-            }
+            .stat-card-vertical .stat-number { font-size: 1rem; }
+            .stat-card-vertical .stat-label { font-size: 0.5rem; }
+            .stat-card-vertical .stat-sub { font-size: 0.4rem; }
         }
     </style>
 </head>
@@ -1162,27 +936,29 @@
     <!--  ROW 1: 2×2 Revenue Grid (Expanded) + Notifications           -->
     <!-- ============================================================= -->
     <div class="row g-3 mb-3">
-        <!-- LEFT COLUMN: 2×2 Revenue Grid (expanded to col-xl-8) -->
+        <!-- LEFT COLUMN: 2×2 Revenue Grid -->
         <div class="col-xl-8 col-lg-7 col-md-12">
             <div class="row g-2">
-                <!-- Yearly Revenue (expanded) -->
+
+                <!-- ======== Yearly Revenue ======== -->
                 <div class="col-md-6 col-sm-6 col-12">
-                    <div class="card-custom card-compact revenue-card-expanded h-100" style="align-self: flex-start;">
-                        <div class="d-flex justify-content-between align-items-center" style="margin-bottom:0.1rem; padding-top: 5px">
-                            <span class="card-title" style="font-size:0.65rem; font-weight:600;">
-                                <i class="fa-solid fa-chart-line me-1" style="color:#1a56db;"></i> Company Revenue – Yearly
-                            </span>
-                            <span class="mini-badge green" style="font-size:0.5rem; padding:0.05rem 0.4rem;">
-                                <i class="fa-regular fa-circle-check"></i> +18%
+                    <div class="card-custom card-compact revenue-card-expanded">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="card-title"><i class="fa-solid fa-chart-line"></i> Company Revenue – Yearly</span>
+                            <span th:class="${yearlyRevenue.percentageChange >= 0} ? 'mini-badge green' : 'mini-badge red'">
+                                <i class="fa-regular fa-circle-check"></i>
+                                <span th:text="${#numbers.formatDecimal(yearlyRevenue.percentageChange, 1, 1)} + '%'">+18%</span>
                             </span>
                         </div>
-                        <div class="chart-wrapper" style="height:200px; margin:0.1rem 0; padding-top: 3px">
+                        <div class="chart-wrapper" style="height:200px;">
                             <canvas id="yearlyRevenueChart"></canvas>
                         </div>
-                        <div class="d-flex justify-content-between align-items-center" style="margin-top:0.1rem; padding-top: 5px">
+                        <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <span class="stat-number" style="font-size:1.1rem; font-weight:700;">₹12.5CR</span>
-                                <span class="stat-label" style="font-size:0.5rem; display:block; color:#64748b; line-height:1.2;">Net Revenue</span>
+<span class="stat-number"
+      th:text="'₹' + ${#numbers.formatDecimal(yearlyRevenue.totalRevenue / 10000000.0, 1, 'COMMA', 1, 'POINT')} + 'CR'">
+</span>
+                                <span class="stat-label">Net Revenue</span>
                             </div>
                             <div style="font-size:0.4rem; color:#94a3b8; text-align:right; line-height:1.1;">
                                 <span>Jan</span> <span>Feb</span> <span>Mar</span> <span>Apr</span> <span>May</span> <span>Jun</span><br>
@@ -1192,24 +968,25 @@
                     </div>
                 </div>
 
-                <!-- Monthly Revenue (expanded) -->
+                <!-- ======== Monthly Revenue ======== -->
                 <div class="col-md-6 col-sm-6 col-12">
-                    <div class="card-custom card-compact revenue-card-expanded h-100" style="align-self: flex-start;">
-                        <div class="d-flex justify-content-between align-items-center" style="margin-bottom:0.1rem;padding-top: 5px">
-                            <span class="card-title" style="font-size:0.65rem; font-weight:600;">
-                                <i class="fa-solid fa-chart-simple me-1" style="color:#0b7e3d;"></i> Company Revenue – Monthly
-                            </span>
-                            <span class="mini-badge green" style="font-size:0.5rem; padding:0.05rem 0.4rem;">
-                                <i class="fa-regular fa-circle-check"></i> +4.2%
+                    <div class="card-custom card-compact revenue-card-expanded">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="card-title"><i class="fa-solid fa-chart-simple"></i> Company Revenue – Monthly</span>
+                            <span th:class="${monthlyRevenue.percentageChange >= 0} ? 'mini-badge green' : 'mini-badge red'">
+                                <i class="fa-regular fa-circle-check"></i>
+                                <span th:text="${#numbers.formatDecimal(monthlyRevenue.percentageChange, 1, 1)} + '%'">+4.2%</span>
                             </span>
                         </div>
-                        <div class="chart-wrapper" style="height:200px; margin:0.1rem 0; padding-top: 3px">
+                        <div class="chart-wrapper" style="height:200px;">
                             <canvas id="monthlyRevenueChart"></canvas>
                         </div>
-                        <div class="d-flex justify-content-between align-items-center" style="margin-top:0.1rem;  padding-top: 5px">
+                        <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <span class="stat-number" style="font-size:1.1rem; font-weight:700;">₹1.05CR</span>
-                                <span class="stat-label" style="font-size:0.5rem; display:block; color:#64748b; line-height:1.2;">Net Revenue</span>
+                                <span class="stat-number"
+                                      th:text="'₹' + ${#numbers.formatDecimal(monthlyRevenue.totalRevenue / 10000000.0, 1, 'COMMA', 1, 'POINT')} + 'CR'">
+</span>
+                                <span class="stat-label">Net Revenue</span>
                             </div>
                             <div style="font-size:0.4rem; color:#94a3b8; text-align:right; line-height:1.1;">
                                 <span>Jan</span> <span>Feb</span> <span>Mar</span> <span>Apr</span> <span>May</span> <span>Jun</span><br>
@@ -1221,146 +998,132 @@
 
                 <div class="col-12"><div class="section-title"><i class="fa-solid fa-building-columns"></i> Department Revenue</div></div>
 
-                <!-- Dept Monthly (expanded) -->
+                <!-- ======== Dept Monthly ======== -->
                 <div class="col-md-6 col-sm-6 col-12">
-                    <div class="card-custom dept-card-expanded h-100">
-                        <div class="card-title" style="font-size:0.75rem; margin-bottom:0.3rem;">
-                            <i class="fa-regular fa-calendar me-1"></i> Department Revenue – Monthly
+                    <div class="card-custom dept-card-expanded">
+                        <div class="card-title">
+                            <i class="fa-regular fa-calendar"></i> Department Revenue – Monthly
                         </div>
+
                         <div class="d-flex align-items-center" style="gap: 0.25rem; flex-wrap: wrap; height:100%;">
                             <div style="flex-shrink:0; width:140px; height:140px; margin:0 auto;">
                                 <canvas id="monthlyDeptDoughnutLeft"></canvas>
                             </div>
-                            <div style="flex:1; padding-left: 0.25rem; min-width:140px;">
-                                <div class="dept-row" style="padding:0.2rem 0; font-size:0.7rem; border-bottom:1px solid #f1f5f9;">
-                                    <span class="dept-name"><span style="display:inline-block; width:10px; height:10px; background:#1a56db; border-radius:3px; margin-right:4px;"></span>Java</span>
-                                    <span class="dept-value">₹35L</span>
-                                    <span class="dept-change up" style="font-size:0.55rem;">+3%</span>
-                                </div>
-                                <div class="dept-row" style="padding:0.2rem 0; font-size:0.7rem; border-bottom:1px solid #f1f5f9;">
-                                    <span class="dept-name"><span style="display:inline-block; width:10px; height:10px; background:#0b7e3d; border-radius:3px; margin-right:4px;"></span>Python</span>
-                                    <span class="dept-value">₹26L</span>
-                                    <span class="dept-change down" style="font-size:0.55rem;">-2%</span>
-                                </div>
-                                <div class="dept-row" style="padding:0.2rem 0; font-size:0.7rem; border-bottom:1px solid #f1f5f9;">
-                                    <span class="dept-name"><span style="display:inline-block; width:10px; height:10px; background:#c2410c; border-radius:3px; margin-right:4px;"></span>Salesforce</span>
-                                    <span class="dept-value">₹23L</span>
-                                    <span class="dept-change up" style="font-size:0.55rem;">+6%</span>
-                                </div>
-                                <div class="dept-row" style="padding:0.2rem 0; font-size:0.7rem; border-bottom:1px solid #f1f5f9;">
-                                    <span class="dept-name"><span style="display:inline-block; width:10px; height:10px; background:#6d28d9; border-radius:3px; margin-right:4px;"></span>Magento</span>
-                                    <span class="dept-value">₹7L</span>
-                                    <span class="dept-change up" style="font-size:0.55rem;">+4%</span>
-                                </div>
-                                <div class="dept-row" style="padding:0.2rem 0; font-size:0.7rem; border-bottom:none;">
-                                    <span class="dept-name"><span style="display:inline-block; width:10px; height:10px; background:#0e7490; border-radius:3px; margin-right:4px;"></span>Dynamics</span>
-                                    <span class="dept-value">₹5L</span>
-                                    <span class="dept-change neutral" style="font-size:0.55rem;">+1%</span>
+
+                            <div style="flex:1; padding-left:0.25rem; min-width:140px;">
+                                <div th:each="dept : ${deptRevenue}"
+                                     class="dept-row"
+                                     style="padding:0.2rem 0; font-size:0.7rem; border-bottom:1px solid #f1f5f9;">
+
+                    <span class="dept-name">
+                        <span style="display:inline-block; width:10px; height:10px; border-radius:3px; margin-right:4px;"
+                              th:style="'background:' + ${dept.color}">
+                        </span>
+                        <span th:text="${dept.department}">Java</span>
+                    </span>
+
+                                    <span class="dept-value"
+                                          th:text="'₹' + ${#numbers.formatDecimal(dept.monthlyRevenue / 100000.0, 1, 'COMMA', 1, 'POINT')} + 'L'">
+                        ₹35.5L
+                    </span>
+
+                                    <span class="dept-change"
+                                          th:class="${dept.monthlyGrowth >= 0} ? 'up' : 'down'"
+                                          th:text="${#numbers.formatDecimal(dept.monthlyGrowth, 1, 'COMMA', 1, 'POINT')} + '%'">
+                        +3.2%
+                    </span>
+
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Dept Yearly (expanded) -->
+                <!-- ======== Dept Yearly ======== -->
                 <div class="col-md-6 col-sm-6 col-12">
-                    <div class="card-custom dept-card-expanded h-100">
-                        <div class="card-title" style="font-size:0.75rem; margin-bottom:0.3rem;">
-                            <i class="fa-regular fa-calendar-plus me-1"></i> Department Revenue – Yearly
+                    <div class="card-custom dept-card-expanded">
+                        <div class="card-title">
+                            <i class="fa-regular fa-calendar-plus"></i> Department Revenue – Yearly
                         </div>
+
                         <div class="d-flex align-items-center" style="gap: 0.25rem; flex-wrap: wrap; height:100%;">
                             <div style="flex-shrink:0; width:140px; height:140px; margin:0 auto;">
                                 <canvas id="yearlyDeptDoughnutLeft"></canvas>
                             </div>
-                            <div style="flex:1; padding-left: 0.25rem; min-width:140px;">
-                                <div class="dept-row" style="padding:0.2rem 0; font-size:0.7rem; border-bottom:1px solid #f1f5f9;">
-                                    <span class="dept-name"><span style="display:inline-block; width:10px; height:10px; background:#1a56db; border-radius:3px; margin-right:4px;"></span>Java</span>
-                                    <span class="dept-value">₹4.2CR</span>
-                                    <span class="dept-change up" style="font-size:0.55rem;">+22%</span>
-                                </div>
-                                <div class="dept-row" style="padding:0.2rem 0; font-size:0.7rem; border-bottom:1px solid #f1f5f9;">
-                                    <span class="dept-name"><span style="display:inline-block; width:10px; height:10px; background:#0b7e3d; border-radius:3px; margin-right:4px;"></span>Python</span>
-                                    <span class="dept-value">₹3.1CR</span>
-                                    <span class="dept-change up" style="font-size:0.55rem;">+18%</span>
-                                </div>
-                                <div class="dept-row" style="padding:0.2rem 0; font-size:0.7rem; border-bottom:1px solid #f1f5f9;">
-                                    <span class="dept-name"><span style="display:inline-block; width:10px; height:10px; background:#c2410c; border-radius:3px; margin-right:4px;"></span>Salesforce</span>
-                                    <span class="dept-value">₹2.8CR</span>
-                                    <span class="dept-change up" style="font-size:0.55rem;">+16%</span>
-                                </div>
-                                <div class="dept-row" style="padding:0.2rem 0; font-size:0.7rem; border-bottom:1px solid #f1f5f9;">
-                                    <span class="dept-name"><span style="display:inline-block; width:10px; height:10px; background:#6d28d9; border-radius:3px; margin-right:4px;"></span>Magento</span>
-                                    <span class="dept-value">₹0.9CR</span>
-                                    <span class="dept-change up" style="font-size:0.55rem;">+12%</span>
-                                </div>
-                                <div class="dept-row" style="padding:0.2rem 0; font-size:0.7rem; border-bottom:none;">
-                                    <span class="dept-name"><span style="display:inline-block; width:10px; height:10px; background:#0e7490; border-radius:3px; margin-right:4px;"></span>Dynamics</span>
-                                    <span class="dept-value">₹0.6CR</span>
-                                    <span class="dept-change neutral" style="font-size:0.55rem;">+5%</span>
+
+                            <div style="flex:1; padding-left:0.25rem; min-width:140px;">
+                                <div th:each="dept : ${deptRevenue}"
+                                     class="dept-row"
+                                     style="padding:0.2rem 0; font-size:0.7rem; border-bottom:1px solid #f1f5f9;">
+
+                    <span class="dept-name">
+                        <span style="display:inline-block; width:10px; height:10px; border-radius:3px; margin-right:4px;"
+                              th:style="'background:' + ${dept.color}">
+                        </span>
+
+                        <span th:text="${dept.department}">Java</span>
+                    </span>
+
+                                    <span class="dept-value"
+                                          th:text="'₹' + ${#numbers.formatDecimal(dept.yearlyRevenue / 10000000.0, 1, 'COMMA', 1, 'POINT')} + 'CR'">
+                        ₹4.2CR
+                    </span>
+
+                                    <span class="dept-change"
+                                          th:class="${dept.yearlyGrowth >= 0} ? 'up' : 'down'"
+                                          th:text="${#numbers.formatDecimal(dept.yearlyGrowth, 1, 'COMMA', 1, 'POINT')} + '%'">
+                        +22.5%
+                    </span>
+
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
 
-        <!-- RIGHT COLUMN: Notifications (col-xl-4) -->
+        <!-- ======== RIGHT COLUMN: Notifications ======== -->
         <div class="col-xl-4 col-lg-5 col-md-12">
-            <div class="row g-2" style="height: 100%;">
-                <div class="col-12" style="height: 100%;">
-                    <div class="card-custom card-compact notif-card-expanded d-flex flex-column" style="height: 100%; position: relative; padding: 1.2rem 1.2rem !important;">
-                        <div class="d-flex justify-content-between align-items-center mb-3" style="padding-left: 2px; padding-top: 0px;">
-                            <span class="fw-semibold" style="font-size:0.95rem; color:#0f172a; letter-spacing:-0.01em;">
+            <div class="row g-2" style="height:100%;">
+                <div class="col-12" style="height:100%;">
+                    <div class="card-custom card-compact notif-card-expanded d-flex flex-column">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="fw-semibold" style="font-size:0.95rem; color:#0f172a;">
                                 <i class="fa-regular fa-bell me-2" style="color:#c2410c;"></i> Notifications
                             </span>
                             <div class="d-flex align-items-center gap-3">
-                                <span class="mini-badge red" style="font-size:0.7rem; padding:0.2rem 0.7rem; background:#fde8e8; color:#b91c1c; border-radius:20px; font-weight:600;">5 new</span>
-                                <a href="#" class="view-all-link" style="font-size:0.65rem; color:#1a56db; font-weight:500; text-decoration:none; white-space:nowrap;">
-                                    View all <i class="fa-solid fa-arrow-right" style="font-size:0.5rem; margin-left:2px;"></i>
-                                </a>
+                                <span class="mini-badge red" style="font-size:0.7rem; padding:0.2rem 0.7rem;">5 new</span>
+                                <a href="#" class="view-all-link" style="font-size:0.65rem;">View all <i class="fa-solid fa-arrow-right" style="font-size:0.5rem;"></i></a>
                             </div>
                         </div>
-                        <div class="notif-scroll" style="flex:1; max-height: 100%; padding-left: 2px;">
-                            <div class="notif-item" style="display:flex; align-items:center; padding:0.55rem 0; border-bottom:1px solid #f1f5f9; gap:12px;">
-                                <span class="notif-dot" style="background:#e67e22; width:10px; height:10px; border-radius:50%; flex-shrink:0;"></span>
-                                <span class="notif-text" style="flex:1; font-size:0.8rem; color:#1e293b; line-height:1.4;">
-                                    <strong>5 Leave Requests</strong>
-                                    <span class="notif-badge pending" style="display:inline-block; font-size:0.55rem; padding:0.1rem 0.6rem; border-radius:12px; background:#fef3c7; color:#b45309; font-weight:500; margin-left:6px;">Pending</span>
-                                </span>
-                                <span class="notif-time" style="font-size:0.65rem; color:#94a3b8; white-space:nowrap;">10m</span>
+                        <div class="notif-scroll" style="flex:1; max-height:100%;">
+                            <!-- Static notifications - can be made dynamic if needed -->
+                            <div class="notif-item" style="padding:0.55rem 0; border-bottom:1px solid #f1f5f9;">
+                                <span class="notif-dot" style="background:#e67e22;"></span>
+                                <span class="notif-text"><strong>5 Leave Requests</strong> <span class="notif-badge pending">Pending</span></span>
+                                <span class="notif-time">10m</span>
                             </div>
-                            <div class="notif-item" style="display:flex; align-items:center; padding:0.55rem 0; border-bottom:1px solid #f1f5f9; gap:12px;">
-                                <span class="notif-dot" style="background:#1a56db; width:10px; height:10px; border-radius:50%; flex-shrink:0;"></span>
-                                <span class="notif-text" style="flex:1; font-size:0.8rem; color:#1e293b; line-height:1.4;">
-                                    <strong>Payroll for July</strong>
-                                    <span class="notif-badge processing" style="display:inline-block; font-size:0.55rem; padding:0.1rem 0.6rem; border-radius:12px; background:#dbeafe; color:#1d4ed8; font-weight:500; margin-left:6px;">Processing</span>
-                                </span>
-                                <span class="notif-time" style="font-size:0.65rem; color:#94a3b8; white-space:nowrap;">30m</span>
+                            <div class="notif-item" style="padding:0.55rem 0; border-bottom:1px solid #f1f5f9;">
+                                <span class="notif-dot" style="background:#1a56db;"></span>
+                                <span class="notif-text"><strong>Payroll for July</strong> <span class="notif-badge processing">Processing</span></span>
+                                <span class="notif-time">30m</span>
                             </div>
-                            <div class="notif-item" style="display:flex; align-items:center; padding:0.55rem 0; border-bottom:1px solid #f1f5f9; gap:12px;">
-                                <span class="notif-dot" style="background:#0b7e3d; width:10px; height:10px; border-radius:50%; flex-shrink:0;"></span>
-                                <span class="notif-text" style="flex:1; font-size:0.8rem; color:#1e293b; line-height:1.4;">
-                                    <strong>2 New Employees</strong>
-                                    <span class="notif-badge joined" style="display:inline-block; font-size:0.55rem; padding:0.1rem 0.6rem; border-radius:12px; background:#d1fae5; color:#065f46; font-weight:500; margin-left:6px;">Joined</span>
-                                </span>
-                                <span class="notif-time" style="font-size:0.65rem; color:#94a3b8; white-space:nowrap;">1h</span>
+                            <div class="notif-item" style="padding:0.55rem 0; border-bottom:1px solid #f1f5f9;">
+                                <span class="notif-dot" style="background:#0b7e3d;"></span>
+                                <span class="notif-text"><strong>2 New Employees</strong> <span class="notif-badge joined">Joined</span></span>
+                                <span class="notif-time">1h</span>
                             </div>
-                            <div class="notif-item" style="display:flex; align-items:center; padding:0.55rem 0; border-bottom:1px solid #f1f5f9; gap:12px;">
-                                <span class="notif-dot" style="background:#b91c1c; width:10px; height:10px; border-radius:50%; flex-shrink:0;"></span>
-                                <span class="notif-text" style="flex:1; font-size:0.8rem; color:#1e293b; line-height:1.4;">
-                                    <strong>Project Deadline</strong>
-                                    <span class="notif-badge deadline" style="display:inline-block; font-size:0.55rem; padding:0.1rem 0.6rem; border-radius:12px; background:#fee2e2; color:#991b1b; font-weight:500; margin-left:6px;">Website</span>
-                                </span>
-                                <span class="notif-time" style="font-size:0.65rem; color:#94a3b8; white-space:nowrap;">2h</span>
+                            <div class="notif-item" style="padding:0.55rem 0; border-bottom:1px solid #f1f5f9;">
+                                <span class="notif-dot" style="background:#b91c1c;"></span>
+                                <span class="notif-text"><strong>Project Deadline</strong> <span class="notif-badge deadline">Website</span></span>
+                                <span class="notif-time">2h</span>
                             </div>
-                            <div class="notif-item" style="display:flex; align-items:center; padding:0.55rem 0; border-bottom:none; gap:12px;">
-                                <span class="notif-dot" style="background:#64748b; width:10px; height:10px; border-radius:50%; flex-shrink:0;"></span>
-                                <span class="notif-text" style="flex:1; font-size:0.8rem; color:#1e293b; line-height:1.4;">
-                                    <strong>Attendance Missing</strong>
-                                    <span class="notif-badge missing" style="display:inline-block; font-size:0.55rem; padding:0.1rem 0.6rem; border-radius:12px; background:#f1f5f9; color:#475569; font-weight:500; margin-left:6px;">12 employees</span>
-                                </span>
-                                <span class="notif-time" style="font-size:0.65rem; color:#94a3b8; white-space:nowrap;">3h</span>
+                            <div class="notif-item" style="padding:0.55rem 0; border-bottom:none;">
+                                <span class="notif-dot" style="background:#64748b;"></span>
+                                <span class="notif-text"><strong>Attendance Missing</strong> <span class="notif-badge missing">12 employees</span></span>
+                                <span class="notif-time">3h</span>
                             </div>
                         </div>
                     </div>
@@ -1373,6 +1136,7 @@
     <!--  ROW: Onboarding Projects – Monthly + Yearly + Chatbot        -->
     <!-- ============================================================= -->
     <div class="row g-3 mb-4">
+
         <!-- Monthly -->
         <div class="col-xl-4 col-lg-4 col-md-12">
             <div class="row g-2">
@@ -1381,30 +1145,30 @@
                         <span class="section-title" style="font-size:0.85rem; font-weight:600; margin:0; border-bottom:none; padding-bottom:0;">
                             <i class="fa-regular fa-calendar-plus me-1" style="color:#1a56db;"></i> Onboarding Projects – Monthly
                         </span>
-                        <span class="badge-trend up" style="font-size:0.6rem; padding:0.1rem 0.6rem; background:#e6f7ed; color:#0b7e3d; border-radius:12px;">
-                            <i class="fa-regular fa-circle-check"></i> +3
+                        <span class="badge-trend up" style="font-size:0.6rem; padding:0.1rem 0.6rem;">
+                            <i class="fa-regular fa-circle-check"></i> <span th:text="'+' + ${onboardingMonthly.newProjects}">+3</span>
                         </span>
                     </div>
                 </div>
                 <div class="col-md-4 col-sm-4 col-6">
                     <div class="stat-card-vertical" style="padding:0.5rem 0.6rem; min-height:80px; border:1px solid #e9edf4; border-radius:8px; background:#fafcff;">
-                        <div class="stat-number" style="font-size:1.2rem; font-weight:700; color:#0f172a;">12</div>
-                        <div class="stat-label" style="font-size:0.6rem; color:#64748b; font-weight:500;">Total Projects</div>
-                        <div class="stat-sub" style="font-size:0.5rem; color:#94a3b8;"><i class="fa-regular fa-circle-check text-success"></i> +3 vs last month</div>
+                        <div class="stat-number" th:text="${onboardingMonthly.totalProjects}">12</div>
+                        <div class="stat-label">Total Projects</div>
+                        <div class="stat-sub"><i class="fa-regular fa-circle-check text-success"></i> <span th:text="'+' + ${onboardingMonthly.newProjects} + ' vs last month'">+3 vs last month</span></div>
                     </div>
                 </div>
                 <div class="col-md-4 col-sm-4 col-6">
                     <div class="stat-card-vertical" style="padding:0.5rem 0.6rem; min-height:80px; border:1px solid #e9edf4; border-radius:8px; background:#fafcff;">
-                        <div class="stat-number" style="font-size:1.2rem; font-weight:700; color:#0f172a;">₹35L</div>
-                        <div class="stat-label" style="font-size:0.6rem; color:#64748b; font-weight:500;">Net Revenue</div>
-                        <div class="stat-sub" style="font-size:0.5rem; color:#94a3b8;">Avg ₹2.9L per project</div>
+                        <div class="stat-number" th:text="'₹' + ${onboardingMonthly.netRevenue} + 'L'">₹35L</div>
+                        <div class="stat-label">Net Revenue</div>
+                        <div class="stat-sub" th:text="'Avg ₹' + ${onboardingMonthly.avgRevenuePerProject} + 'L per project'">Avg ₹2.9L per project</div>
                     </div>
                 </div>
                 <div class="col-md-4 col-sm-4 col-12">
                     <div class="stat-card-vertical" style="padding:0.5rem 0.6rem; min-height:80px; border:1px solid #e9edf4; border-radius:8px; background:#fafcff;">
-                        <div class="stat-number" style="font-size:1.2rem; font-weight:700; color:#0b7e3d;">₹9L</div>
-                        <div class="stat-label" style="font-size:0.6rem; color:#64748b; font-weight:500;">Profit</div>
-                        <div class="stat-sub" style="font-size:0.5rem; color:#94a3b8;">25.7% margin</div>
+                        <div class="stat-number" th:text="'₹' + ${onboardingMonthly.profit} + 'L'">₹9L</div>
+                        <div class="stat-label">Profit</div>
+                        <div class="stat-sub" th:text="${onboardingMonthly.margin} + '% margin'">25.7% margin</div>
                     </div>
                 </div>
                 <div class="col-12">
@@ -1426,30 +1190,30 @@
                         <span class="section-title" style="font-size:0.85rem; font-weight:600; margin:0; border-bottom:none; padding-bottom:0;">
                             <i class="fa-solid fa-rocket me-1" style="color:#1a56db;"></i> Onboarding Projects – Yearly
                         </span>
-                        <span class="badge-trend up" style="font-size:0.6rem; padding:0.1rem 0.6rem; background:#e6f7ed; color:#0b7e3d; border-radius:12px;">
-                            <i class="fa-regular fa-circle-check"></i> +12
+                        <span class="badge-trend up" style="font-size:0.6rem; padding:0.1rem 0.6rem;">
+                            <i class="fa-regular fa-circle-check"></i> <span th:text="'+' + ${onboardingYearly.newProjects}">+12</span>
                         </span>
                     </div>
                 </div>
                 <div class="col-md-4 col-sm-4 col-6">
                     <div class="stat-card-vertical" style="padding:0.5rem 0.6rem; min-height:80px; border:1px solid #e9edf4; border-radius:8px; background:#fafcff;">
-                        <div class="stat-number" style="font-size:1.2rem; font-weight:700; color:#0f172a;">48</div>
-                        <div class="stat-label" style="font-size:0.6rem; color:#64748b; font-weight:500;">Total Projects</div>
-                        <div class="stat-sub" style="font-size:0.5rem; color:#94a3b8;"><i class="fa-regular fa-circle-check text-success"></i> +12 vs last year</div>
+                        <div class="stat-number" th:text="${onboardingYearly.totalProjects}">48</div>
+                        <div class="stat-label">Total Projects</div>
+                        <div class="stat-sub"><i class="fa-regular fa-circle-check text-success"></i> <span th:text="'+' + ${onboardingYearly.newProjects} + ' vs last year'">+12 vs last year</span></div>
                     </div>
                 </div>
                 <div class="col-md-4 col-sm-4 col-6">
                     <div class="stat-card-vertical" style="padding:0.5rem 0.6rem; min-height:80px; border:1px solid #e9edf4; border-radius:8px; background:#fafcff;">
-                        <div class="stat-number" style="font-size:1.2rem; font-weight:700; color:#0f172a;">₹2.8CR</div>
-                        <div class="stat-label" style="font-size:0.6rem; color:#64748b; font-weight:500;">Net Revenue</div>
-                        <div class="stat-sub" style="font-size:0.5rem; color:#94a3b8;">Avg ₹5.8L per project</div>
+                        <div class="stat-number" th:text="'₹' + ${onboardingYearly.netRevenue} + 'CR'">₹2.8CR</div>
+                        <div class="stat-label">Net Revenue</div>
+                        <div class="stat-sub" th:text="'Avg ₹' + ${onboardingYearly.avgRevenuePerProject} + 'L per project'">Avg ₹5.8L per project</div>
                     </div>
                 </div>
                 <div class="col-md-4 col-sm-4 col-12">
                     <div class="stat-card-vertical" style="padding:0.5rem 0.6rem; min-height:80px; border:1px solid #e9edf4; border-radius:8px; background:#fafcff;">
-                        <div class="stat-number" style="font-size:1.2rem; font-weight:700; color:#0b7e3d;">₹0.9CR</div>
-                        <div class="stat-label" style="font-size:0.6rem; color:#64748b; font-weight:500;">Profit</div>
-                        <div class="stat-sub" style="font-size:0.5rem; color:#94a3b8;">32% margin</div>
+                        <div class="stat-number" th:text="'₹' + ${onboardingYearly.profit} + 'CR'">₹0.9CR</div>
+                        <div class="stat-label">Profit</div>
+                        <div class="stat-sub" th:text="${onboardingYearly.margin} + '% margin'">32% margin</div>
                     </div>
                 </div>
                 <div class="col-12">
@@ -1466,6 +1230,7 @@
         <!-- Chatbot Card -->
         <div class="col-xl-4 col-lg-4 col-md-12">
             <div class="card-custom" style="height:100%; padding: 0.8rem 0.9rem; display:flex; flex-direction:column; min-height:340px;">
+                <!-- Chatbot header and content (static) -->
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <div class="d-flex align-items-center gap-2">
                         <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center text-white fw-bold" style="width:28px; height:28px; font-size:0.5rem; background-color:#1a56db;">AI</div>
@@ -1502,9 +1267,10 @@
     <!-- ============================================================= -->
     <div class="section-title"><i class="fa-solid fa-code"></i> Technology-wise Onboarding Projects</div>
     <div class="row g-3 mb-4">
+        <!-- Monthly Table -->
         <div class="col-md-6 col-12">
             <div class="card-custom">
-                <div class="card-title" style="font-size:0.8rem;"><i class="fa-regular fa-calendar me-1"></i> Monthly</div>
+                <div class="card-title"><i class="fa-regular fa-calendar"></i> Monthly</div>
                 <div class="table-responsive">
                     <table class="table table-custom">
                         <thead>
@@ -1518,20 +1284,31 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr><td>Java</td><td class="text-end">10</td><td class="text-end">₹25L</td><td class="text-end" style="color:#0b7e3d;">₹7L</td><td class="text-end" style="color:#b91c1c;">₹3L</td><td class="text-end">28%</td></tr>
-                        <tr><td>Python</td><td class="text-end">8</td><td class="text-end">₹6L</td><td class="text-end" style="color:#0b7e3d;">₹2L</td><td class="text-end" style="color:#b91c1c;">₹1L</td><td class="text-end">25%</td></tr>
-                        <tr><td>Salesforce</td><td class="text-end">6</td><td class="text-end">₹3L</td><td class="text-end" style="color:#0b7e3d;">₹1L</td><td class="text-end" style="color:#b91c1c;">₹1L</td><td class="text-end">22%</td></tr>
-                        <tr><td>Magento</td><td class="text-end">4</td><td class="text-end">₹1L</td><td class="text-end" style="color:#0b7e3d;">₹0L</td><td class="text-end" style="color:#b91c1c;">₹0L</td><td class="text-end">20%</td></tr>
-                        <tr><td>Dynamics</td><td class="text-end">3</td><td class="text-end">₹0L</td><td class="text-end" style="color:#0b7e3d;">₹0L</td><td class="text-end" style="color:#b91c1c;">₹0L</td><td class="text-end">15%</td></tr>
-                        <tr class="total-row"><td><strong>Total</strong></td><td class="text-end"><strong>31</strong></td><td class="text-end"><strong>₹35L</strong></td><td class="text-end" style="color:#0b7e3d;"><strong>₹9L</strong></td><td class="text-end" style="color:#b91c1c;"><strong>₹7L</strong></td><td class="text-end"><strong>25.7%</strong></td></tr>
+                        <tr th:each="tech : ${techMonthly}">
+                            <td th:text="${tech.name}">Java</td>
+                            <td class="text-end" th:text="${tech.projects}">10</td>
+                            <td class="text-end" th:text="'₹' + ${tech.revenue} + 'L'">₹25L</td>
+                            <td class="text-end" style="color:#0b7e3d;" th:text="'₹' + ${tech.profit} + 'L'">₹7L</td>
+                            <td class="text-end" style="color:#b91c1c;" th:text="'₹' + ${tech.loss} + 'L'">₹3L</td>
+                            <td class="text-end" th:text="${tech.margin} + '%'">28%</td>
+                        </tr>
+                        <tr class="total-row">
+                            <td><strong>Total</strong></td>
+                            <td class="text-end"><strong th:text="${techMonthlyTotal.projects}">31</strong></td>
+                            <td class="text-end"><strong th:text="'₹' + ${techMonthlyTotal.revenue} + 'L'">₹35L</strong></td>
+                            <td class="text-end" style="color:#0b7e3d;"><strong th:text="'₹' + ${techMonthlyTotal.profit} + 'L'">₹9L</strong></td>
+                            <td class="text-end" style="color:#b91c1c;"><strong th:text="'₹' + ${techMonthlyTotal.loss} + 'L'">₹7L</strong></td>
+                            <td class="text-end"><strong th:text="${techMonthlyTotal.margin} + '%'">25.7%</strong></td>
+                        </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
+        <!-- Yearly Table -->
         <div class="col-md-6 col-12">
             <div class="card-custom">
-                <div class="card-title" style="font-size:0.8rem;"><i class="fa-regular fa-calendar-plus me-1"></i> Yearly</div>
+                <div class="card-title"><i class="fa-regular fa-calendar-plus"></i> Yearly</div>
                 <div class="table-responsive">
                     <table class="table table-custom">
                         <thead>
@@ -1545,12 +1322,22 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr><td>Java</td><td class="text-end">20</td><td class="text-end">₹1.4CR</td><td class="text-end" style="color:#0b7e3d;">₹0.45CR</td><td class="text-end" style="color:#b91c1c;">₹0.16CR</td><td class="text-end">28%</td></tr>
-                        <tr><td>Python</td><td class="text-end">12</td><td class="text-end">₹0.7CR</td><td class="text-end" style="color:#0b7e3d;">₹0.2CR</td><td class="text-end" style="color:#b91c1c;">₹0.1CR</td><td class="text-end">25%</td></tr>
-                        <tr><td>Salesforce</td><td class="text-end">8</td><td class="text-end">₹0.36CR</td><td class="text-end" style="color:#0b7e3d;">₹0.11CR</td><td class="text-end" style="color:#b91c1c;">₹0.06CR</td><td class="text-end">22%</td></tr>
-                        <tr><td>Magento</td><td class="text-end">5</td><td class="text-end">₹0.2CR</td><td class="text-end" style="color:#0b7e3d;">₹0.06CR</td><td class="text-end" style="color:#b91c1c;">₹0.03CR</td><td class="text-end">20%</td></tr>
-                        <tr><td>Dynamics</td><td class="text-end">3</td><td class="text-end">₹0.15CR</td><td class="text-end" style="color:#0b7e3d;">₹0.03CR</td><td class="text-end" style="color:#b91c1c;">₹0.02CR</td><td class="text-end">15%</td></tr>
-                        <tr class="total-row"><td><strong>Total</strong></td><td class="text-end"><strong>48</strong></td><td class="text-end"><strong>₹2.8CR</strong></td><td class="text-end" style="color:#0b7e3d;"><strong>₹0.9CR</strong></td><td class="text-end" style="color:#b91c1c;"><strong>₹0.39CR</strong></td><td class="text-end"><strong>32%</strong></td></tr>
+                        <tr th:each="tech : ${techYearly}">
+                            <td th:text="${tech.name}">Java</td>
+                            <td class="text-end" th:text="${tech.projects}">20</td>
+                            <td class="text-end" th:text="'₹' + ${tech.revenue} + 'CR'">₹1.4CR</td>
+                            <td class="text-end" style="color:#0b7e3d;" th:text="'₹' + ${tech.profit} + 'CR'">₹0.45CR</td>
+                            <td class="text-end" style="color:#b91c1c;" th:text="'₹' + ${tech.loss} + 'CR'">₹0.16CR</td>
+                            <td class="text-end" th:text="${tech.margin} + '%'">28%</td>
+                        </tr>
+                        <tr class="total-row">
+                            <td><strong>Total</strong></td>
+                            <td class="text-end"><strong th:text="${techYearlyTotal.projects}">48</strong></td>
+                            <td class="text-end"><strong th:text="'₹' + ${techYearlyTotal.revenue} + 'CR'">₹2.8CR</strong></td>
+                            <td class="text-end" style="color:#0b7e3d;"><strong th:text="'₹' + ${techYearlyTotal.profit} + 'CR'">₹0.9CR</strong></td>
+                            <td class="text-end" style="color:#b91c1c;"><strong th:text="'₹' + ${techYearlyTotal.loss} + 'CR'">₹0.39CR</strong></td>
+                            <td class="text-end"><strong th:text="${techYearlyTotal.margin} + '%'">32%</strong></td>
+                        </tr>
                         </tbody>
                     </table>
                 </div>
@@ -1565,18 +1352,36 @@
     <div class="row g-3 mb-4">
         <div class="col-md-6 col-12">
             <div class="card-custom">
-                <div class="card-title" style="font-size:0.8rem;"><i class="fa-regular fa-calendar me-1"></i> This Month</div>
-                <div class="loss-item"><span class="loss-label"><i class="fa-solid fa-circle-exclamation"></i> Total Loss</span><span class="loss-value negative">₹7L</span></div>
-                <div class="loss-item"><span class="loss-label"><i class="fa-solid fa-arrow-up"></i> Highest Loss</span><span class="loss-value">₹3L <span class="loss-sub">(Website Revamp)</span></span></div>
-                <div class="loss-item"><span class="loss-label"><i class="fa-solid fa-arrow-down"></i> Lowest Loss</span><span class="loss-value">₹0.5L <span class="loss-sub">(Mobile App)</span></span></div>
+                <div class="card-title"><i class="fa-regular fa-calendar"></i> This Month</div>
+                <div class="loss-item">
+                    <span class="loss-label"><i class="fa-solid fa-circle-exclamation"></i> Total Loss</span>
+                    <span class="loss-value negative" th:text="'₹' + ${projectLossMonthly.totalLoss} + 'L'">₹7L</span>
+                </div>
+                <div class="loss-item">
+                    <span class="loss-label"><i class="fa-solid fa-arrow-up"></i> Highest Loss</span>
+                    <span class="loss-value" th:text="'₹' + ${projectLossMonthly.highestLossAmount} + 'L' + ' (' + ${projectLossMonthly.highestLossProject} + ')'">₹3L (Website Revamp)</span>
+                </div>
+                <div class="loss-item">
+                    <span class="loss-label"><i class="fa-solid fa-arrow-down"></i> Lowest Loss</span>
+                    <span class="loss-value" th:text="'₹' + ${projectLossMonthly.lowestLossAmount} + 'L' + ' (' + ${projectLossMonthly.lowestLossProject} + ')'">₹0.5L (Mobile App)</span>
+                </div>
             </div>
         </div>
         <div class="col-md-6 col-12">
             <div class="card-custom">
-                <div class="card-title" style="font-size:0.8rem;"><i class="fa-regular fa-calendar-plus me-1"></i> This Year</div>
-                <div class="loss-item"><span class="loss-label"><i class="fa-solid fa-circle-exclamation"></i> Total Loss</span><span class="loss-value negative">₹0.39CR</span></div>
-                <div class="loss-item"><span class="loss-label"><i class="fa-solid fa-arrow-up"></i> Highest Loss</span><span class="loss-value">₹0.18CR <span class="loss-sub">(HRMS Development)</span></span></div>
-                <div class="loss-item"><span class="loss-label"><i class="fa-solid fa-arrow-down"></i> Lowest Loss</span><span class="loss-value">₹0.02CR <span class="loss-sub">(API Integration)</span></span></div>
+                <div class="card-title"><i class="fa-regular fa-calendar-plus"></i> This Year</div>
+                <div class="loss-item">
+                    <span class="loss-label"><i class="fa-solid fa-circle-exclamation"></i> Total Loss</span>
+                    <span class="loss-value negative" th:text="'₹' + ${projectLossYearly.totalLoss} + 'CR'">₹0.39CR</span>
+                </div>
+                <div class="loss-item">
+                    <span class="loss-label"><i class="fa-solid fa-arrow-up"></i> Highest Loss</span>
+                    <span class="loss-value" th:text="'₹' + ${projectLossYearly.highestLossAmount} + 'CR' + ' (' + ${projectLossYearly.highestLossProject} + ')'">₹0.18CR (HRMS Development)</span>
+                </div>
+                <div class="loss-item">
+                    <span class="loss-label"><i class="fa-solid fa-arrow-down"></i> Lowest Loss</span>
+                    <span class="loss-value" th:text="'₹' + ${projectLossYearly.lowestLossAmount} + 'CR' + ' (' + ${projectLossYearly.lowestLossProject} + ')'">₹0.02CR (API Integration)</span>
+                </div>
             </div>
         </div>
     </div>
@@ -1590,24 +1395,42 @@
             <div class="card-custom">
                 <div class="row">
                     <div class="col-md-4 col-sm-6 col-12">
-                        <h6 class="fw-bold mb-2" style="font-size:0.85rem;"><i class="fa-solid fa-handshake me-1" style="color:#1a56db;"></i> C2C</h6>
+                        <h6 class="fw-bold mb-2"><i class="fa-solid fa-handshake me-1" style="color:#1a56db;"></i> C2C</h6>
                         <div class="row">
-                            <div class="col-6"><div class="project-metric"><div class="pm-value">₹0.75CR</div><div class="pm-label">Revenue</div></div></div>
-                            <div class="col-6"><div class="project-metric"><div class="pm-value" style="color:#0b7e3d;">₹0.12CR</div><div class="pm-label">Profit</div></div></div>
+                            <div class="col-6"><div class="project-metric">
+                                <div class="pm-value" th:text="'₹' + ${projectOverview.c2c.revenue} + 'CR'">₹0.75CR</div>
+                                <div class="pm-label">Revenue</div>
+                            </div></div>
+                            <div class="col-6"><div class="project-metric">
+                                <div class="pm-value" style="color:#0b7e3d;" th:text="'₹' + ${projectOverview.c2c.profit} + 'CR'">₹0.12CR</div>
+                                <div class="pm-label">Profit</div>
+                            </div></div>
                         </div>
                     </div>
                     <div class="col-md-4 col-sm-6 col-12">
-                        <h6 class="fw-bold mb-2" style="font-size:0.85rem;"><i class="fa-solid fa-arrows-spin me-1" style="color:#c2410c;"></i> C2M</h6>
+                        <h6 class="fw-bold mb-2"><i class="fa-solid fa-arrows-spin me-1" style="color:#c2410c;"></i> C2M</h6>
                         <div class="row">
-                            <div class="col-6"><div class="project-metric"><div class="pm-value">₹0.42CR</div><div class="pm-label">Revenue</div></div></div>
-                            <div class="col-6"><div class="project-metric"><div class="pm-value" style="color:#b91c1c;">₹0.08CR</div><div class="pm-label">Loss</div></div></div>
+                            <div class="col-6"><div class="project-metric">
+                                <div class="pm-value" th:text="'₹' + ${projectOverview.c2m.revenue} + 'CR'">₹0.42CR</div>
+                                <div class="pm-label">Revenue</div>
+                            </div></div>
+                            <div class="col-6"><div class="project-metric">
+                                <div class="pm-value" style="color:#b91c1c;" th:text="'₹' + ${projectOverview.c2m.loss} + 'CR'">₹0.08CR</div>
+                                <div class="pm-label">Loss</div>
+                            </div></div>
                         </div>
                     </div>
                     <div class="col-md-4 col-sm-12 col-12">
-                        <h6 class="fw-bold mb-2" style="font-size:0.85rem;"><i class="fa-solid fa-user me-1" style="color:#6d28d9;"></i> Individual</h6>
+                        <h6 class="fw-bold mb-2"><i class="fa-solid fa-user me-1" style="color:#6d28d9;"></i> Individual</h6>
                         <div class="row">
-                            <div class="col-6"><div class="project-metric"><div class="pm-value">₹0.39CR</div><div class="pm-label">Revenue</div></div></div>
-                            <div class="col-6"><div class="project-metric"><div class="pm-value" style="color:#0b7e3d;">₹0.18CR</div><div class="pm-label">Profit</div></div></div>
+                            <div class="col-6"><div class="project-metric">
+                                <div class="pm-value" th:text="'₹' + ${projectOverview.individual.revenue} + 'CR'">₹0.39CR</div>
+                                <div class="pm-label">Revenue</div>
+                            </div></div>
+                            <div class="col-6"><div class="project-metric">
+                                <div class="pm-value" style="color:#0b7e3d;" th:text="'₹' + ${projectOverview.individual.profit} + 'CR'">₹0.18CR</div>
+                                <div class="pm-label">Profit</div>
+                            </div></div>
                         </div>
                     </div>
                 </div>
@@ -1619,7 +1442,7 @@
     <div class="footer-note">
         <span>Super Admin Dashboard</span>
         <span class="ms-3">v2.0</span>
-        <span class="ms-3"><i class="fa-regular fa-clock"></i> 30 Jul 2026</span>
+        <span class="ms-3"><i class="fa-regular fa-clock"></i> <span th:text="${#dates.format(#dates.createNow(), 'dd MMM yyyy')}">30 Jul 2026</span></span>
     </div>
 
 </div><!-- end main-content -->
@@ -1630,56 +1453,41 @@
 <!-- ============================================================= -->
 <!--  SCRIPTS                                                      -->
 <!-- ============================================================= -->
-<script>
+<script th:inline="javascript">
     // ===== SIDEBAR TOGGLE =====
     function toggleSidebar() {
         const sidebar = document.querySelector('.sidebar');
         const overlay = document.getElementById('sidebarOverlay');
-        if (sidebar) {
-            sidebar.classList.toggle('open');
-        }
-        if (overlay) {
-            overlay.classList.toggle('show');
-        }
+        if (sidebar) sidebar.classList.toggle('open');
+        if (overlay) overlay.classList.toggle('show');
     }
-
     window.addEventListener('resize', function() {
         if (window.innerWidth > 992) {
-            const sidebar = document.querySelector('.sidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-            if (sidebar) sidebar.classList.remove('open');
-            if (overlay) overlay.classList.remove('show');
+            document.querySelector('.sidebar')?.classList.remove('open');
+            document.getElementById('sidebarOverlay')?.classList.remove('show');
         }
     });
 
-    // ===== FIX: MANUAL COLLAPSE TOGGLE FOR SIDEBAR DROPDOWNS =====
+    // ===== SIDEBAR DROPDOWNS MANUAL TOGGLE =====
     document.addEventListener('DOMContentLoaded', function() {
-        const triggers = document.querySelectorAll('.sidebar [data-bs-toggle="collapse"]');
-
-        triggers.forEach(function(trigger) {
+        document.querySelectorAll('.sidebar [data-bs-toggle="collapse"]').forEach(function(trigger) {
             trigger.addEventListener('click', function(e) {
                 e.preventDefault();
-
-                const targetId = this.getAttribute('data-bs-target');
-                if (!targetId) return;
-
-                const target = document.querySelector(targetId);
-                if (!target) return;
-
-                if (typeof bootstrap !== 'undefined' && bootstrap.Collapse) {
-                    const collapse = bootstrap.Collapse.getInstance(target) || new bootstrap.Collapse(target, { toggle: false });
-                    collapse.toggle();
-                } else {
-                    target.classList.toggle('show');
-                    this.setAttribute('aria-expanded', target.classList.contains('show'));
-                    const arrow = this.querySelector('.arrow-icon');
-                    if (arrow) {
-                        arrow.style.transform = target.classList.contains('show') ? 'rotate(90deg)' : 'rotate(0deg)';
+                const target = document.querySelector(this.getAttribute('data-bs-target'));
+                if (target) {
+                    if (typeof bootstrap !== 'undefined' && bootstrap.Collapse) {
+                        const collapse = bootstrap.Collapse.getInstance(target) || new bootstrap.Collapse(target, { toggle: false });
+                        collapse.toggle();
+                    } else {
+                        target.classList.toggle('show');
+                        this.setAttribute('aria-expanded', target.classList.contains('show'));
+                        const arrow = this.querySelector('.arrow-icon');
+                        if (arrow) arrow.style.transform = target.classList.contains('show') ? 'rotate(90deg)' : 'rotate(0deg)';
                     }
                 }
             });
         });
-
+        // Auto-expand active submenu
         const currentPath = window.location.pathname;
         document.querySelectorAll('.submenu a').forEach(function(link) {
             const href = link.getAttribute('href');
@@ -1706,34 +1514,35 @@
         if (window) window.classList.toggle('open');
     }
 
-    // ===== COLORS (for charts) =====
-    const blue = 'rgba(26, 86, 219, 1)';
-    const blueLight = 'rgba(26, 86, 219, 0.15)';
-    const green = 'rgba(11, 126, 61, 1)';
-    const greenLight = 'rgba(11, 126, 61, 0.15)';
+    // ===== CHART DATA INJECTION =====
+    var yearlyData = /*[[${yearlyRevenue.monthlyRevenue}]]*/ [];
+    var monthlyData = /*[[${monthlyRevenue.dailyRevenue}]]*/ [];
+    var deptMonthlyData = /*[[${deptRevenue}]]*/ [];
+    var deptYearlyData = /*[[${deptRevenue}]]*/ [];
+    var barMonthlyData = /*[[${techMonthly}]]*/ [];
+    var barYearlyData = /*[[${techYearly}]]*/ [];
 
-    // ===== 1. YEARLY REVENUE LINE (with gradient) =====
+    // ===== 1. YEARLY REVENUE CHART =====
     const yearlyCanvas = document.getElementById('yearlyRevenueChart');
     const yearlyCtx = yearlyCanvas.getContext('2d');
-
-    const yearlyGradient = yearlyCtx.createLinearGradient(0, 0, 0, 150);
-    yearlyGradient.addColorStop(0, 'rgba(26, 86, 219, 0.8)');
-    yearlyGradient.addColorStop(0.4, 'rgba(26, 86, 219, 0.4)');
-    yearlyGradient.addColorStop(1, 'rgba(26, 86, 219, 0)');
-
+    const yearlyGradient = yearlyCtx.createLinearGradient(0,0,0,150);
+    yearlyGradient.addColorStop(0, 'rgba(26,86,219,0.8)');
+    yearlyGradient.addColorStop(0.4, 'rgba(26,86,219,0.4)');
+    yearlyGradient.addColorStop(1, 'rgba(26,86,219,0)');
     new Chart(yearlyCanvas, {
         type: 'line',
         data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
             datasets: [{
-                data: [0.6, 3.9, 1.3, 5.0, 2.8, 1.8, 5.0, 6.5, 8.2, 9.8, 1.2, 12.5],
+                data: yearlyData,
                 borderColor: '#1a56db',
                 backgroundColor: yearlyGradient,
                 fill: true,
-                tension: 0,                      // <-- SHARP EDGES (no curve)
+                tension: 0,
                 pointRadius: 2.5,
-                pointHoverRadius: 0,
-                borderWidth: 2,
+                pointBorderColor: '#fff',
+                pointBorderWidth: 1.5,
+                borderWidth: 2
             }]
         },
         options: {
@@ -1741,45 +1550,34 @@
             maintainAspectRatio: false,
             plugins: { legend: { display: false } },
             scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: { font: { size: 7 }, callback: v => '₹' + v + 'CR' },
-                    grid: { color: 'rgba(0,0,0,0.04)' }
-                },
-                x: {
-                    grid: { display: false },
-                    ticks: { font: { size: 6 } }
-                }
+                y: { beginAtZero: true, ticks: { font: { size: 7 }, callback: v => '₹' + v + 'CR' }, grid: { color: 'rgba(0,0,0,0.04)' } },
+                x: { grid: { display: false }, ticks: { font: { size: 6 } } }
             },
-            interaction: {
-                intersect: false,
-                mode: 'index'
-            }
+            interaction: { intersect: false, mode: 'index' }
         }
     });
 
-    // ===== 2. MONTHLY REVENUE LINE (with gradient) =====
+    // ===== 2. MONTHLY REVENUE CHART =====
     const monthlyCanvas = document.getElementById('monthlyRevenueChart');
     const monthlyCtx = monthlyCanvas.getContext('2d');
-
-    const monthlyGradient = monthlyCtx.createLinearGradient(0, 0, 0, 250);
-    monthlyGradient.addColorStop(0, 'rgba(11, 126, 61, 0.8)');
-    monthlyGradient.addColorStop(0.4, 'rgba(11, 126, 61, 0.4)');
-    monthlyGradient.addColorStop(1, 'rgba(11, 126, 61, 0)');
-
+    const monthlyGradient = monthlyCtx.createLinearGradient(0,0,0,150);
+    monthlyGradient.addColorStop(0, 'rgba(11,126,61,0.8)');
+    monthlyGradient.addColorStop(0.4, 'rgba(11,126,61,0.4)');
+    monthlyGradient.addColorStop(1, 'rgba(11,126,61,0)');
     new Chart(monthlyCanvas, {
         type: 'line',
         data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+            labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
             datasets: [{
-                data: [0.82, 1.86, 0.89, 5.93, 0.97, 3.00, 1.02, 8.05],
+                data: monthlyData,
                 borderColor: '#0b7e3d',
                 backgroundColor: monthlyGradient,
                 fill: true,
                 tension: 0,
                 pointRadius: 2.5,
-                pointHoverRadius: 0,
-                borderWidth: 2,
+                pointBorderColor: '#fff',
+                pointBorderWidth: 1.5,
+                borderWidth: 2
             }]
         },
         options: {
@@ -1787,182 +1585,87 @@
             maintainAspectRatio: false,
             plugins: { legend: { display: false } },
             scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: { font: { size: 7 }, callback: v => '₹' + v + 'CR' },
-                    grid: { color: 'rgba(0,0,0,0.04)' }
-                },
-                x: {
-                    grid: { display: false },
-                    ticks: { font: { size: 6 } }
-                }
+                y: { beginAtZero: true, ticks: { font: { size: 7 }, callback: v => '₹' + v + 'CR' }, grid: { color: 'rgba(0,0,0,0.04)' } },
+                x: { grid: { display: false }, ticks: { font: { size: 6 } } }
             },
-            interaction: {
-                intersect: false,
-                mode: 'index'
-            }
+            interaction: { intersect: false, mode: 'index' }
         }
     });
 
-    // ===== MONTHLY DEPARTMENT DOUGHNUT =====
+    // ===== 3. DEPARTMENT DOUGHNUTS =====
+    const monthlyDeptData = deptMonthlyData.map(d => d.monthlyRevenue);
+    const yearlyDeptData = deptYearlyData.map(d => d.yearlyRevenue);
+    const deptLabels = deptMonthlyData.map(d => d.department);
+    const deptColors = ['#1a56db','#0b7e3d','#c2410c','#6d28d9','#0e7490'];
+
     new Chart(document.getElementById('monthlyDeptDoughnutLeft'), {
         type: 'doughnut',
-        data: {
-            labels: ['Java', 'Python', 'Salesforce', 'Magento', 'Dynamics'],
-            datasets: [{
-                data: [35, 26, 23, 7, 5],
-                backgroundColor: ['#1a56db', '#0b7e3d', '#c2410c', '#6d28d9', '#0e7490'],
-                borderColor: '#fff',
-                borderWidth: 2,
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            cutout: '55%',
-        }
+        data: { labels: deptLabels, datasets: [{ data: monthlyDeptData, backgroundColor: deptColors, borderColor: '#fff', borderWidth: 2 }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, cutout: '55%' }
     });
-
-    // ===== YEARLY DEPARTMENT DOUGHNUT =====
     new Chart(document.getElementById('yearlyDeptDoughnutLeft'), {
         type: 'doughnut',
-        data: {
-            labels: ['Java', 'Python', 'Salesforce', 'Magento', 'Dynamics'],
-            datasets: [{
-                data: [4.2, 3.1, 2.8, 0.9, 0.6],
-                backgroundColor: ['#1a56db', '#0b7e3d', '#c2410c', '#6d28d9', '#0e7490'],
-                borderColor: '#fff',
-                borderWidth: 2,
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            cutout: '55%',
-        }
+        data: { labels: deptLabels, datasets: [{ data: yearlyDeptData, backgroundColor: deptColors, borderColor: '#fff', borderWidth: 2 }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, cutout: '55%' }
     });
 
-    // ===== MONTHLY BAR CHART =====
+    // ===== 4. BAR CHARTS (Technology-wise) =====
+    const barMonthlyData = barMonthlyData.map(t => t.projects);
+    const barYearlyData = barYearlyData.map(t => t.projects);
+    const techLabels = barMonthlyData.map(t => t.name);
+
     new Chart(document.getElementById('monthlyBarChart'), {
         type: 'bar',
         data: {
-            labels: ['Java', 'Python', 'Salesforce', 'Magento', 'Dynamics'],
+            labels: techLabels,
             datasets: [{
-                data: [10, 8, 6, 4, 3],
-                backgroundColor: ['#1a56db', '#0b7e3d', '#c2410c', '#6d28d9', '#0e7490'],
-                borderColor: '#ffffff',
+                data: barMonthlyData,
+                backgroundColor: deptColors,
+                borderColor: '#fff',
                 borderWidth: 1,
                 borderRadius: 4,
-                barPercentage: 0.5,
+                barPercentage: 0.5
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            plugins: {
-                legend: { display: false },
-                tooltip: {
-                    backgroundColor: 'rgba(15,23,42,0.85)',
-                    titleFont: { size: 8 },
-                    bodyFont: { size: 7 },
-                    cornerRadius: 4,
-                    padding: 4,
-                    callbacks: {
-                        label: function(ctx) {
-                            return 'Projects: ' + ctx.parsed.y;
-                        }
-                    }
-                }
-            },
+            plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => 'Projects: ' + ctx.parsed.y } } },
             scales: {
-                x: {
-                    grid: { display: false },
-                    ticks: {
-                        font: { size: 6 },
-                        maxRotation: 0,
-                        color: '#94a3b8'
-                    }
-                },
-                y: {
-                    grid: { color: 'rgba(0,0,0,0.04)' },
-                    ticks: {
-                        font: { size: 6 },
-                        color: '#94a3b8',
-                        stepSize: 1
-                    },
-                    beginAtZero: true
-                }
+                x: { grid: { display: false }, ticks: { font: { size: 6 }, maxRotation: 0, color: '#94a3b8' } },
+                y: { grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: { size: 6 }, color: '#94a3b8', stepSize: 1 }, beginAtZero: true }
             },
-            interaction: {
-                intersect: false,
-                mode: 'index'
-            }
+            interaction: { intersect: false, mode: 'index' }
         }
     });
 
-    // ===== YEARLY BAR CHART =====
     new Chart(document.getElementById('yearlyBarChart'), {
         type: 'bar',
         data: {
-            labels: ['Java', 'Python', 'Salesforce', 'Magento', 'Dynamics'],
+            labels: techLabels,
             datasets: [{
-                data: [20, 12, 8, 5, 3],
-                backgroundColor: ['#1a56db', '#0b7e3d', '#c2410c', '#6d28d9', '#0e7490'],
-                borderColor: '#ffffff',
+                data: barYearlyData,
+                backgroundColor: deptColors,
+                borderColor: '#fff',
                 borderWidth: 1,
                 borderRadius: 4,
-                barPercentage: 0.5,
+                barPercentage: 0.5
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            plugins: {
-                legend: { display: false },
-                tooltip: {
-                    backgroundColor: 'rgba(15,23,42,0.85)',
-                    titleFont: { size: 8 },
-                    bodyFont: { size: 7 },
-                    cornerRadius: 4,
-                    padding: 4,
-                    callbacks: {
-                        label: function(ctx) {
-                            return 'Projects: ' + ctx.parsed.y;
-                        }
-                    }
-                }
-            },
+            plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => 'Projects: ' + ctx.parsed.y } } },
             scales: {
-                x: {
-                    grid: { display: false },
-                    ticks: {
-                        font: { size: 6 },
-                        maxRotation: 0,
-                        color: '#94a3b8'
-                    }
-                },
-                y: {
-                    grid: { color: 'rgba(0,0,0,0.04)' },
-                    ticks: {
-                        font: { size: 6 },
-                        color: '#94a3b8',
-                        stepSize: 1
-                    },
-                    beginAtZero: true
-                }
+                x: { grid: { display: false }, ticks: { font: { size: 6 }, maxRotation: 0, color: '#94a3b8' } },
+                y: { grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: { size: 6 }, color: '#94a3b8', stepSize: 1 }, beginAtZero: true }
             },
-            interaction: {
-                intersect: false,
-                mode: 'index'
-            }
+            interaction: { intersect: false, mode: 'index' }
         }
     });
 </script>
 
 <!-- ===== BOOTSTRAP JS ===== -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
-</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
