@@ -2,7 +2,6 @@ package EmployeeManagementSystem.entity;
 
 import EmployeeManagementSystem.enums.ProjectStatus;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 
@@ -15,7 +14,6 @@ import java.util.List;
 @Table(name = "projects")
 @Data
 public class Project {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -47,6 +45,8 @@ public class Project {
 
     @Column(name = "onboarding_date")
     private LocalDate onboardingDate;
+
+    private LocalDate endDate;
 
     @Column(name = "description")
     private String description;
@@ -118,6 +118,13 @@ public class Project {
 
     public LocalDate getOnboardingDate() { return onboardingDate; }
     public void setOnboardingDate(LocalDate onboardingDate) { this.onboardingDate = onboardingDate; }
+
+    public LocalDate getEndDate(){
+        return endDate;
+    }
+    public void setEndDate(LocalDate endDate){
+        this.endDate = endDate;
+    }
 
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
