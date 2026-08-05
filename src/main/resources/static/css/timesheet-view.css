@@ -1,0 +1,52 @@
+<style>
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f5f7fb;
+        }
+
+        .timesheet-card {
+            border-radius: 15px;
+            border: none;
+            overflow: hidden;
+        }
+
+        .card-header-custom {
+            background: linear-gradient(135deg,#343a40,#343a40);
+            padding: 20px;
+        }
+
+        .detail-box {
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 18px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .label-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #64748b;
+        }
+
+        .value-text {
+            font-size: 16px;
+            font-weight: 500;
+            color: #1e293b;
+        }
+
+        .description-box {
+            min-height: 120px;
+            line-height: 1.6;
+            white-space: pre-line;
+        }
+
+        .btn-custom {
+            background-color: #343a40;
+            border-radius: 25px;
+            padding: 10px 25px;
+
+        }
+
+
+    </style>
