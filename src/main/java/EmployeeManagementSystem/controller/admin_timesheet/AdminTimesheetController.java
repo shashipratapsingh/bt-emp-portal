@@ -1,0 +1,158 @@
+//package EmployeeManagementSystem.controller.admin_timesheet;
+//
+//import EmployeeManagementSystem.entity.Timesheet;
+//import EmployeeManagementSystem.service.TimesheetService;
+//import lombok.RequiredArgsConstructor;
+//import org.springframework.stereotype.Controller;
+//import org.springframework.ui.Model;
+//import org.springframework.web.bind.annotation.*;
+//
+//import java.util.ArrayList;
+//import java.util.List;
+//
+//@Controller
+//@RequestMapping("/admin/timesheets")
+//@RequiredArgsConstructor
+//public class AdminTimesheetController {
+//
+//    private final TimesheetService timesheetService;
+//
+//    // =====================================================
+//    // Display All Employee Timesheets
+//    // URL : /admin/timesheets/all
+//    // =====================================================
+//    @GetMapping("/all")
+//    public String showAllTimesheets(Model model) {
+//
+//        System.out.println("========== Admin Timesheet ==========");
+//
+//        List<Timesheet> timesheets = timesheetService.getAllTimesheet();
+//
+//        System.out.println("Total Timesheets : " + timesheets.size());
+//
+//        model.addAttribute("timesheets", timesheets);
+//
+//        return "admin/timesheet-management/all-timesheet";
+//    }
+//
+//    // =====================================================
+//    // View All Timesheets of a Particular Employee
+//    // URL : /admin/timesheets/view/EMP0004
+//    // =====================================================
+//    @GetMapping("/view/{employeeId}")
+//    public String viewEmployeeTimesheets(@PathVariable("employeeId") String employeeId, Model model) {
+//        System.out.println("======================================");
+//        System.out.println("Employee ID : " + employeeId);
+//
+//        List<Timesheet> timesheets = timesheetService.getTimesheetsByEmployeeId(employeeId);
+//
+//        System.out.println("Total Records : " + timesheets.size());
+//
+//        if (timesheets.isEmpty()) {
+//            model.addAttribute("message", "No timesheets found for employee : " + employeeId);
+//            model.addAttribute("employeeId", employeeId);
+//            model.addAttribute("timesheets", new ArrayList<>());
+//        } else {
+//            // Format dates if needed
+//            for (Timesheet sheet : timesheets) {
+//                // Format date if you have date formatting logic
+//                // sheet.setFormattedDate(sheet.getDate().toString());
+//            }
+//            model.addAttribute("timesheets", timesheets);
+//        }
+//
+//        return "admin/timesheet-management/view-timesheet";
+//    }
+//}
+
+
+
+
+
+
+
+
+
+package EmployeeManagementSystem.controller.admin_timesheet;
+
+import EmployeeManagementSystem.dto.EmployeeTimesheetDTO;
+import EmployeeManagementSystem.entity.Timesheet;
+import EmployeeManagementSystem.service.TimesheetService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Controller
+@RequestMapping("/admin/timesheets")
+@RequiredArgsConstructor
+public class AdminTimesheetController {
+
+    private final TimesheetService timesheetService;
+
+    // =====================================================
+    // Display Employee List (One Row Per Employee)
+    // URL : /admin/timesheets/all
+    // =====================================================
+    @GetMapping("/all")
+    public String showAllEmployees(Model model) {
+
+        System.out.println("========== Employee List ==========");
+
+        List<EmployeeTimesheetDTO> employees = timesheetService.getAllEmployees();
+
+        System.out.println("Total Employees : " + employees.size());
+
+        model.addAttribute("employees", employees);
+
+        return "admin/timesheet-management/all-timesheet";
+    }
+
+    // =====================================================
+    // Display All Timesheets of Selected Employee
+    // URL : /admin/timesheets/view/EMP0004
+    // =====================================================
+    @GetMapping("/view/{employeeId}")
+    public String viewEmployeeTimesheets(@PathVariable String employeeId,
+                                         Model model) {
+
+        System.out.println("==================================");
+        System.out.println("Employee ID : " + employeeId);
+
+        List<Timesheet> timesheets =
+                timesheetService.getTimesheetsByEmployeeId(employeeId);
+
+        System.out.println("Total Records : " + timesheets.size());
+
+        model.addAttribute("employeeId", employeeId);
+        model.addAttribute("timesheets", timesheets);
+
+        if (!timesheets.isEmpty()) {
+            model.addAttribute("employeeName",
+                    timesheets.get(0).getEmployeeName());
+        }
+
+        return "admin/timesheet-management/view-timesheet";
+    }
+
+    @PostMapping("/approve/{id}")
+    public String approveTimesheet(@PathVariable Long id) {
+
+        timesheetService.updateTimesheetStatus(id, "approve");
+
+        return "redirect:/admin/timesheets/view/" +
+                timesheetService.getById(id).getEmployeeId();
+    }
+
+    @PostMapping("/reject/{id}")
+    public String rejectTimesheet(@PathVariable Long id) {
+
+        timesheetService.updateTimesheetStatus(id, "reject");
+
+        return "redirect:/admin/timesheets/view/" +
+                timesheetService.getById(id).getEmployeeId();
+    }
+}

@@ -47,7 +47,7 @@ public class Timesheet {
     @Column(name = "date")
     private LocalDate date;
 
-    private String hoursWorked;
+    private Double hoursWorked;
 
     @Column(length = 1000)
     private String taskDescription;
