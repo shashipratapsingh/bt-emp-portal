@@ -461,8 +461,9 @@
             </button>
             <div class="collapse" id="timesheetSubmenu">
                 <ul class="submenu">
-                    <li><a th:href="@{/admin/timesheets}">View Timesheets</a></li>
-                    <li><a th:href="@{/admin/timesheets/add}">Add Timesheet</a></li>
+<!--                    <li><a th:href="@{/admin/timesheets/view}">View Timesheets</a></li>-->
+                  <li>  <a th:href="@{/admin/timesheets/view/{employeeId}}"> view timesheet</a> </li>
+                    <li><a th:href="@{/admin/timesheets/all}">All Timesheets</a></li>
                     <li><a th:href="@{/admin/timesheets/export}">Export Timesheet Data</a></li>
                 </ul>
             </div>
