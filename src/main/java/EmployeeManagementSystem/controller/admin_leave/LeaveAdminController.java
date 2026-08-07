@@ -142,7 +142,11 @@ public class LeaveAdminController {
             leaveService.approveLeave(id, comment);
             ra.addFlashAttribute("success", "Leave approved successfully");
         } catch (Exception e) {
-            ra.addFlashAttribute("error", e.getMessage());
+
+            e.printStackTrace();
+
+            throw e;
+
         }
         return "redirect:/admin/leave/requests?status=PENDING";
     }
@@ -155,7 +159,11 @@ public class LeaveAdminController {
             leaveService.rejectLeave(id, comment);
             ra.addFlashAttribute("success", "Leave rejected");
         } catch (Exception e) {
-            ra.addFlashAttribute("error", e.getMessage());
+
+            e.printStackTrace();
+
+            throw e;
+
         }
         return "redirect:/admin/leave/requests?status=PENDING";
     }

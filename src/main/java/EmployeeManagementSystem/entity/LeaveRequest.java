@@ -71,6 +71,10 @@ public class LeaveRequest {
     @Column(nullable = false)
     private LeaveStatus status = LeaveStatus.PENDING;
 
+    @Column(length = 1000)
+    private String approvalComment;
+
+    private LocalDateTime approvedAt;
 
     public long getTotalDays() {
         return java.time.temporal.ChronoUnit.DAYS.between(startDate, endDate) + 1;
