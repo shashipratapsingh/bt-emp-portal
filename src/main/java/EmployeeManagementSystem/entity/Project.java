@@ -31,6 +31,8 @@ public class Project {
     @Column(name = "department_id")
     private Long departmentId;
 
+    private String technology;
+
     @Column(name = "assigned_employee_id")
     private Long assignedEmployeeId;
 
