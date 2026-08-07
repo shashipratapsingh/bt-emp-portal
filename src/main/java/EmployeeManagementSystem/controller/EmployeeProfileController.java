@@ -359,7 +359,7 @@ public class EmployeeProfileController {
         model.addAttribute("qualifications", Arrays.asList("10th", "12th", "Diploma", "Bachelor's", "Master's", "PhD", "Other"));
         model.addAttribute("pageTitle", "Edit Employee");
 
-        return "admin/employee-management/add-employee";
+        return "admin/employee-management/update-employee";
     }
 
     @PostMapping("/employees/update/{id}")
@@ -384,7 +384,7 @@ public class EmployeeProfileController {
             model.addAttribute("maritalStatuses", Arrays.asList("Single", "Married", "Divorced", "Widowed"));
             model.addAttribute("qualifications", Arrays.asList("10th", "12th", "Diploma", "Bachelor's", "Master's", "PhD", "Other"));
             model.addAttribute("pageTitle", "Edit Employee");
-            return "admin/employee-management/add-employee";
+            return "admin/employee-management/update-employee";
         }
 
         try {
@@ -398,7 +398,7 @@ public class EmployeeProfileController {
             model.addAttribute("maritalStatuses", Arrays.asList("Single", "Married", "Divorced", "Widowed"));
             model.addAttribute("qualifications", Arrays.asList("10th", "12th", "Diploma", "Bachelor's", "Master's", "PhD", "Other"));
             model.addAttribute("pageTitle", "Edit Employee");
-            return "admin/employee-management/add-employee";
+            return "admin/employee-management/update-employee";
         }
     }
 
