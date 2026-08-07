@@ -224,10 +224,9 @@ public class DashboardServiceImpl implements DashboardService {
             }
         }
 
-        BigDecimal total = Arrays.stream(monthlyRevenue).reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal total = calculateYearRevenue(year);
 
-        // Previous year total (recursive, but safe with caching or for small datasets)
-        BigDecimal prevTotal = getYearlyRevenue(year - 1).getTotalRevenue();
+        BigDecimal prevTotal = calculateYearRevenue(year - 1);
         double pctChange = (prevTotal.compareTo(BigDecimal.ZERO) > 0)
                 ? total.subtract(prevTotal).divide(prevTotal, 4, RoundingMode.HALF_UP)
                   .multiply(BigDecimal.valueOf(100)).doubleValue()
@@ -274,11 +273,14 @@ public class DashboardServiceImpl implements DashboardService {
 
         // Previous month revenue
         LocalDate prevMonth = startOfMonth.minusMonths(1);
-        MonthlyRevenueDTO prevDTO = getMonthlyRevenue(prevMonth.getYear(), prevMonth.getMonthValue());
-        double pctChange = (prevDTO.getTotalRevenue().compareTo(BigDecimal.ZERO) > 0)
-                ? totalRevenue.subtract(prevDTO.getTotalRevenue())
-                  .divide(prevDTO.getTotalRevenue(), 4, RoundingMode.HALF_UP)
-                  .multiply(BigDecimal.valueOf(100)).doubleValue()
+        BigDecimal prevRevenue = calculateMonthRevenue(
+                prevMonth.getYear(),
+                prevMonth.getMonthValue()
+        );
+        double pctChange = (prevRevenue.compareTo(BigDecimal.ZERO) > 0)
+                ? totalRevenue.subtract(prevRevenue)
+                .divide(prevRevenue, 4, RoundingMode.HALF_UP)
+                .multiply(BigDecimal.valueOf(100)).doubleValue()
                 : 0.0;
 
         MonthlyRevenueDTO dto = new MonthlyRevenueDTO();
@@ -668,6 +670,59 @@ public class DashboardServiceImpl implements DashboardService {
         ProjectTypeDTO individual = new ProjectTypeDTO(indRevenue, indProfit, indLoss);
 
         return new ProjectOverviewDTO(c2c, c2m, individual);
+    }
+
+    private BigDecimal calculateYearRevenue(int year) {
+        LocalDate startOfYear = LocalDate.of(year, 1, 1);
+        LocalDate endOfYear = LocalDate.of(year, 12, 31);
+
+        List<Project> projects = projectRepository.findProjectsOverlappingYear(startOfYear, endOfYear);
+        BigDecimal total = BigDecimal.ZERO;
+
+        for (Project p : projects) {
+            LocalDate effStart = p.getOnboardingDate().isBefore(startOfYear) ? startOfYear : p.getOnboardingDate();
+            LocalDate effEnd = (p.getEndDate() != null && p.getEndDate().isBefore(endOfYear))
+                    ? p.getEndDate() : endOfYear;
+
+            if (effEnd.isBefore(startOfYear) || effStart.isAfter(endOfYear)) continue;
+
+            long totalDays = ChronoUnit.DAYS.between(effStart, effEnd) + 1;
+            BigDecimal dailyRate = BigDecimal.valueOf(p.getTotalCost())
+                    .divide(BigDecimal.valueOf(totalDays), 4, RoundingMode.HALF_UP);
+
+            total = total.add(dailyRate.multiply(BigDecimal.valueOf(totalDays)));
+        }
+
+        return total;
+    }
+
+    private BigDecimal calculateMonthRevenue(int year, int month) {
+        LocalDate startOfMonth = LocalDate.of(year, month, 1);
+        LocalDate endOfMonth = startOfMonth.withDayOfMonth(startOfMonth.lengthOfMonth());
+
+        List<Project> projects = projectRepository.findProjectsOverlappingMonth(startOfMonth, endOfMonth);
+        BigDecimal totalRevenue = BigDecimal.ZERO;
+
+        for (Project p : projects) {
+            LocalDate effStart = p.getOnboardingDate().isBefore(startOfMonth) ? startOfMonth : p.getOnboardingDate();
+            LocalDate effEnd = (p.getEndDate() != null && p.getEndDate().isBefore(endOfMonth))
+                    ? p.getEndDate() : endOfMonth;
+
+            if (effEnd.isBefore(startOfMonth) || effStart.isAfter(endOfMonth)) continue;
+
+            long totalDaysProject = ChronoUnit.DAYS.between(
+                    p.getOnboardingDate(),
+                    (p.getEndDate() != null ? p.getEndDate() : LocalDate.now())
+            ) + 1;
+
+            BigDecimal dailyRate = BigDecimal.valueOf(p.getTotalCost())
+                    .divide(BigDecimal.valueOf(totalDaysProject), 4, RoundingMode.HALF_UP);
+
+            long daysInMonth = ChronoUnit.DAYS.between(effStart, effEnd) + 1;
+            totalRevenue = totalRevenue.add(dailyRate.multiply(BigDecimal.valueOf(daysInMonth)));
+        }
+
+        return totalRevenue;
     }
 
 }
