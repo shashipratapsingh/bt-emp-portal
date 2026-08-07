@@ -1,7 +1,7 @@
 package EmployeeManagementSystem.controller;
 
-import EmployeeManagementSystem.entity.Project;
-import EmployeeManagementSystem.entity.Timesheet;
+import EmployeeManagementSystem.entity.*;
+import EmployeeManagementSystem.repository.RegisterEmployeeRepository;
 import EmployeeManagementSystem.service.ProjectService;
 import EmployeeManagementSystem.service.TimesheetService;
 import lombok.Getter;
@@ -56,8 +56,6 @@ import java.util.List;
 //    }
 //
 //}
-
-
 
 
 //@Controller
@@ -134,20 +132,6 @@ import java.util.List;
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //package EmployeeManagementSystem.controller;
 
 import EmployeeManagementSystem.entity.Project;
@@ -170,6 +154,7 @@ public class TimesheetController {
 
     private final TimesheetService service;
     private final ProjectService projectService;
+    private final RegisterEmployeeRepository registerEmployeeRepository;
 
     // ===================== OPEN TIMESHEET PAGE =====================
 
@@ -194,13 +179,44 @@ public class TimesheetController {
 
     // ===================== SAVE TIMESHEET =====================
 
+//    @PostMapping("/submit")
+//    public String saveTimeSheet(@ModelAttribute("timesheet") Timesheet timesheet) {
+//
+//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//
+//        timesheet.setEmployeeId(auth.getName());
+//        timesheet.setEmployeeName(auth.getName());
+//
+//        service.saveTimesheet(timesheet);
+//
+//        return "redirect:/employee/timesheet/log?success";
+//    }
+
+
     @PostMapping("/submit")
     public String saveTimeSheet(@ModelAttribute("timesheet") Timesheet timesheet) {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String userId = auth.getName();
 
-        timesheet.setEmployeeId(auth.getName());
-        timesheet.setEmployeeName(auth.getName());
+        RegisterEmployee employee = registerEmployeeRepository.findByUserId(userId);
+
+        if (employee == null) {
+            throw new RuntimeException("Employee not found");
+        }
+
+        // Employee details
+        timesheet.setEmployeeId(employee.getUserId());
+        timesheet.setEmployeeName(employee.getName());
+
+        // Project details
+        if (timesheet.getProject() != null && timesheet.getProject().getId() != null) {
+
+            Project project = projectService.getProjectById(timesheet.getProject().getId());
+
+            timesheet.setProject(project);
+            timesheet.setProjectName(project.getProjectName());
+        }
 
         service.saveTimesheet(timesheet);
 
@@ -302,8 +318,6 @@ public class TimesheetController {
 //    }
 
 
-
-
     // ===================== UPDATE TIMESHEET =====================
 
     @PostMapping("/update")
@@ -332,10 +346,6 @@ public class TimesheetController {
         // Redirect to Timesheet Log page
         return "redirect:/employee/timesheet/log?updated";
     }
-
-
-
-
 
 
     // ===================== HR / ADMIN =====================

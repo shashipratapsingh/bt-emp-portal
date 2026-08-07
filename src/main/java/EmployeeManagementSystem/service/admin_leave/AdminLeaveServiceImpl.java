@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -145,40 +146,70 @@ public class AdminLeaveServiceImpl implements AdminLeaveService {
     }
 
     // ------------------- Admin: Approve / Reject -------------------
+//    @Override
+//    public LeaveRequest approveLeave(Long requestId, String comment) {
+//        LeaveRequest request = leaveRequestRepo.findById(requestId)
+//                .orElseThrow(() -> new IllegalArgumentException("Leave request not found"));
+//
+//        if (request.getStatus() != LeaveStatus.PENDING) {
+//            throw new IllegalStateException("Leave request already processed");
+//        }
+//
+//        // Resolve leave type ID from name
+//        LeaveType leaveType = leaveTypeRepo.findByName(request.getLeaveType())
+//                .orElseThrow(() -> new IllegalStateException("Leave type not found: " + request.getLeaveType()));
+//
+//        // Fetch the employee to get the Long ID (since request stores employeeId as String)
+//        Long employeeId = Long.parseLong(request.getEmployeeId());
+//        Employee employee = employeeRepo.findById(employeeId)
+//                .orElseThrow(() -> new IllegalStateException("Employee not found for ID: " + employeeId));
+//
+//        // Deduct balance
+//        Integer year = request.getStartDate().getYear();
+//        LeaveBalance balance = leaveBalanceRepo
+//                .findByEmployeeIdAndLeaveTypeIdAndYear(employee.getId(), leaveType.getId(), year) // ✅ Long
+//                .orElseThrow(() -> new IllegalStateException("Balance not found"));
+//
+//        long days = ChronoUnit.DAYS.between(request.getStartDate(), request.getEndDate()) + 1;
+//        if (balance.getBalance() < days) {
+//            throw new IllegalStateException("Insufficient balance at approval time");
+//        }
+//
+//        balance.setBalance(balance.getBalance() - days);
+//        leaveBalanceRepo.save(balance);
+//
+//        request.setStatus(LeaveStatus.APPROVED);
+//        request.setApprovalComment(comment);
+//        request.setApprovedAt(java.time.LocalDateTime.now());
+//        return leaveRequestRepo.save(request);
+//    }
+
+
+
     @Override
+    @Transactional
     public LeaveRequest approveLeave(Long requestId, String comment) {
+
         LeaveRequest request = leaveRequestRepo.findById(requestId)
-                .orElseThrow(() -> new IllegalArgumentException("Leave request not found"));
+                .orElseThrow(() ->
+                        new RuntimeException("Leave Request Not Found"));
 
         if (request.getStatus() != LeaveStatus.PENDING) {
-            throw new IllegalStateException("Leave request already processed");
+            throw new RuntimeException("Already Processed");
         }
 
-        // Resolve leave type ID from name
-        LeaveType leaveType = leaveTypeRepo.findByName(request.getLeaveType())
-                .orElseThrow(() -> new IllegalStateException("Leave type not found: " + request.getLeaveType()));
-
-        // Fetch the employee to get the Long ID (since request stores employeeId as String)
-        Long employeeId = Long.parseLong(request.getEmployeeId());
-        Employee employee = employeeRepo.findById(employeeId)
-                .orElseThrow(() -> new IllegalStateException("Employee not found for ID: " + employeeId));
-
-        // Deduct balance
-        Integer year = request.getStartDate().getYear();
-        LeaveBalance balance = leaveBalanceRepo
-                .findByEmployeeIdAndLeaveTypeIdAndYear(employee.getId(), leaveType.getId(), year) // ✅ Long
-                .orElseThrow(() -> new IllegalStateException("Balance not found"));
-
-        long days = ChronoUnit.DAYS.between(request.getStartDate(), request.getEndDate()) + 1;
-        if (balance.getBalance() < days) {
-            throw new IllegalStateException("Insufficient balance at approval time");
-        }
-
-        balance.setBalance(balance.getBalance() - days);
-        leaveBalanceRepo.save(balance);
+        System.out.println("Employee ID : " + request.getEmployeeId());
+        System.out.println("Leave Type  : " + request.getLeaveType());
 
         request.setStatus(LeaveStatus.APPROVED);
-        return leaveRequestRepo.save(request);
+        request.setApprovalComment(comment);
+        request.setApprovedAt(LocalDateTime.now());
+
+        LeaveRequest saved = leaveRequestRepo.save(request);
+
+        System.out.println("Saved Status : " + saved.getStatus());
+
+        return saved;
     }
 
     @Override
@@ -191,6 +222,8 @@ public class AdminLeaveServiceImpl implements AdminLeaveService {
         }
 
         request.setStatus(LeaveStatus.REJECTED);
+        request.setApprovalComment(comment);
+        request.setApprovedAt(java.time.LocalDateTime.now());
         return leaveRequestRepo.save(request);
     }
 

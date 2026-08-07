@@ -100,18 +100,25 @@ public class LoginController {
                     attendanceTrackingRepository.findByEmployeeIdAndDate(
                             employeeId,
                             LocalDate.now());
-            if (existing.isEmpty()) {
+            if (existing.isPresent()) {
+
+                AttendanceTracking attendance = existing.get();
+
+                attendance.setWorkMode(request.getWorkMode());
+
+                attendanceTrackingRepository.save(attendance);
+
+            } else {
 
                 AttendanceTracking attendance = new AttendanceTracking();
                 attendance.setEmployeeId(employeeId);
-                //attendance.setEmployeeName(registerEmployee.getName());
                 attendance.setDate(LocalDate.now());
                 attendance.setLoginTime(LocalDateTime.now());
+                attendance.setWorkMode(request.getWorkMode());
                 attendance.setStatus("Present");
 
                 attendanceTrackingRepository.save(attendance);
             }
-
             System.out.println("Attendance Saved Successfully");
 
             if ("ROLE_EMPLOYEE".equalsIgnoreCase(role)){

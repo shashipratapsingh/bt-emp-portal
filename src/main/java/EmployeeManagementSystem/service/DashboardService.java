@@ -3,6 +3,7 @@ package EmployeeManagementSystem.service;
 import EmployeeManagementSystem.dto.BirthdayDTO;
 import EmployeeManagementSystem.dto.DashboardStatsDTO;
 import EmployeeManagementSystem.dto.AnniversaryDTO;
+import EmployeeManagementSystem.dto.dynamic.*;
 import EmployeeManagementSystem.entity.Employee;
 import org.springframework.data.domain.Page;
 
@@ -31,4 +32,30 @@ public interface DashboardService {
     Page<Employee> getUpcomingBirthdays(int page, int size);
 
     Page<Employee> getUpcomingAnniversaries(int page, int size);
+
+    YearlyRevenueDTO getYearlyRevenue(int year);
+
+    MonthlyRevenueDTO getMonthlyRevenue(int year, int month);
+
+    List<DepartmentRevenueDTO> getDepartmentRevenue(int year);
+
+    OnboardingProjectsDTO getOnboardingMonthly();
+
+    OnboardingProjectsDTO getOnboardingYearly();
+
+    // ---------- Project Loss ----------
+    ProjectLossDTO getProjectLossMonthly();
+
+    ProjectLossDTO getProjectLossYearly();
+
+
+    List<TechnologyRevenueDTO> getTechMonthlyRevenue(int year, int month);
+
+    TechnologyRevenueTotalDTO getTechMonthlyTotal(int year, int month);
+
+    List<TechnologyRevenueDTO> getTechYearlyRevenue(int year);
+
+    TechnologyRevenueTotalDTO getTechYearlyTotal(int year);
+
+    ProjectOverviewDTO getProjectOverview(int year);
 }

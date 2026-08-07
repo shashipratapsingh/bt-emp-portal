@@ -1,6 +1,7 @@
 package EmployeeManagementSystem.controller;
 
 import EmployeeManagementSystem.dto.DashboardStatsDTO;
+import EmployeeManagementSystem.dto.dynamic.*;
 import EmployeeManagementSystem.entity.*;
 import EmployeeManagementSystem.repository.*;
 import EmployeeManagementSystem.service.*;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -65,37 +67,31 @@ public class AdminController {
                             @RequestParam(defaultValue = "0") int page,
                             @RequestParam(defaultValue = "5") int size) {
 
-        // -------- FIX: Get logged-in user's full name from EmployeeProfile --------
+        // ===== LOGGED-IN USER =====
         String userName = "Guest";
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()
                 && !(authentication.getPrincipal() instanceof String && authentication.getPrincipal().equals("anonymousUser"))) {
-            // Principal is the user ID (e.g., "EMP0001")
-            String userId = authentication.getName();  // or getPrincipal().toString()
+            String userId = authentication.getName();
             if (userId != null && !userId.isEmpty()) {
-                // Fetch the employee profile by userId
                 RegisterEmployee profile = registerEmployeeRepository.findByUserId(userId);
                 if (profile != null && profile.getName() != null && !profile.getName().isEmpty()) {
-                    userName = profile.getName();   // e.g., "Sujit kumar"
+                    userName = profile.getName();
                 } else {
-                    userName = userId;   // fallback to user ID if name not found
+                    userName = userId;
                 }
             }
         }
         model.addAttribute("loggedInUser", userName);
-        // -----------------------------------------------------
-
-        // Add currentPage attribute for sidebar to highlight active menu
         model.addAttribute("currentPage", "dashboard");
 
         try {
-            // Try to get data from service
+            // ===== 1. STATS (existing) =====
             DashboardStatsDTO stats = dashboardService.getDashboardStats();
-
             if (stats != null) {
                 model.addAttribute("stats", stats);
                 model.addAttribute("totalEmployees", stats.getTotalEmployees());
-                model.addAttribute("activeEmployees", stats.getTotalEmployees() - 15); // Calculate active employees
+                model.addAttribute("activeEmployees", stats.getTotalEmployees() - 15);
                 model.addAttribute("departments", stats.getDepartments());
                 model.addAttribute("attendanceRate", stats.getAttendanceRate());
                 model.addAttribute("payroll", stats.getPayroll());
@@ -108,25 +104,75 @@ public class AdminController {
                         : 0;
                 model.addAttribute("newJoinees", newJoinees);
             } else {
-                // If stats is null, use fallback data
                 addFallbackData(model);
             }
 
             model.addAttribute("vacancies", 18);
             model.addAttribute("pendingLeaves", 11);
 
-            // Get upcoming birthdays
+            // ===== 2. BIRTHDAYS & ANNIVERSARIES (existing) =====
             List<?> birthdays = dashboardService.getUpcomingBirthdaysDTO();
             model.addAttribute("upcomingBirthdays", birthdays != null ? birthdays : Collections.emptyList());
 
-            // Get upcoming anniversaries
             List<?> anniversaries = dashboardService.getUpcomingAnniversariesDTO();
             model.addAttribute("anniversaries", anniversaries != null ? anniversaries : Collections.emptyList());
 
-            log.info("Birthdays count: {}", birthdays != null ? birthdays.size() : 0);
-            log.info("Anniversaries count: {}", anniversaries != null ? anniversaries.size() : 0);
+            // ===== 3. NEW DYNAMIC REVENUE DATA =====
+            // Get current year and month
+            int currentYear = LocalDate.now().getYear();
+            int currentMonth = LocalDate.now().getMonthValue();
 
-            // Get recent activities
+            // ===== 6. PROJECT OVERVIEW =====
+            ProjectOverviewDTO projectOverview = dashboardService.getProjectOverview(currentYear);
+            model.addAttribute("projectOverview", projectOverview != null ? projectOverview : new ProjectOverviewDTO(
+                    new ProjectTypeDTO(0,0,0),
+                    new ProjectTypeDTO(0,0,0),
+                    new ProjectTypeDTO(0,0,0)
+            )); // fallback to avoid null if service returns null 
+
+            // Yearly Revenue
+            YearlyRevenueDTO yearlyRevenue = dashboardService.getYearlyRevenue(currentYear);
+            model.addAttribute("yearlyRevenue", yearlyRevenue);
+
+            // Monthly Revenue
+            MonthlyRevenueDTO monthlyRevenue = dashboardService.getMonthlyRevenue(currentYear, currentMonth);
+            model.addAttribute("monthlyRevenue", monthlyRevenue);
+
+            // Department Revenue
+            List<DepartmentRevenueDTO> deptRevenue = dashboardService.getDepartmentRevenue(currentYear);
+            model.addAttribute("deptRevenue", deptRevenue);
+
+            // Onboarding Monthly
+            OnboardingProjectsDTO onboardingMonthly = dashboardService.getOnboardingMonthly();
+            model.addAttribute("onboardingMonthly", onboardingMonthly);
+
+            // Onboarding Yearly
+            OnboardingProjectsDTO onboardingYearly = dashboardService.getOnboardingYearly();
+            model.addAttribute("onboardingYearly", onboardingYearly);
+
+            // Project Loss Monthly
+            ProjectLossDTO projectLossMonthly = dashboardService.getProjectLossMonthly();
+            model.addAttribute("projectLossMonthly", projectLossMonthly);
+
+            // Project Loss Yearly
+            ProjectLossDTO projectLossYearly = dashboardService.getProjectLossYearly();
+            model.addAttribute("projectLossYearly", projectLossYearly);
+
+            // ===== 4. TECHNOLOGY-WISE REVENUE (NEW) =====
+            List<TechnologyRevenueDTO> techMonthly = dashboardService.getTechMonthlyRevenue(currentYear, currentMonth);
+            model.addAttribute("techMonthly", techMonthly != null ? techMonthly : Collections.emptyList());
+
+            List<TechnologyRevenueDTO> techYearly = dashboardService.getTechYearlyRevenue(currentYear);
+            model.addAttribute("techYearly", techYearly != null ? techYearly : Collections.emptyList());
+
+// Totals
+            TechnologyRevenueTotalDTO techMonthlyTotal = dashboardService.getTechMonthlyTotal(currentYear, currentMonth);
+            model.addAttribute("techMonthlyTotal", techMonthlyTotal); // can be null
+
+            TechnologyRevenueTotalDTO techYearlyTotal = dashboardService.getTechYearlyTotal(currentYear);
+            model.addAttribute("techYearlyTotal", techYearlyTotal);   // can be null
+
+            // ===== 4. ACTIVITIES (existing) =====
             Page<Activity> activityPage = activityService.getActivities(page, size);
             model.addAttribute("activities", activityPage.getContent());
             model.addAttribute("pageNumber", page);
@@ -134,9 +180,8 @@ public class AdminController {
             model.addAttribute("hasNext", activityPage.hasNext());
             model.addAttribute("hasPrevious", activityPage.hasPrevious());
 
-            // --- STATIC SAMPLE DATA FOR DISPLAY ---
-
-            // Employee Status - This will show in the status section
+            // ===== 5. STATIC SAMPLE DATA (keep as fallback or remove) =====
+            // Employee Status
             List<StatusStat> employeeStatus = Arrays.asList(
                     new StatusStat("Active", 120, 80.0),
                     new StatusStat("On Notice Period", 10, 6.7),
@@ -177,7 +222,7 @@ public class AdminController {
             );
             model.addAttribute("employeeList", employeeList);
 
-            // Recent Activities (for display)
+            // Recent Activities
             List<ActivityDTO> recentActivities = Arrays.asList(
                     new ActivityDTO("<strong>Priya Sharma</strong> has been added as new employee", "#2a6df4", "2 min ago"),
                     new ActivityDTO("<strong>Neha Singh</strong> applied for leave", "#e67e22", "15 min ago"),
@@ -190,8 +235,6 @@ public class AdminController {
         } catch (Exception e) {
             log.error("Error loading dashboard: ", e);
             model.addAttribute("error", e.getMessage());
-
-            // Add fallback data if service fails
             addFallbackData(model);
         }
 
