@@ -1442,6 +1442,7 @@
         if (sidebar) sidebar.classList.toggle('open');
         if (overlay) overlay.classList.toggle('show');
     }
+
     window.addEventListener('resize', function() {
         if (window.innerWidth > 992) {
             document.querySelector('.sidebar')?.classList.remove('open');
@@ -1468,6 +1469,7 @@
                 }
             });
         });
+
         // Auto-expand active submenu
         const currentPath = window.location.pathname;
         document.querySelectorAll('.submenu a').forEach(function(link) {
@@ -1488,6 +1490,9 @@
                 }
             }
         });
+
+        // ===== INITIALIZE CHARTS AFTER DOM LOAD =====
+        initCharts();
     });
 
     function toggleChat() {
@@ -1495,243 +1500,365 @@
         if (window) window.classList.toggle('open');
     }
 
-    // ===== CHART DATA (Using mock data) =====
-    // Yearly Revenue - values in CRORES
-    var yearlyData = [12, 15, 18, 22, 28, 35, 32, 38, 42, 48, 55, 62];
+    // ===== MAIN CHART INITIALIZATION FUNCTION =====
+    function initCharts() {
+        // ===== GET DATA FROM THYMELEAF =====
+        /*<![CDATA[*/
+        var deptRevenueData = /*[[${deptRevenueJson}]]*/ '[]';
+        var techMonthlyData = /*[[${techMonthlyJson}]]*/ '[]';
+        var techYearlyData = /*[[${techYearlyJson}]]*/ '[]';
+        /*]]>*/
 
-    // Monthly Revenue - values in CRORES
-    var monthlyData = [5, 8, 12, 15, 18, 22, 20, 25, 28, 32, 35, 38];
+        // Parse JSON data
+        let deptMonthlyData = [];
+        let techMonthlyObjects = [];
+        let techYearlyObjects = [];
 
-    // Department Revenue - values in actual rupees (will be formatted in display)
-    var deptMonthlyData = [
-        { department: 'Java', monthlyRevenue: 3550000, yearlyRevenue: 42000000, monthlyGrowth: 3.2, yearlyGrowth: 22.5, color: '#1a56db' },
-        { department: 'Python', monthlyRevenue: 2800000, yearlyRevenue: 38000000, monthlyGrowth: -1.5, yearlyGrowth: 18.0, color: '#0b7e3d' },
-        { department: 'React', monthlyRevenue: 2200000, yearlyRevenue: 28000000, monthlyGrowth: 5.0, yearlyGrowth: 30.0, color: '#c2410c' },
-        { department: 'Node.js', monthlyRevenue: 1850000, yearlyRevenue: 22000000, monthlyGrowth: -2.0, yearlyGrowth: 15.0, color: '#6d28d9' },
-        { department: 'DevOps', monthlyRevenue: 1500000, yearlyRevenue: 18000000, monthlyGrowth: 1.8, yearlyGrowth: 20.0, color: '#0e7490' }
-    ];
-    var deptYearlyData = deptMonthlyData;
+        try {
+            deptMonthlyData = typeof deptRevenueData === 'string' ? JSON.parse(deptRevenueData) : deptRevenueData;
+            techMonthlyObjects = typeof techMonthlyData === 'string' ? JSON.parse(techMonthlyData) : techMonthlyData;
+            techYearlyObjects = typeof techYearlyData === 'string' ? JSON.parse(techYearlyData) : techYearlyData;
 
-    // Technology-wise data
-    var barMonthlyDataObjects = [
-        { name: 'Java', projects: 10, revenue: 25, profit: 7, loss: 3, margin: 28 },
-        { name: 'Python', projects: 8, revenue: 20, profit: 5, loss: 2, margin: 25 },
-        { name: 'React', projects: 7, revenue: 18, profit: 6, loss: 1.5, margin: 33 },
-        { name: 'Node.js', projects: 4, revenue: 10, profit: 2, loss: 1, margin: 20 },
-        { name: 'DevOps', projects: 2, revenue: 5, profit: 1, loss: 0.5, margin: 20 }
-    ];
-    var barYearlyDataObjects = [
-        { name: 'Java', projects: 20, revenue: 140, profit: 45, loss: 16, margin: 32 },
-        { name: 'Python', projects: 15, revenue: 95, profit: 28, loss: 12, margin: 29 },
-        { name: 'React', projects: 12, revenue: 85, profit: 30, loss: 8, margin: 35 },
-        { name: 'Node.js', projects: 8, revenue: 45, profit: 10, loss: 6, margin: 22 },
-        { name: 'DevOps', projects: 5, revenue: 30, profit: 8, loss: 3, margin: 27 }
-    ];
+            console.log('Department Data loaded:', deptMonthlyData);
+            console.log('Tech Monthly Data loaded:', techMonthlyObjects);
+            console.log('Tech Yearly Data loaded:', techYearlyObjects);
+        } catch(e) {
+            console.error('Error parsing JSON data:', e);
+        }
 
-    // ===== 1. YEARLY REVENUE CHART =====
-    const yearlyCanvas = document.getElementById('yearlyRevenueChart');
-    if (yearlyCanvas) {
-        const yearlyCtx = yearlyCanvas.getContext('2d');
-        const yearlyGradient = yearlyCtx.createLinearGradient(0,0,0,150);
-        yearlyGradient.addColorStop(0, 'rgba(26,86,219,0.8)');
-        yearlyGradient.addColorStop(0.4, 'rgba(26,86,219,0.4)');
-        yearlyGradient.addColorStop(1, 'rgba(26,86,219,0)');
-        new Chart(yearlyCanvas, {
-            type: 'line',
-            data: {
-                labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
-                datasets: [{
-                    data: yearlyData,
-                    borderColor: '#1a56db',
-                    backgroundColor: yearlyGradient,
-                    fill: true,
-                    tension: 0,
-                    pointRadius: 2.5,
-                    pointBorderColor: '#fff',
-                    pointBorderWidth: 1.5,
-                    borderWidth: 2
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    y: { beginAtZero: true, ticks: { font: { size: 7 }, callback: v => '₹' + v + 'CR' }, grid: { color: 'rgba(0,0,0,0.04)' } },
-                    x: { grid: { display: false }, ticks: { font: { size: 6 } } }
+        // ===== CHART DATA (Using mock data as fallback) =====
+        // Yearly Revenue - values in CRORES
+        var yearlyData = [12, 15, 18, 22, 28, 35, 32, 38, 42, 48, 55, 62];
+
+        // Monthly Revenue - values in CRORES
+        var monthlyData = [5, 8, 12, 15, 18, 22, 20, 25, 28, 32, 35, 38];
+
+        // ===== 1. YEARLY REVENUE CHART =====
+        const yearlyCanvas = document.getElementById('yearlyRevenueChart');
+        if (yearlyCanvas) {
+            const yearlyCtx = yearlyCanvas.getContext('2d');
+            const yearlyGradient = yearlyCtx.createLinearGradient(0,0,0,150);
+            yearlyGradient.addColorStop(0, 'rgba(26,86,219,0.8)');
+            yearlyGradient.addColorStop(0.4, 'rgba(26,86,219,0.4)');
+            yearlyGradient.addColorStop(1, 'rgba(26,86,219,0)');
+            new Chart(yearlyCanvas, {
+                type: 'line',
+                data: {
+                    labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+                    datasets: [{
+                        data: yearlyData,
+                        borderColor: '#1a56db',
+                        backgroundColor: yearlyGradient,
+                        fill: true,
+                        tension: 0,
+                        pointRadius: 2.5,
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 1.5,
+                        borderWidth: 2
+                    }]
                 },
-                interaction: { intersect: false, mode: 'index' }
-            }
-        });
-    }
-
-    // ===== 2. MONTHLY REVENUE CHART =====
-    const monthlyCanvas = document.getElementById('monthlyRevenueChart');
-    if (monthlyCanvas) {
-        const monthlyCtx = monthlyCanvas.getContext('2d');
-        const monthlyGradient = monthlyCtx.createLinearGradient(0,0,0,150);
-        monthlyGradient.addColorStop(0, 'rgba(11,126,61,0.8)');
-        monthlyGradient.addColorStop(0.4, 'rgba(11,126,61,0.4)');
-        monthlyGradient.addColorStop(1, 'rgba(11,126,61,0)');
-        new Chart(monthlyCanvas, {
-            type: 'line',
-            data: {
-                labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
-                datasets: [{
-                    data: monthlyData,
-                    borderColor: '#0b7e3d',
-                    backgroundColor: monthlyGradient,
-                    fill: true,
-                    tension: 0,
-                    pointRadius: 2.5,
-                    pointBorderColor: '#fff',
-                    pointBorderWidth: 1.5,
-                    borderWidth: 2
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    y: { beginAtZero: true, ticks: { font: { size: 7 }, callback: v => '₹' + v + 'CR' }, grid: { color: 'rgba(0,0,0,0.04)' } },
-                    x: { grid: { display: false }, ticks: { font: { size: 6 } } }
-                },
-                interaction: { intersect: false, mode: 'index' }
-            }
-        });
-    }
-
-    // ===== 3. DEPARTMENT DOUGHNUTS =====
-    const monthlyDeptData = deptMonthlyData.map(d => d.monthlyRevenue);
-    const yearlyDeptData = deptYearlyData.map(d => d.yearlyRevenue);
-    const deptLabels = deptMonthlyData.map(d => d.department);
-    const deptColors = ['#1a56db','#0b7e3d','#c2410c','#6d28d9','#0e7490'];
-
-    const monthlyDeptChart = document.getElementById('monthlyDeptDoughnutLeft');
-    if (monthlyDeptChart) {
-        new Chart(monthlyDeptChart, {
-            type: 'doughnut',
-            data: {
-                labels: deptLabels,
-                datasets: [{
-                    data: monthlyDeptData,
-                    backgroundColor: deptColors,
-                    borderColor: '#fff',
-                    borderWidth: 2
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                cutout: '55%'
-            }
-        });
-    }
-
-    const yearlyDeptChart = document.getElementById('yearlyDeptDoughnutLeft');
-    if (yearlyDeptChart) {
-        new Chart(yearlyDeptChart, {
-            type: 'doughnut',
-            data: {
-                labels: deptLabels,
-                datasets: [{
-                    data: yearlyDeptData,
-                    backgroundColor: deptColors,
-                    borderColor: '#fff',
-                    borderWidth: 2
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                cutout: '55%'
-            }
-        });
-    }
-
-    // ===== 4. BAR CHARTS (Technology-wise) =====
-    // Extract data from the objects
-    const barMonthlyProjects = barMonthlyDataObjects.map(t => t.projects);
-    const barYearlyProjects = barYearlyDataObjects.map(t => t.projects);
-    const techLabels = barMonthlyDataObjects.map(t => t.name);
-
-    const monthlyBarChart = document.getElementById('monthlyBarChart');
-    if (monthlyBarChart) {
-        new Chart(monthlyBarChart, {
-            type: 'bar',
-            data: {
-                labels: techLabels,
-                datasets: [{
-                    data: barMonthlyProjects,
-                    backgroundColor: deptColors,
-                    borderColor: '#fff',
-                    borderWidth: 1,
-                    borderRadius: 4,
-                    barPercentage: 0.5
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: { callbacks: { label: ctx => 'Projects: ' + ctx.parsed.y } }
-                },
-                scales: {
-                    x: {
-                        grid: { display: false },
-                        ticks: { font: { size: 6 }, maxRotation: 0, color: '#94a3b8' }
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { font: { size: 7 }, callback: v => '₹' + v + 'CR' },
+                            grid: { color: 'rgba(0,0,0,0.04)' }
+                        },
+                        x: { grid: { display: false }, ticks: { font: { size: 6 } } }
                     },
-                    y: {
-                        grid: { color: 'rgba(0,0,0,0.04)' },
-                        ticks: { font: { size: 6 }, color: '#94a3b8', stepSize: 1 },
-                        beginAtZero: true
-                    }
-                },
-                interaction: { intersect: false, mode: 'index' }
-            }
-        });
-    }
+                    interaction: { intersect: false, mode: 'index' }
+                }
+            });
+        }
 
-    const yearlyBarChart = document.getElementById('yearlyBarChart');
-    if (yearlyBarChart) {
-        new Chart(yearlyBarChart, {
-            type: 'bar',
-            data: {
-                labels: techLabels,
-                datasets: [{
-                    data: barYearlyProjects,
-                    backgroundColor: deptColors,
-                    borderColor: '#fff',
-                    borderWidth: 1,
-                    borderRadius: 4,
-                    barPercentage: 0.5
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: { callbacks: { label: ctx => 'Projects: ' + ctx.parsed.y } }
+        // ===== 2. MONTHLY REVENUE CHART =====
+        const monthlyCanvas = document.getElementById('monthlyRevenueChart');
+        if (monthlyCanvas) {
+            const monthlyCtx = monthlyCanvas.getContext('2d');
+            const monthlyGradient = monthlyCtx.createLinearGradient(0,0,0,150);
+            monthlyGradient.addColorStop(0, 'rgba(11,126,61,0.8)');
+            monthlyGradient.addColorStop(0.4, 'rgba(11,126,61,0.4)');
+            monthlyGradient.addColorStop(1, 'rgba(11,126,61,0)');
+            new Chart(monthlyCanvas, {
+                type: 'line',
+                data: {
+                    labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+                    datasets: [{
+                        data: monthlyData,
+                        borderColor: '#0b7e3d',
+                        backgroundColor: monthlyGradient,
+                        fill: true,
+                        tension: 0,
+                        pointRadius: 2.5,
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 1.5,
+                        borderWidth: 2
+                    }]
                 },
-                scales: {
-                    x: {
-                        grid: { display: false },
-                        ticks: { font: { size: 6 }, maxRotation: 0, color: '#94a3b8' }
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { font: { size: 7 }, callback: v => '₹' + v + 'CR' },
+                            grid: { color: 'rgba(0,0,0,0.04)' }
+                        },
+                        x: { grid: { display: false }, ticks: { font: { size: 6 } } }
                     },
-                    y: {
-                        grid: { color: 'rgba(0,0,0,0.04)' },
-                        ticks: { font: { size: 6 }, color: '#94a3b8', stepSize: 1 },
-                        beginAtZero: true
+                    interaction: { intersect: false, mode: 'index' }
+                }
+            });
+        }
+
+        // ===== 3. DEPARTMENT DOUGHNUT CHARTS =====
+        // Define default colors for departments
+        const defaultDeptColors = ['#1a56db', '#0b7e3d', '#c2410c', '#6d28d9', '#0e7490', '#b91c1c', '#e67e22', '#1a56db'];
+
+        if (deptMonthlyData && deptMonthlyData.length > 0) {
+            // Prepare data from the server - use technology field if available, otherwise fallback to department
+            const monthlyDeptData = deptMonthlyData.map(d => {
+                // Convert BigDecimal to number if needed
+                const val = d.monthlyRevenue;
+                return typeof val === 'number' ? val : (val ? parseFloat(val) : 0);
+            });
+
+            const yearlyDeptData = deptMonthlyData.map(d => {
+                const val = d.yearlyRevenue;
+                return typeof val === 'number' ? val : (val ? parseFloat(val) : 0);
+            });
+
+            // Use technology field first, then department field
+            const deptLabels = deptMonthlyData.map(d => d.technology || d.department || 'Unknown');
+
+            // Use colors from data or generate default ones
+            const deptColors = deptMonthlyData.map((d, i) => d.color || defaultDeptColors[i % defaultDeptColors.length]);
+
+            // Monthly Department Doughnut
+            const monthlyDeptChart = document.getElementById('monthlyDeptDoughnutLeft');
+            if (monthlyDeptChart) {
+                new Chart(monthlyDeptChart, {
+                    type: 'doughnut',
+                    data: {
+                        labels: deptLabels,
+                        datasets: [{
+                            data: monthlyDeptData,
+                            backgroundColor: deptColors,
+                            borderColor: '#fff',
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        cutout: '55%'
                     }
-                },
-                interaction: { intersect: false, mode: 'index' }
+                });
             }
-        });
+
+            // Yearly Department Doughnut
+            const yearlyDeptChart = document.getElementById('yearlyDeptDoughnutLeft');
+            if (yearlyDeptChart) {
+                new Chart(yearlyDeptChart, {
+                    type: 'doughnut',
+                    data: {
+                        labels: deptLabels,
+                        datasets: [{
+                            data: yearlyDeptData,
+                            backgroundColor: deptColors,
+                            borderColor: '#fff',
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        cutout: '55%'
+                    }
+                });
+            }
+        } else {
+            console.warn('No department data available for doughnut charts');
+
+            // Show empty state or fallback data
+            const fallbackLabels = ['No Data'];
+            const fallbackData = [1];
+
+            const monthlyDeptChart = document.getElementById('monthlyDeptDoughnutLeft');
+            if (monthlyDeptChart) {
+                new Chart(monthlyDeptChart, {
+                    type: 'doughnut',
+                    data: {
+                        labels: fallbackLabels,
+                        datasets: [{
+                            data: fallbackData,
+                            backgroundColor: ['#e9edf4'],
+                            borderColor: '#fff',
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: { enabled: false }
+                        },
+                        cutout: '55%'
+                    }
+                });
+            }
+
+            const yearlyDeptChart = document.getElementById('yearlyDeptDoughnutLeft');
+            if (yearlyDeptChart) {
+                new Chart(yearlyDeptChart, {
+                    type: 'doughnut',
+                    data: {
+                        labels: fallbackLabels,
+                        datasets: [{
+                            data: fallbackData,
+                            backgroundColor: ['#e9edf4'],
+                            borderColor: '#fff',
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: { enabled: false }
+                        },
+                        cutout: '55%'
+                    }
+                });
+            }
+        }
+
+        // ===== 4. BAR CHARTS (Technology-wise) =====
+        const techColors = ['#1a56db', '#0b7e3d', '#c2410c', '#6d28d9', '#0e7490', '#b91c1c', '#e67e22', '#1a56db'];
+
+        // Monthly Bar Chart
+        const monthlyBarChart = document.getElementById('monthlyBarChart');
+        if (monthlyBarChart) {
+            let techLabels = [];
+            let barMonthlyProjects = [];
+            let barColors = [];
+
+            if (techMonthlyObjects && techMonthlyObjects.length > 0) {
+                techLabels = techMonthlyObjects.map(t => t.name || 'Unknown');
+                barMonthlyProjects = techMonthlyObjects.map(t => t.projects || 0);
+                barColors = techLabels.map((_, i) => techColors[i % techColors.length]);
+            } else {
+                // Fallback data if no tech data
+                techLabels = ['No Data'];
+                barMonthlyProjects = [0];
+                barColors = ['#e9edf4'];
+            }
+
+            new Chart(monthlyBarChart, {
+                type: 'bar',
+                data: {
+                    labels: techLabels,
+                    datasets: [{
+                        data: barMonthlyProjects,
+                        backgroundColor: barColors,
+                        borderColor: '#fff',
+                        borderWidth: 1,
+                        borderRadius: 4,
+                        barPercentage: 0.5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: ctx => 'Projects: ' + ctx.parsed.y
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { display: false },
+                            ticks: { font: { size: 6 }, maxRotation: 0, color: '#94a3b8' }
+                        },
+                        y: {
+                            grid: { color: 'rgba(0,0,0,0.04)' },
+                            ticks: { font: { size: 6 }, color: '#94a3b8', stepSize: 1 },
+                            beginAtZero: true
+                        }
+                    },
+                    interaction: { intersect: false, mode: 'index' }
+                }
+            });
+        }
+
+        // Yearly Bar Chart
+        const yearlyBarChart = document.getElementById('yearlyBarChart');
+        if (yearlyBarChart) {
+            let yearlyTechLabels = [];
+            let barYearlyProjects = [];
+            let yearlyColors = [];
+
+            if (techYearlyObjects && techYearlyObjects.length > 0) {
+                yearlyTechLabels = techYearlyObjects.map(t => t.name || 'Unknown');
+                barYearlyProjects = techYearlyObjects.map(t => t.projects || 0);
+                yearlyColors = yearlyTechLabels.map((_, i) => techColors[i % techColors.length]);
+            } else {
+                // Fallback data if no tech data
+                yearlyTechLabels = ['No Data'];
+                barYearlyProjects = [0];
+                yearlyColors = ['#e9edf4'];
+            }
+
+            new Chart(yearlyBarChart, {
+                type: 'bar',
+                data: {
+                    labels: yearlyTechLabels,
+                    datasets: [{
+                        data: barYearlyProjects,
+                        backgroundColor: yearlyColors,
+                        borderColor: '#fff',
+                        borderWidth: 1,
+                        borderRadius: 4,
+                        barPercentage: 0.5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: ctx => 'Projects: ' + ctx.parsed.y
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { display: false },
+                            ticks: { font: { size: 6 }, maxRotation: 0, color: '#94a3b8' }
+                        },
+                        y: {
+                            grid: { color: 'rgba(0,0,0,0.04)' },
+                            ticks: { font: { size: 6 }, color: '#94a3b8', stepSize: 1 },
+                            beginAtZero: true
+                        }
+                    },
+                    interaction: { intersect: false, mode: 'index' }
+                }
+            });
+        }
     }
 </script>
 

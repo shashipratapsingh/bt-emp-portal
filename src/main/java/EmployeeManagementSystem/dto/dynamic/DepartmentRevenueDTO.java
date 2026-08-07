@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 @Data
 public class DepartmentRevenueDTO {
     private String department;
+    private String technology;
     private BigDecimal monthlyRevenue;
     private BigDecimal yearlyRevenue;
     private double monthlyGrowth;

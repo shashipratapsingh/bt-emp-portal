@@ -6,6 +6,7 @@ import EmployeeManagementSystem.entity.*;
 import EmployeeManagementSystem.repository.*;
 import EmployeeManagementSystem.service.*;
 import EmployeeManagementSystem.service.admin_leave.AdminLeaveServiceImpl;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -33,7 +34,7 @@ public class AdminController {
     private EmployeeRepository employeeRepository;
 
     @Autowired
-    private EmployeeProfileRepository employeeProfileRepository;   // already present
+    private EmployeeProfileRepository employeeProfileRepository;
 
     @Autowired
     private EmployeeProfileService employeeProfileService;
@@ -53,13 +54,16 @@ public class AdminController {
     private final ActivityService activityService;
     private final DashboardService dashboardService;
     private final DepartmentServiceImpl departmentService;
+    private final ObjectMapper objectMapper;
 
     public AdminController(ActivityService activityService,
                            DashboardService dashboardService,
-                           DepartmentServiceImpl departmentService) {
+                           DepartmentServiceImpl departmentService,
+                           ObjectMapper objectMapper) {
         this.activityService = activityService;
         this.dashboardService = dashboardService;
         this.departmentService = departmentService;
+        this.objectMapper = objectMapper;
     }
 
     @GetMapping("/dashboard")
@@ -117,18 +121,17 @@ public class AdminController {
             List<?> anniversaries = dashboardService.getUpcomingAnniversariesDTO();
             model.addAttribute("anniversaries", anniversaries != null ? anniversaries : Collections.emptyList());
 
-            // ===== 3. NEW DYNAMIC REVENUE DATA =====
-            // Get current year and month
+            // ===== 3. DYNAMIC REVENUE DATA =====
             int currentYear = LocalDate.now().getYear();
             int currentMonth = LocalDate.now().getMonthValue();
 
-            // ===== 6. PROJECT OVERVIEW =====
+            // ===== PROJECT OVERVIEW =====
             ProjectOverviewDTO projectOverview = dashboardService.getProjectOverview(currentYear);
             model.addAttribute("projectOverview", projectOverview != null ? projectOverview : new ProjectOverviewDTO(
                     new ProjectTypeDTO(0,0,0),
                     new ProjectTypeDTO(0,0,0),
                     new ProjectTypeDTO(0,0,0)
-            )); // fallback to avoid null if service returns null 
+            ));
 
             // Yearly Revenue
             YearlyRevenueDTO yearlyRevenue = dashboardService.getYearlyRevenue(currentYear);
@@ -158,21 +161,44 @@ public class AdminController {
             ProjectLossDTO projectLossYearly = dashboardService.getProjectLossYearly();
             model.addAttribute("projectLossYearly", projectLossYearly);
 
-            // ===== 4. TECHNOLOGY-WISE REVENUE (NEW) =====
+            // ===== 4. TECHNOLOGY-WISE REVENUE =====
             List<TechnologyRevenueDTO> techMonthly = dashboardService.getTechMonthlyRevenue(currentYear, currentMonth);
             model.addAttribute("techMonthly", techMonthly != null ? techMonthly : Collections.emptyList());
 
             List<TechnologyRevenueDTO> techYearly = dashboardService.getTechYearlyRevenue(currentYear);
             model.addAttribute("techYearly", techYearly != null ? techYearly : Collections.emptyList());
 
-// Totals
+            // Totals
             TechnologyRevenueTotalDTO techMonthlyTotal = dashboardService.getTechMonthlyTotal(currentYear, currentMonth);
-            model.addAttribute("techMonthlyTotal", techMonthlyTotal); // can be null
+            model.addAttribute("techMonthlyTotal", techMonthlyTotal);
 
             TechnologyRevenueTotalDTO techYearlyTotal = dashboardService.getTechYearlyTotal(currentYear);
-            model.addAttribute("techYearlyTotal", techYearlyTotal);   // can be null
+            model.addAttribute("techYearlyTotal", techYearlyTotal);
 
-            // ===== 4. ACTIVITIES (existing) =====
+            // ===== 5. CONVERT DATA TO JSON FOR JAVASCRIPT CHARTS =====
+            try {
+                // Department Revenue JSON
+                String deptRevenueJson = objectMapper.writeValueAsString(deptRevenue);
+                model.addAttribute("deptRevenueJson", deptRevenueJson);
+
+                // Technology Monthly JSON
+                String techMonthlyJson = objectMapper.writeValueAsString(techMonthly);
+                model.addAttribute("techMonthlyJson", techMonthlyJson);
+
+                // Technology Yearly JSON
+                String techYearlyJson = objectMapper.writeValueAsString(techYearly);
+                model.addAttribute("techYearlyJson", techYearlyJson);
+
+                log.info("Successfully converted data to JSON for charts");
+            } catch (Exception e) {
+                log.error("Error converting data to JSON: ", e);
+                // Set empty JSON arrays as fallback
+                model.addAttribute("deptRevenueJson", "[]");
+                model.addAttribute("techMonthlyJson", "[]");
+                model.addAttribute("techYearlyJson", "[]");
+            }
+
+            // ===== 6. ACTIVITIES =====
             Page<Activity> activityPage = activityService.getActivities(page, size);
             model.addAttribute("activities", activityPage.getContent());
             model.addAttribute("pageNumber", page);
@@ -180,7 +206,7 @@ public class AdminController {
             model.addAttribute("hasNext", activityPage.hasNext());
             model.addAttribute("hasPrevious", activityPage.hasPrevious());
 
-            // ===== 5. STATIC SAMPLE DATA (keep as fallback or remove) =====
+            // ===== 7. STATIC SAMPLE DATA =====
             // Employee Status
             List<StatusStat> employeeStatus = Arrays.asList(
                     new StatusStat("Active", 120, 80.0),
@@ -236,6 +262,11 @@ public class AdminController {
             log.error("Error loading dashboard: ", e);
             model.addAttribute("error", e.getMessage());
             addFallbackData(model);
+
+            // Add empty JSON data for charts on error
+            model.addAttribute("deptRevenueJson", "[]");
+            model.addAttribute("techMonthlyJson", "[]");
+            model.addAttribute("techYearlyJson", "[]");
         }
 
         return "admin/dashboard";
@@ -255,26 +286,15 @@ public class AdminController {
 
     @GetMapping("/employees")
     public String showAllEmployees(Model model) {
-
         List<Employee> employees = employeeRepository.findAll();
-
-
         Employee employee = new Employee();
-
         employee.setDepartment(new Department());
-
         employee.setSalaries(new ArrayList<>());
-
-
         List<Department> departments = departmentRepository.findAll();
 
-
         model.addAttribute("employees", employees);
-
         model.addAttribute("employee", employee);
-
         model.addAttribute("departments", departments);
-
 
         return "admin/employees";
     }
@@ -287,11 +307,9 @@ public class AdminController {
                                            @RequestParam(defaultValue = "asc") String sortDir) {
         System.out.println("===== CONTROLLER HIT =====");
 
-        // Create Pageable with sorting
         Sort.Direction direction = sortDir.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
 
-        // Get paginated employee profiles
         Page<EmployeeProfile> profilePage = employeeProfileService.getAllProfiles(pageable);
 
         model.addAttribute("profiles", profilePage.getContent());
