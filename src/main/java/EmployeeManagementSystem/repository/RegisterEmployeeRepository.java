@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface RegisterEmployeeRepository extends JpaRepository<RegisterEmployee,Integer> {
     RegisterEmployee findByUserId(String userId);
-    Optional<RegisterEmployee> findFirstByOrderByIdDesc();
+    Optional<RegisterEmployee> findFirstByUserIdIsNotNullOrderByIdDesc();
     Optional<RegisterEmployee> findByEmail(String email);
     @Query(value = "SELECT * FROM register_employee WHERE " +
             "DATE_FORMAT(dob, '%m-%d') BETWEEN DATE_FORMAT(CURDATE(), '%m-%d') " +

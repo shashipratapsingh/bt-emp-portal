@@ -37,12 +37,10 @@ public class RegisterEmployeeImpl implements RegisterEmployeeService {
 
     public String generateNextEmployeeId() {
 
-        return repository.findFirstByOrderByIdDesc()
+        return repository.findFirstByUserIdIsNotNullOrderByIdDesc()
                 .map(lastEmp -> {
                     String lastUserId = lastEmp.getUserId();
-
                     int lastNumber = Integer.parseInt(lastUserId.replace("EMP", ""));
-
                     return String.format("EMP%04d", lastNumber + 1);
                 })
                 .orElse("EMP0001");
