@@ -1,4 +1,4 @@
-package EmployeeManagementSystem.Aibot;
+package EmployeeManagementSystem.aibot;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
