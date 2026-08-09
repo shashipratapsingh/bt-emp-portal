@@ -81,9 +81,6 @@
                     <!-- FORM HANDLING VIA THYMELEAF -->
                     <form th:action="@{/employee/wfh/save}" th:object="${wfhRequest}" method="POST">
 
-                        <!-- OPTIONAL HIDDEN FIELDS FOR UPDATES -->
-                        <!-- <input type="hidden" th:field="*{id}" /> -->
-
                         <div class="row g-3 g-md-4">
 
                             <!-- Target Project reference allocation -->
@@ -120,6 +117,65 @@
                             </button>
                         </div>
                     </form>
+                </div>
+
+                <!-- ============================================ -->
+                <!-- PREVIOUS WFH APPLICATIONS SECTION - NEW ADDED -->
+                <!-- ============================================ -->
+                <div class="wfh-card mt-4">
+                    <h4 class="section-title">
+                        <i class="fa-solid fa-clock-rotate-left me-2 opacity-75"></i>
+                        <span>My WFH Applications</span>
+                    </h4>
+
+                    <!-- Check if applications exist -->
+                    <div th:if="${applications != null and !applications.isEmpty()}">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Project</th>
+                                    <th>Start Date</th>
+                                    <th>End Date</th>
+                                    <th>Status</th>
+                                    <th>Applied On</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="app, iterStat : ${applications}">
+                                    <td th:text="${iterStat.count}"></td>
+                                    <td th:text="${app.projectName}"></td>
+                                    <td th:text="${#temporals.format(app.startDate, 'dd MMM yyyy')}"></td>
+                                    <td th:text="${#temporals.format(app.endDate, 'dd MMM yyyy')}"></td>
+                                    <td>
+                                        <!-- Status Badges -->
+                                        <span th:if="${app.status == 'PENDING'}" class="badge bg-warning text-dark">
+                                                <i class="fa-regular fa-clock me-1"></i> Pending
+                                            </span>
+                                        <span th:if="${app.status == 'APPROVED'}" class="badge bg-success">
+                                                <i class="fa-regular fa-circle-check me-1"></i> Approved
+                                            </span>
+                                        <span th:if="${app.status == 'REJECTED'}" class="badge bg-danger">
+                                                <i class="fa-regular fa-circle-xmark me-1"></i> Rejected
+                                            </span>
+                                        <span th:if="${app.status == 'CANCELLED'}" class="badge bg-secondary">
+                                                <i class="fa-regular fa-circle-minus me-1"></i> Cancelled
+                                            </span>
+                                    </td>
+                                    <td th:text="${#temporals.format(app.createdDate, 'dd MMM yyyy HH:mm')}"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Show message when no applications exist -->
+                    <div th:if="${applications == null or applications.isEmpty()}" class="text-center py-4">
+                        <i class="fa-regular fa-file-lines fs-1 text-muted mb-3 d-block"></i>
+                        <p class="text-muted mb-0">You haven't submitted any WFH applications yet.</p>
+                        <small class="text-muted">Use the form above to submit your first request.</small>
+                    </div>
                 </div>
 
             </div>

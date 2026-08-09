@@ -11,4 +11,6 @@ public interface WfhRequestRepository extends JpaRepository<WfhRequest,Long> {
 
     List<WfhRequest> findByStatus(String status);
     long countByStatus(String status);
+    List<WfhRequest> findByEmployeeIdOrderByCreatedDateDesc(String employeeId);
+
 }

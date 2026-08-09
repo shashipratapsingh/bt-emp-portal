@@ -19,6 +19,10 @@ public class WfhServiceImpl implements WfhService{
         return repository.save(request);
     }
     @Override
+    public List<WfhRequest> getEmployeeById(String employeeId){
+        return repository.findByEmployeeIdOrderByCreatedDateDesc(employeeId);
+    }
+    @Override
     public List<WfhRequest> getWFHEmployees() {
 
         LocalDate today = LocalDate.now();
