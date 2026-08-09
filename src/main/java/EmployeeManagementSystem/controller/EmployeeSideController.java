@@ -18,7 +18,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticatedPrincipal;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -48,6 +50,7 @@ public class EmployeeSideController {
     private final LeaveRepository leaveRepository;
     private final EmployeeProfileRepository employeeProfileRepository;
     private final EmployeeProfileService employeeProfileService;
+    private final RegisterEmployeeService registerEmployeeService;
 //    private final PolicyService policyService;
     @GetMapping("/dashboard")
     public String dashboard(HttpServletRequest request, Model model) {
@@ -125,17 +128,29 @@ public class EmployeeSideController {
     }
 
     @GetMapping("/wfh/apply")
-    public String showWfhForm(Model model) {
+    public String showWfhForm(@ModelAttribute WfhRequest request, Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String employeeId = authentication.getName();
+
         model.addAttribute("currentPage", "wfh");
         model.addAttribute("wfhRequest", new WfhRequest());
+        List<WfhRequest> applications = wfhService.getEmployeeById(employeeId);
+        model.addAttribute("applications", applications);
         return "wfh-apply-page";
     }
     @PostMapping("/wfh/save")
     public String saveWfhRequest(@ModelAttribute("wfhRequest") WfhRequest request, @AuthenticationPrincipal UserDetails currentUser){
-        if (currentUser!=null){
-            request.setEmployeeId(currentUser.getUsername());
-            request.setEmployeeName(currentUser.getUsername());
+        Authentication auth=SecurityContextHolder.getContext().getAuthentication();
+        if (auth==null|| !auth.isAuthenticated()||"anonymousUser".equals(auth.getName())){
+            return "redirect:/auth/loginPage";
         }
+        String employeeId=auth.getName();
+        RegisterEmployee registerEmployee=registerEmployeeService.getEmployeeById(employeeId);
+        request.setEmployeeId(registerEmployee.getUserId());
+        request.setEmployeeName(registerEmployee.getName());
+        request.setStatus("PENDING");
+        request.setWfhMode("Work From Home");
+
         wfhService.saveRequest(request);
         return "redirect:/employee/wfh/apply?success=true";
     }
