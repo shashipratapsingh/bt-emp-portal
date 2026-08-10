@@ -121,80 +121,278 @@
         </div>
     </div>
 </div>
-    <script>
-        let sessionId = Date.now().toString();
+<script>
 
-        function newChat() {
-            sessionId = Date.now().toString();
-            chatBody.innerHTML = "";
+    let sessionId = Date.now().toString();
+
+    const API_URL = "http://localhost:9090/api/chat";
+
+    const chatBody = document.getElementById("chatBody");
+    const inputBox = document.getElementById("question");
+
+
+    // =========================================================
+    // NEW CHAT
+    // =========================================================
+
+    function newChat() {
+
+        sessionId = Date.now().toString();
+
+        chatBody.innerHTML = "";
+
+        inputBox.focus();
+    }
+
+
+    // =========================================================
+    // SEND MESSAGE
+    // =========================================================
+
+    async function sendMessage() {
+
+        const text = inputBox.value.trim();
+
+        if (text === "") {
+            return;
         }
 
-        const API_URL = "http://localhost:9090/api/chat";
 
-        const chatBody = document.getElementById("chatBody");
-        const inputBox = document.getElementById("question");
+        // -----------------------------------------------------
+        // USER MESSAGE
+        // -----------------------------------------------------
 
-        async function sendMessage() {
+        const userMessage = document.createElement("div");
 
-            const text = inputBox.value.trim();
+        userMessage.className = "message user";
 
-            if (text === "") return;
+        const userBubble = document.createElement("div");
 
-            // User Message
-            chatBody.innerHTML += `
-        <div class="message user">
-            <div class="bubble">${text}</div>
-        </div>
-    `;
+        userBubble.className = "bubble";
 
-            inputBox.value = "";
-            chatBody.scrollTop = chatBody.scrollHeight;
+        // textContent prevents HTML injection
+        userBubble.textContent = text;
 
-            try {
+        userMessage.appendChild(userBubble);
 
-                const response = await fetch(API_URL, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        sessionId: sessionId,
-                        prompt: text
-                    })
-                });
+        chatBody.appendChild(userMessage);
 
-                const data = await response.json();
 
-                // AI Message
-                chatBody.innerHTML += `
-            <div class="message ai">
-                <div class="bubble">${data.answer}</div>
-            </div>
-        `;
+        // Clear input
+        inputBox.value = "";
 
-                chatBody.scrollTop = chatBody.scrollHeight;
 
-            } catch (e) {
+        // Scroll down
+        chatBody.scrollTop =
+            chatBody.scrollHeight;
 
-                chatBody.innerHTML += `
-            <div class="message ai">
-                <div class="bubble" style="color:red">
+
+        // -----------------------------------------------------
+        // AI TYPING MESSAGE
+        // -----------------------------------------------------
+
+        const aiMessage = document.createElement("div");
+
+        aiMessage.className = "message ai";
+
+        const aiBubble = document.createElement("div");
+
+        aiBubble.className = "bubble";
+
+        aiBubble.textContent = "Thinking...";
+
+        aiMessage.appendChild(aiBubble);
+
+        chatBody.appendChild(aiMessage);
+
+
+        chatBody.scrollTop =
+            chatBody.scrollHeight;
+
+
+        try {
+
+            // -------------------------------------------------
+            // API CALL
+            // -------------------------------------------------
+
+            const response = await fetch(API_URL, {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+
+                    sessionId: sessionId,
+
+                    prompt: text
+
+                })
+
+            });
+
+
+            // -------------------------------------------------
+            // CHECK HTTP STATUS
+            // -------------------------------------------------
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "HTTP Error: " + response.status
+                );
+            }
+
+
+            // -------------------------------------------------
+            // READ JSON
+            // -------------------------------------------------
+
+            const data = await response.json();
+
+
+            console.log(
+                ">>> API RESPONSE:",
+                data
+            );
+
+
+            // -------------------------------------------------
+            // GET ANSWER
+            // -------------------------------------------------
+
+            let answer = data.answer;
+
+
+            if (!answer) {
+
+                aiBubble.textContent =
+                    "No response received from server.";
+
+                return;
+            }
+
+
+            // -------------------------------------------------
+            // FORMAT AI RESPONSE
+            // -------------------------------------------------
+
+            answer = formatAIResponse(answer);
+
+
+            // -------------------------------------------------
+            // DISPLAY AI RESPONSE
+            // -------------------------------------------------
+
+            aiBubble.innerHTML = answer;
+
+
+            chatBody.scrollTop =
+                chatBody.scrollHeight;
+
+
+        } catch (error) {
+
+            console.error(
+                ">>> CHAT API ERROR:",
+                error
+            );
+
+
+            aiBubble.innerHTML = `
+                <span style="color:red;">
                     Server Error
-                </div>
-            </div>
-        `;
+                </span>
+            `;
 
-                console.log(e);
-            }
         }
 
-        function handleKey(event) {
-            if (event.key === "Enter") {
-                sendMessage();
-            }
-        }
-    </script>
+    }
 
+
+    // =========================================================
+    // FORMAT AI RESPONSE
+    // =========================================================
+
+    function formatAIResponse(answer) {
+
+        // ---------------------------------------------
+        // Escape HTML first
+        // ---------------------------------------------
+
+        answer = escapeHtml(answer);
+
+
+        // ---------------------------------------------
+        // Convert **text** to bold
+        //
+        // Example:
+        // **Independence Day**
+        //
+        // becomes:
+        // <strong>Independence Day</strong>
+        // ---------------------------------------------
+
+        answer = answer.replace(
+            /\*\*(.*?)\*\*/g,
+            "<strong>$1</strong>"
+        );
+
+
+        // ---------------------------------------------
+        // Convert newline to <br>
+        //
+        // \n -> <br>
+        // ---------------------------------------------
+
+        answer = answer.replace(
+            /\r\n/g,
+            "\n"
+        );
+
+        answer = answer.replace(
+            /\n/g,
+            "<br>"
+        );
+
+
+        return answer;
+    }
+
+
+    // =========================================================
+    // ESCAPE HTML
+    // =========================================================
+
+    function escapeHtml(value) {
+
+        const div =
+            document.createElement("div");
+
+        div.textContent = value;
+
+        return div.innerHTML;
+    }
+
+
+    // =========================================================
+    // ENTER KEY
+    // =========================================================
+
+    function handleKey(event) {
+
+        if (event.key === "Enter") {
+
+            event.preventDefault();
+
+            sendMessage();
+        }
+    }
+
+</script>
 </body>
 
 </html>
