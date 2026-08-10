@@ -1,10 +1,10 @@
+// SalaryStructureController.java
 package EmployeeManagementSystem.controller.admin_salary;
 
-
 import EmployeeManagementSystem.dto.SalaryStructureDTO;
-import EmployeeManagementSystem.entity.Employee;
+import EmployeeManagementSystem.entity.EmployeeProfile;
 import EmployeeManagementSystem.entity.admin_salary.SalaryStructure;
-import EmployeeManagementSystem.repository.EmployeeRepository;
+import EmployeeManagementSystem.repository.EmployeeProfileRepository;
 import EmployeeManagementSystem.service.admin_salary.SalaryStructureService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -21,24 +21,24 @@ import java.util.List;
 public class SalaryStructureController {
 
     private final SalaryStructureService salaryStructureService;
-    private final EmployeeRepository employeeRepository;
+    private final EmployeeProfileRepository employeeProfileRepository;
 
     // GET - Add Salary Structure Form
-    @GetMapping("/add/{employeeId}")
-    public String showAddSalaryStructureForm(@PathVariable Long employeeId, Model model) {
-        Employee employee = employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new RuntimeException("Employee not found with id: " + employeeId));
+    @GetMapping("/add/{profileId}")
+    public String showAddSalaryStructureForm(@PathVariable Long profileId, Model model) {
+        EmployeeProfile employeeProfile = employeeProfileRepository.findById(profileId)
+                .orElseThrow(() -> new RuntimeException("Employee Profile not found with id: " + profileId));
 
-        // Check if salary structure already exists
-        if (salaryStructureService.existsByEmployeeId(employeeId)) {
-            return "redirect:/admin/salary-structure/edit/" +
-                    salaryStructureService.getSalaryStructureByEmployeeId(employeeId).getId();
+        // Check if salary structure already exists for this profile
+        if (salaryStructureService.existsByEmployeeProfileId(profileId)) {
+            SalaryStructure existing = salaryStructureService.getSalaryStructureByEmployeeProfileId(profileId);
+            return "redirect:/admin/salary-structure/edit/" + existing.getId();
         }
 
         SalaryStructureDTO dto = new SalaryStructureDTO();
-        dto.setEmployeeId(employeeId);
+        dto.setEmployeeProfileId(profileId);
 
-        model.addAttribute("employee", employee);
+        model.addAttribute("employeeProfile", employeeProfile);
         model.addAttribute("salaryStructureDTO", dto);
         model.addAttribute("pageTitle", "Add Salary Structure");
 
@@ -51,11 +51,11 @@ public class SalaryStructureController {
                                       RedirectAttributes redirectAttributes) {
         try {
             SalaryStructure saved = salaryStructureService.saveSalaryStructure(dto);
-            redirectAttributes.addFlashAttribute("success", "Salary structure saved successfully for employee!");
+            redirectAttributes.addFlashAttribute("success", "Salary structure saved successfully!");
             return "redirect:/admin/salary-structure/view/" + saved.getId();
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Error saving salary structure: " + e.getMessage());
-            return "redirect:/admin/salary-structure/add/" + dto.getEmployeeId();
+            return "redirect:/admin/salary-structure/add/" + dto.getEmployeeProfileId();
         }
     }
 
@@ -63,11 +63,11 @@ public class SalaryStructureController {
     @GetMapping("/edit/{id}")
     public String showEditSalaryStructureForm(@PathVariable Long id, Model model) {
         SalaryStructure salaryStructure = salaryStructureService.getSalaryStructure(id);
-        Employee employee = salaryStructure.getEmployee();
+        EmployeeProfile employeeProfile = salaryStructure.getEmployeeProfile();
 
         SalaryStructureDTO dto = new SalaryStructureDTO();
         dto.setId(salaryStructure.getId());
-        dto.setEmployeeId(employee.getId());
+        dto.setEmployeeProfileId(employeeProfile.getId());
         dto.setBasicSalary(salaryStructure.getBasicSalary());
         dto.setHra(salaryStructure.getHra());
         dto.setConveyance(salaryStructure.getConveyance());
@@ -81,7 +81,7 @@ public class SalaryStructureController {
         dto.setLoanDeduction(salaryStructure.getLoanDeduction());
         dto.setEffectiveFrom(salaryStructure.getEffectiveFrom());
 
-        model.addAttribute("employee", employee);
+        model.addAttribute("employeeProfile", employeeProfile);
         model.addAttribute("salaryStructureDTO", dto);
         model.addAttribute("pageTitle", "Edit Salary Structure");
 
@@ -98,8 +98,7 @@ public class SalaryStructureController {
             return "redirect:/admin/salary-structure/view/" + updated.getId();
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Error updating salary structure: " + e.getMessage());
-//            return "redirect:/admin/salary-structure/edit/" + dto.getEmployeeId();
-              return "redirect:/admin/salary-structure/list";
+            return "redirect:/admin/salary-structure/list";
         }
     }
 
@@ -107,7 +106,7 @@ public class SalaryStructureController {
     @GetMapping("/view/{id}")
     public String viewSalaryStructure(@PathVariable Long id, Model model) {
         SalaryStructure salaryStructure = salaryStructureService.getSalaryStructure(id);
-        Employee employee = salaryStructure.getEmployee();
+        EmployeeProfile employeeProfile = salaryStructure.getEmployeeProfile();
 
         // Calculate totals
         BigDecimal totalEarnings = salaryStructure.getBasicSalary()
@@ -126,7 +125,7 @@ public class SalaryStructureController {
         BigDecimal netSalary = totalEarnings.subtract(totalDeductions);
 
         model.addAttribute("salaryStructure", salaryStructure);
-        model.addAttribute("employee", employee);
+        model.addAttribute("employeeProfile", employeeProfile);
         model.addAttribute("totalEarnings", totalEarnings);
         model.addAttribute("totalDeductions", totalDeductions);
         model.addAttribute("netSalary", netSalary);
@@ -147,7 +146,7 @@ public class SalaryStructureController {
     // GET - Delete Salary Structure
     @GetMapping("/delete/{id}")
     public String deleteSalaryStructure(@PathVariable Long id,
-                                        @RequestParam(required = false) Long employeeId,
+                                        @RequestParam(required = false) Long profileId,
                                         RedirectAttributes redirectAttributes) {
         try {
             salaryStructureService.deleteSalaryStructure(id);
@@ -156,8 +155,8 @@ public class SalaryStructureController {
             redirectAttributes.addFlashAttribute("error", "Error deleting salary structure: " + e.getMessage());
         }
 
-        if (employeeId != null) {
-            return "redirect:/admin/employees/view/" + employeeId;
+        if (profileId != null) {
+            return "redirect:/admin/employee-profiles/view/" + profileId;
         }
         return "redirect:/admin/salary-structure/list";
     }

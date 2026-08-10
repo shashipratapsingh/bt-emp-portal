@@ -1,118 +1,130 @@
 package EmployeeManagementSystem.service.admin_salary.impl;
 
 import EmployeeManagementSystem.entity.Employee;
+import EmployeeManagementSystem.entity.EmployeeProfile;
 import EmployeeManagementSystem.entity.Salary;
 import EmployeeManagementSystem.entity.admin_salary.SalaryStructure;
-import EmployeeManagementSystem.repository.EmployeeRepository;
+import EmployeeManagementSystem.repository.EmployeeProfileRepository;
 import EmployeeManagementSystem.repository.admin_salaryRepo.AdminSalaryRepo;
-import EmployeeManagementSystem.repository.admin_salaryRepo.AdminSalaryStructureRepo;
 import EmployeeManagementSystem.service.admin_salary.MonthlySalaryService;
+import EmployeeManagementSystem.service.admin_salary.SalaryStructureService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class MonthlySalaryServiceImpl implements MonthlySalaryService {
 
-    private final AdminSalaryRepo salaryRepository;
-    private final AdminSalaryStructureRepo salaryStructureRepository;
-    private final EmployeeRepository employeeRepository;
+    private final AdminSalaryRepo adminSalaryRepo;
+    private final SalaryStructureService salaryStructureService;
+    private final EmployeeProfileRepository employeeProfileRepository;
 
     @Override
-    @Transactional
-    public Salary generateMonthlySalary(Long employeeId, String month, Integer year) {
-        Optional<Salary> existing = salaryRepository.findByEmployeeIdAndMonthAndYear(employeeId, month, year);
-        if (existing.isPresent()) {
-            return existing.get();
+    public Salary generateMonthlySalary(Long profileId, String month, Integer year) {
+        EmployeeProfile employeeProfile = employeeProfileRepository.findById(profileId)
+                .orElseThrow(() -> new RuntimeException("Employee Profile not found with id: " + profileId));
+
+        SalaryStructure salaryStructure = salaryStructureService.getSalaryStructureByEmployeeProfileId(profileId);
+
+        // Check if salary already exists for this month
+        if (adminSalaryRepo.existsByEmployeeProfileIdAndMonthAndYear(profileId, month, year)) {
+            throw new RuntimeException("Salary already generated for " + month + " " + year);
         }
 
-        Employee employee = employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new RuntimeException("Employee not found"));
+        // Calculate salary components
+        double basicSalary = salaryStructure.getBasicSalary().doubleValue();
+        double hra = salaryStructure.getHra().doubleValue();
+        double allowance = salaryStructure.getConveyance().doubleValue() +
+                salaryStructure.getMedicalAllowance().doubleValue() +
+                salaryStructure.getSpecialAllowance().doubleValue() +
+                salaryStructure.getOtherAllowance().doubleValue();
+        double bonus = 0.0; // Can be calculated based on performance
+        double deductions = salaryStructure.getPf().doubleValue() +
+                salaryStructure.getEsi().doubleValue() +
+                salaryStructure.getProfessionalTax().doubleValue() +
+                salaryStructure.getTds().doubleValue() +
+                salaryStructure.getLoanDeduction().doubleValue();
 
-        SalaryStructure structure = salaryStructureRepository.findByEmployeeId(employeeId)
-                .orElseThrow(() -> new RuntimeException("Salary structure not found"));
+        double grossSalary = basicSalary + hra + allowance + bonus;
+        double netSalary = grossSalary - deductions;
 
         Salary salary = new Salary();
-        salary.setEmployee(employee);
-        salary.setEmployeeId(employee.getId().toString());
-        salary.setEmployeeName(employee.getFirstName() + " " + employee.getLastName());
-        salary.setDepartment(employee.getDepartment() != null ? employee.getDepartment().getDepartmentName() : null);
-        salary.setDesignation(employee.getDepartment() != null ? employee.getDepartment().getDepartmentName() : null);
 
-        // ----- Earnings -----
-        salary.setBasicSalary(structure.getBasicSalary().doubleValue());
-        salary.setHra(structure.getHra().doubleValue());
+        // Set Employee (via Employee object)
+        Employee employee = employeeProfile.getEmployee();
+        if (employee != null) {
+            salary.setEmployee(employee);
+        }
 
-        // Allowance = sum of conveyance + medical + special + other
-        double allowance = structure.getConveyance().doubleValue()
-                + structure.getMedicalAllowance().doubleValue()
-                + structure.getSpecialAllowance().doubleValue()
-                + structure.getOtherAllowance().doubleValue();
+        // Set Employee Profile
+        salary.setEmployeeProfileId(profileId);
+        salary.setEmployeeProfile(employeeProfile);
+
+        // Set other fields
+        salary.setEmployeeCode(employeeProfile.getUserId());
+        salary.setEmployeeName(employeeProfile.getFullName());
+        salary.setDepartment(employeeProfile.getDepartment());
+        salary.setDesignation(employeeProfile.getDesignation());
+        salary.setBasicSalary(basicSalary);
+        salary.setHra(hra);
         salary.setAllowance(allowance);
-
-        salary.setBonus(0.0); // Can be set separately if needed
-
-        // ----- Deductions -----
-        double deductions = structure.getPf().doubleValue()
-                + structure.getProfessionalTax().doubleValue()
-                + structure.getTds().doubleValue();
+        salary.setBonus(bonus);
         salary.setDeductions(deductions);
-
-        // ----- Gross & Net -----
-        double gross = salary.getBasicSalary() + salary.getHra() + salary.getAllowance() + salary.getBonus();
-        salary.setGrossSalary(gross);
-        salary.setNetSalary(gross - salary.getDeductions());
-
-        // ----- Metadata -----
+        salary.setGrossSalary(grossSalary);
+        salary.setNetSalary(netSalary);
+        salary.setPaymentStatus("PENDING");
         salary.setMonth(month);
         salary.setYear(year);
-        salary.setPaymentStatus("Pending");
+        salary.setPaymentDate(null);
 
-        return salaryRepository.save(salary);
+        return adminSalaryRepo.save(salary);
     }
 
     @Override
-    @Transactional
     public List<Salary> generateMonthlySalaryForAllEmployees(String month, Integer year) {
-        List<Employee> employees = employeeRepository.findAll();
-        List<Salary> generated = new ArrayList<>();
-        for (Employee emp : employees) {
-            try {
-                generated.add(generateMonthlySalary(emp.getId(), month, year));
-            } catch (Exception e) {
-                System.err.println("Error generating salary for employee " + emp.getId() + ": " + e.getMessage());
-            }
-        }
-        return generated;
+        List<EmployeeProfile> activeProfiles = employeeProfileRepository.findAll().stream()
+                .filter(p -> "ACTIVE".equals(p.getStatus()))
+                .collect(Collectors.toList());
+
+        return activeProfiles.stream()
+                .map(profile -> {
+                    try {
+                        return generateMonthlySalary(profile.getId(), month, year);
+                    } catch (Exception e) {
+                        return null;
+                    }
+                })
+                .filter(salary -> salary != null)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Salary getSalaryByEmployeeAndMonth(Long employeeId, String month, Integer year) {
-        return salaryRepository.findByEmployeeIdAndMonthAndYear(employeeId, month, year)
-                .orElseThrow(() -> new RuntimeException("Salary not found for employee: " + employeeId));
+    public Salary getSalaryByEmployeeProfileAndMonth(Long profileId, String month, Integer year) {
+        return adminSalaryRepo.findByEmployeeProfileIdAndMonthAndYear(profileId, month, year)
+                .orElseThrow(() -> new RuntimeException("Salary not found for employee profile " + profileId +
+                        " for " + month + " " + year));
     }
 
     @Override
     public List<Salary> getSalariesByMonth(String month, Integer year) {
-        return salaryRepository.findAll().stream()
-                .filter(s -> month.equals(s.getMonth()) && year.equals(s.getYear()))
-                .toList();
+        return adminSalaryRepo.findByMonthAndYear(month, year);
     }
 
     @Override
-    public List<Salary> getSalariesByEmployee(Long employeeId) {
-        return salaryRepository.findByEmployeeId(employeeId);
+    public List<Salary> getSalariesByEmployeeProfile(Long profileId) {
+        return adminSalaryRepo.findByEmployeeProfileIdOrderByYearDescMonthDesc(profileId);
     }
 
-    // Additional helper method for the slip view
     @Override
-    public Salary getSalaryById(Long id) {
-        return salaryRepository.findById(id)
+    public Salary getSalary(Long id) {
+        return adminSalaryRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Salary not found with id: " + id));
     }
 }

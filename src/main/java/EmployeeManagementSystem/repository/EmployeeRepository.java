@@ -27,27 +27,38 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
             "LOWER(CONCAT(e.firstName, ' ', e.lastName)) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     List<Employee> searchByName(@Param("keyword") String keyword);
 
-    Employee getEmployeeById(Long id);
-
     // Find employee by email
     Optional<Employee> findByEmail(String email);
 
-    // Employees having DOB
-    @Query("SELECT e FROM Employee e WHERE e.dateOfBirth IS NOT NULL")
-    List<Employee> findAllWithDob();
-
-    // Employees having Joining Date
-    @Query("SELECT e FROM Employee e WHERE e.joiningDate IS NOT NULL")
-    List<Employee> findAllWithJoiningDate();
-
-    // Current Month Birthdays
-    @Query("SELECT e FROM Employee e WHERE MONTH(e.dateOfBirth) = MONTH(CURRENT_DATE)")
-    List<Employee> findUpcomingBirthdays();
-
-    // Work From Home Employees
-    List<Employee> findByWorkMode(String workMode);
-
     // Find employees by department ID - Using Spring Data JPA naming convention
     List<Employee> findByDepartmentId(Long departmentId);
+
+    @Query("SELECT DISTINCT e FROM Employee e " +
+            "LEFT JOIN FETCH e.profile p " +
+            "LEFT JOIN FETCH e.department d " +
+            "LEFT JOIN FETCH e.salaries s " +
+            "WHERE e.id = :id")
+    Optional<Employee> findByIdWithDetails(@Param("id") Long id);
+
+    @Query("SELECT DISTINCT e FROM Employee e " +
+            "LEFT JOIN e.profile p " +
+            "LEFT JOIN e.department d " +
+            "WHERE (:keyword IS NULL OR LOWER(e.fullName) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+            "OR LOWER(e.email) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+            "OR LOWER(p.userId) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
+            "AND (:departmentId IS NULL OR e.department.id = :departmentId) " +
+            "AND (:status IS NULL OR p.status = :status)")
+    Page<Employee> searchEmployees(@Param("keyword") String keyword,
+                                   @Param("departmentId") Long departmentId,
+                                   @Param("status") String status,
+                                   Pageable pageable);
+
+
+
+    @Query("SELECT DISTINCT e FROM Employee e " +
+            "LEFT JOIN e.profile p " +
+            "WHERE p.status = 'ACTIVE'")
+    List<Employee> findAllActiveEmployees();
+
 
 }

@@ -1,7 +1,6 @@
 package EmployeeManagementSystem.controller.admin_salary;
 
-
-import EmployeeManagementSystem.entity.Employee;
+import EmployeeManagementSystem.entity.EmployeeProfile;
 import EmployeeManagementSystem.entity.Salary;
 import EmployeeManagementSystem.entity.admin_salary.SalaryStructure;
 import EmployeeManagementSystem.repository.admin_salaryRepo.AdminSalaryRepo;
@@ -26,8 +25,8 @@ public class MonthlySalaryController {
     private final SalaryStructureService salaryStructureService;
     private final AdminSalaryRepo adminSalaryRepo;
 
-    @GetMapping("/slip/{employeeId}")
-    public String showSalarySlip(@PathVariable Long employeeId,
+    @GetMapping("/slip/{profileId}")
+    public String showSalarySlip(@PathVariable Long profileId,
                                  @RequestParam(required = false) String month,
                                  @RequestParam(required = false) Integer year,
                                  Model model) {
@@ -37,24 +36,24 @@ public class MonthlySalaryController {
             year = now.getYear();
         }
 
-        Salary salary = monthlySalaryService.getSalaryByEmployeeAndMonth(employeeId, month, year);
-        Employee employee = salary.getEmployee();
+        Salary salary = monthlySalaryService.getSalaryByEmployeeProfileAndMonth(profileId, month, year);
+        EmployeeProfile employeeProfile = salary.getEmployeeProfile();
 
         model.addAttribute("salary", salary);
-        model.addAttribute("employee", employee);
+        model.addAttribute("employeeProfile", employeeProfile);
         model.addAttribute("monthYear", month + " " + year);
         model.addAttribute("generatedDate", LocalDate.now().format(DateTimeFormatter.ofPattern("MMMM dd, yyyy")));
 
         return "admin/payroll/salary-slip";
     }
-    // GET - Generate Salary Form
-    @GetMapping("/generate/{employeeId}")
-    public String showGenerateSalaryForm(@PathVariable Long employeeId, Model model) {
-        SalaryStructure salaryStructure = salaryStructureService.getSalaryStructureByEmployeeId(employeeId);
 
-        model.addAttribute("employeeId", employeeId);
-        model.addAttribute("employeeName", salaryStructure.getEmployee().getFirstName() + " " +
-                salaryStructure.getEmployee().getLastName());
+    // GET - Generate Salary Form
+    @GetMapping("/generate/{profileId}")
+    public String showGenerateSalaryForm(@PathVariable Long profileId, Model model) {
+        SalaryStructure salaryStructure = salaryStructureService.getSalaryStructureByEmployeeProfileId(profileId);
+
+        model.addAttribute("profileId", profileId);
+        model.addAttribute("employeeName", salaryStructure.getEmployeeProfile().getFullName());
         model.addAttribute("currentMonth", LocalDate.now().format(DateTimeFormatter.ofPattern("MMMM")));
         model.addAttribute("currentYear", LocalDate.now().getYear());
         model.addAttribute("pageTitle", "Generate Monthly Salary");
@@ -64,18 +63,18 @@ public class MonthlySalaryController {
 
     // POST - Generate Single Salary
     @PostMapping("/generate/single")
-    public String generateSingleSalary(@RequestParam Long employeeId,
+    public String generateSingleSalary(@RequestParam Long profileId,
                                        @RequestParam String month,
                                        @RequestParam Integer year,
                                        RedirectAttributes redirectAttributes) {
         try {
-            Salary salary = monthlySalaryService.generateMonthlySalary(employeeId, month, year);
+            Salary salary = monthlySalaryService.generateMonthlySalary(profileId, month, year);
             redirectAttributes.addFlashAttribute("success",
                     "Salary generated successfully for " + month + " " + year + "!");
             return "redirect:/admin/payroll/view/" + salary.getId();
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Error generating salary: " + e.getMessage());
-            return "redirect:/admin/payroll/generate/" + employeeId;
+            return "redirect:/admin/payroll/generate/" + profileId;
         }
     }
 
@@ -107,14 +106,11 @@ public class MonthlySalaryController {
     // GET - View Salary
     @GetMapping("/view/{id}")
     public String viewSalary(@PathVariable Long id, Model model) {
-        Salary salary = monthlySalaryService.getSalaryByEmployeeAndMonth(
-                id,
-                adminSalaryRepo.findById(id).get().getMonth(),
-                adminSalaryRepo.findById(id).get().getYear()
-        );
-        // Actually we need the salary ID, let's fix this
-        // Better to fetch by ID directly - we need to add this method
+        Salary salary = adminSalaryRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Salary not found with id: " + id));
+
         model.addAttribute("salary", salary);
+        model.addAttribute("employeeProfile", salary.getEmployeeProfile());
         model.addAttribute("pageTitle", "Salary Details");
         return "admin/payroll/view-salary";
     }
@@ -138,11 +134,11 @@ public class MonthlySalaryController {
     }
 
     // GET - List Employee Salaries
-    @GetMapping("/list/employee/{employeeId}")
-    public String listEmployeeSalaries(@PathVariable Long employeeId, Model model) {
-        List<Salary> salaries = monthlySalaryService.getSalariesByEmployee(employeeId);
+    @GetMapping("/list/employee/{profileId}")
+    public String listEmployeeSalaries(@PathVariable Long profileId, Model model) {
+        List<Salary> salaries = monthlySalaryService.getSalariesByEmployeeProfile(profileId);
         model.addAttribute("salaries", salaries);
-        model.addAttribute("employeeId", employeeId);
+        model.addAttribute("profileId", profileId);
         model.addAttribute("pageTitle", "Employee Salary History");
         return "admin/payroll/employee-salary-history";
     }

@@ -1,14 +1,18 @@
+
+// EmployeeProfile.java
 package EmployeeManagementSystem.entity;
 
+import EmployeeManagementSystem.entity.admin_salary.SalaryStructure;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "employee_profiles")
@@ -21,12 +25,22 @@ public class EmployeeProfile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     @Column(name = "user_id", unique = true, nullable = false)
     private String userId;
 
+    // One-to-One with Employee (existing)
     @OneToOne(mappedBy = "profile", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Employee employee;
+
+    // ===== DIRECT MAPPING TO SALARY STRUCTURE =====
+    // One-to-One with SalaryStructure using employee_profile_id
+    @OneToOne(mappedBy = "employeeProfile", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private SalaryStructure salaryStructure;
+
+    // ===== DIRECT MAPPING TO PROJECTS =====
+    // One-to-Many with Projects using employee_profile_id
+    @OneToMany(mappedBy = "employeeProfile", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Project> projects = new ArrayList<>();
 
     @NotBlank(message = "Full name is required")
     @Size(min = 2, max = 100, message = "Full name must be between 2 and 100 characters")
@@ -42,8 +56,6 @@ public class EmployeeProfile {
     private LocalDate dob;
 
     private String gender;
-
-    @Column(name = "blood_group")
     private String bloodGroup;
 
     @NotBlank(message = "Email is required")
@@ -96,7 +108,6 @@ public class EmployeeProfile {
     private String status = "ACTIVE";
 
     // ===== NEW FIELDS =====
-
     @Column(name = "department")
     private String department;
 
@@ -104,14 +115,13 @@ public class EmployeeProfile {
     private String designation;
 
     @Column(name = "password")
-    private String password;  // Auto-generated password for login
+    private String password;
 
     @Column(name = "email_sent")
     private boolean emailSent = false;
 
     @Column(name = "registered_at")
-    private LocalDateTime registeredAt;  // When the employee was registered
-
+    private LocalDateTime registeredAt;
 
     @Transient
     private String confirmEmail;
