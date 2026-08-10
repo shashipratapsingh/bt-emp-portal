@@ -1,9 +1,9 @@
+// Project.java
 package EmployeeManagementSystem.entity;
 
 import EmployeeManagementSystem.enums.ProjectStatus;
 import jakarta.persistence.*;
 import lombok.Data;
-
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -14,10 +14,19 @@ import java.util.List;
 @Table(name = "projects")
 @Data
 public class Project {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // Foreign key to EmployeeProfile
+    @Column(name = "employee_profile_id")
+    private Long employeeProfileId;
+
+    // Relationship to EmployeeProfile
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "employee_profile_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private EmployeeProfile employeeProfile;
 
     @Column(name = "project_name", unique = true, nullable = true)
     private String projectName;
@@ -54,7 +63,7 @@ public class Project {
     private String description;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", length = 50)  // ADD THIS - set length to 50
+    @Column(name = "status", length = 50)
     private ProjectStatus status;
 
     @Column(name = "created_by")
@@ -89,60 +98,4 @@ public class Project {
         this.status = ProjectStatus.ACTIVE;
         this.createdAt = LocalDateTime.now();
     }
-
-    // Getters and Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public String getProjectName() { return projectName; }
-    public void setProjectName(String projectName) { this.projectName = projectName; }
-
-    public String getClientName() { return clientName; }
-    public void setClientName(String clientName) { this.clientName = clientName; }
-
-    public String getClientRegion() { return clientRegion; }
-    public void setClientRegion(String clientRegion) { this.clientRegion = clientRegion; }
-
-    public Long getDepartmentId() { return departmentId; }
-    public void setDepartmentId(Long departmentId) { this.departmentId = departmentId; }
-
-    public Long getAssignedEmployeeId() { return assignedEmployeeId; }
-    public void setAssignedEmployeeId(Long assignedEmployeeId) { this.assignedEmployeeId = assignedEmployeeId; }
-
-    public String getAssignedEmployeeName() { return assignedEmployeeName; }
-    public void setAssignedEmployeeName(String assignedEmployeeName) { this.assignedEmployeeName = assignedEmployeeName; }
-
-    public String getProjectType() { return projectType; }
-    public void setProjectType(String projectType) { this.projectType = projectType; }
-
-    public Double getTotalCost() { return totalCost; }
-    public void setTotalCost(Double totalCost) { this.totalCost = totalCost; }
-
-    public LocalDate getOnboardingDate() { return onboardingDate; }
-    public void setOnboardingDate(LocalDate onboardingDate) { this.onboardingDate = onboardingDate; }
-
-    public LocalDate getEndDate(){
-        return endDate;
-    }
-    public void setEndDate(LocalDate endDate){
-        this.endDate = endDate;
-    }
-
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
-
-    public ProjectStatus getStatus() { return status; }
-    public void setStatus(ProjectStatus status) { this.status = status; }
-
-    public String getCreatedBy() { return createdBy; }
-    public void setCreatedBy(String createdBy) { this.createdBy = createdBy; }
-
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
-
-    public LocalDateTime getUpdatedAt() { return updatedAt; }
-    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
-
-    public List<Employee> getAssignedEmployees() { return assignedEmployees; }
-    public void setAssignedEmployees(List<Employee> assignedEmployees) { this.assignedEmployees = assignedEmployees; }
 }

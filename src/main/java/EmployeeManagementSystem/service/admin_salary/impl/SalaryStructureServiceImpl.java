@@ -1,112 +1,95 @@
+// SalaryStructureServiceImpl.java
 package EmployeeManagementSystem.service.admin_salary.impl;
 
-
-
 import EmployeeManagementSystem.dto.SalaryStructureDTO;
-import EmployeeManagementSystem.entity.Employee;
+import EmployeeManagementSystem.entity.EmployeeProfile;
 import EmployeeManagementSystem.entity.admin_salary.SalaryStructure;
-import EmployeeManagementSystem.repository.EmployeeRepository;
+import EmployeeManagementSystem.repository.EmployeeProfileRepository;
 import EmployeeManagementSystem.repository.admin_salaryRepo.AdminSalaryStructureRepo;
 import EmployeeManagementSystem.service.admin_salary.SalaryStructureService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class SalaryStructureServiceImpl implements SalaryStructureService {
 
-    private final AdminSalaryStructureRepo salaryStructureRepository;
-    private final EmployeeRepository employeeRepository;
+    private final AdminSalaryStructureRepo salaryStructureRepo;
+    private final EmployeeProfileRepository employeeProfileRepository;
 
-    @Transactional
     @Override
     public SalaryStructure saveSalaryStructure(SalaryStructureDTO dto) {
-        // Find employee
-        Employee employee = employeeRepository.findById(dto.getEmployeeId())
-                .orElseThrow(() -> new RuntimeException("Employee not found with id: " + dto.getEmployeeId()));
+        EmployeeProfile employeeProfile = employeeProfileRepository.findById(dto.getEmployeeProfileId())
+                .orElseThrow(() -> new RuntimeException("Employee Profile not found with id: " + dto.getEmployeeProfileId()));
 
-        // Check if salary structure already exists
-        if (salaryStructureRepository.existsByEmployeeId(dto.getEmployeeId())) {
-            throw new RuntimeException("Salary structure already exists for employee: " + dto.getEmployeeId());
-        }
+        SalaryStructure salaryStructure = new SalaryStructure();
+        salaryStructure.setEmployeeProfileId(employeeProfile.getId());
+        salaryStructure.setEmployeeProfile(employeeProfile);
+        salaryStructure.setBasicSalary(dto.getBasicSalary());
+        salaryStructure.setHra(dto.getHra());
+        salaryStructure.setConveyance(dto.getConveyance());
+        salaryStructure.setMedicalAllowance(dto.getMedicalAllowance());
+        salaryStructure.setSpecialAllowance(dto.getSpecialAllowance());
+        salaryStructure.setOtherAllowance(dto.getOtherAllowance());
+        salaryStructure.setPf(dto.getPf());
+        salaryStructure.setEsi(dto.getEsi());
+        salaryStructure.setProfessionalTax(dto.getProfessionalTax());
+        salaryStructure.setTds(dto.getTds());
+        salaryStructure.setLoanDeduction(dto.getLoanDeduction());
+        salaryStructure.setEffectiveFrom(dto.getEffectiveFrom());
 
-        // Create Salary Structure
-        SalaryStructure salaryStructure = SalaryStructure.builder()
-                .employee(employee)
-                .basicSalary(dto.getBasicSalary() != null ? dto.getBasicSalary() : BigDecimal.ZERO)
-                .hra(dto.getHra() != null ? dto.getHra() : BigDecimal.ZERO)
-                .conveyance(dto.getConveyance() != null ? dto.getConveyance() : BigDecimal.ZERO)
-                .medicalAllowance(dto.getMedicalAllowance() != null ? dto.getMedicalAllowance() : BigDecimal.ZERO)
-                .specialAllowance(dto.getSpecialAllowance() != null ? dto.getSpecialAllowance() : BigDecimal.ZERO)
-                .otherAllowance(dto.getOtherAllowance() != null ? dto.getOtherAllowance() : BigDecimal.ZERO)
-                .pf(dto.getPf() != null ? dto.getPf() : BigDecimal.ZERO)
-                .esi(dto.getEsi() != null ? dto.getEsi() : BigDecimal.ZERO)
-                .professionalTax(dto.getProfessionalTax() != null ? dto.getProfessionalTax() : BigDecimal.ZERO)
-                .tds(dto.getTds() != null ? dto.getTds() : BigDecimal.ZERO)
-                .loanDeduction(dto.getLoanDeduction() != null ? dto.getLoanDeduction() : BigDecimal.ZERO)
-                .effectiveFrom(dto.getEffectiveFrom() != null ? dto.getEffectiveFrom() : LocalDate.now())
-                .build();
-
-        return salaryStructureRepository.save(salaryStructure);
+        return salaryStructureRepo.save(salaryStructure);
     }
 
-    @Transactional
     @Override
     public SalaryStructure updateSalaryStructure(SalaryStructureDTO dto) {
-        // Find existing salary structure
-        SalaryStructure existing = salaryStructureRepository.findById(dto.getId())
-                .orElseThrow(() -> new RuntimeException("Salary structure not found with id: " + dto.getEmployeeId()));
+        SalaryStructure existing = salaryStructureRepo.findById(dto.getId())
+                .orElseThrow(() -> new RuntimeException("Salary structure not found with id: " + dto.getId()));
 
-        // Update fields
-        existing.setBasicSalary(dto.getBasicSalary() != null ? dto.getBasicSalary() : BigDecimal.ZERO);
-        existing.setHra(dto.getHra() != null ? dto.getHra() : BigDecimal.ZERO);
-        existing.setConveyance(dto.getConveyance() != null ? dto.getConveyance() : BigDecimal.ZERO);
-        existing.setMedicalAllowance(dto.getMedicalAllowance() != null ? dto.getMedicalAllowance() : BigDecimal.ZERO);
-        existing.setSpecialAllowance(dto.getSpecialAllowance() != null ? dto.getSpecialAllowance() : BigDecimal.ZERO);
-        existing.setOtherAllowance(dto.getOtherAllowance() != null ? dto.getOtherAllowance() : BigDecimal.ZERO);
-        existing.setPf(dto.getPf() != null ? dto.getPf() : BigDecimal.ZERO);
-        existing.setEsi(dto.getEsi() != null ? dto.getEsi() : BigDecimal.ZERO);
-        existing.setProfessionalTax(dto.getProfessionalTax() != null ? dto.getProfessionalTax() : BigDecimal.ZERO);
-        existing.setTds(dto.getTds() != null ? dto.getTds() : BigDecimal.ZERO);
-        existing.setLoanDeduction(dto.getLoanDeduction() != null ? dto.getLoanDeduction() : BigDecimal.ZERO);
+        existing.setBasicSalary(dto.getBasicSalary());
+        existing.setHra(dto.getHra());
+        existing.setConveyance(dto.getConveyance());
+        existing.setMedicalAllowance(dto.getMedicalAllowance());
+        existing.setSpecialAllowance(dto.getSpecialAllowance());
+        existing.setOtherAllowance(dto.getOtherAllowance());
+        existing.setPf(dto.getPf());
+        existing.setEsi(dto.getEsi());
+        existing.setProfessionalTax(dto.getProfessionalTax());
+        existing.setTds(dto.getTds());
+        existing.setLoanDeduction(dto.getLoanDeduction());
+        existing.setEffectiveFrom(dto.getEffectiveFrom());
 
-        if (dto.getEffectiveFrom() != null) {
-            existing.setEffectiveFrom(dto.getEffectiveFrom());
-        }
-
-        return salaryStructureRepository.save(existing);
+        return salaryStructureRepo.save(existing);
     }
 
     @Override
     public SalaryStructure getSalaryStructure(Long id) {
-        return salaryStructureRepository.findById(id)
+        return salaryStructureRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Salary structure not found with id: " + id));
     }
 
     @Override
-    public SalaryStructure getSalaryStructureByEmployeeId(Long employeeId) {
-        return salaryStructureRepository.findByEmployeeId(employeeId)
-                .orElseThrow(() -> new RuntimeException("Salary structure not found for employee id: " + employeeId));
+    public SalaryStructure getSalaryStructureByEmployeeProfileId(Long profileId) {
+        return salaryStructureRepo.findByEmployeeProfileId(profileId)
+                .orElseThrow(() -> new RuntimeException("Salary structure not found for profile id: " + profileId));
     }
 
+    @Override
     public List<SalaryStructure> getAllSalaryStructures() {
-        return salaryStructureRepository.findAllWithEmployeeAndDepartment();
+        return salaryStructureRepo.findAll();
     }
 
-    @Transactional
     @Override
     public void deleteSalaryStructure(Long id) {
-        SalaryStructure salaryStructure = getSalaryStructure(id);
-        salaryStructureRepository.delete(salaryStructure);
+        salaryStructureRepo.deleteById(id);
     }
 
     @Override
-    public boolean existsByEmployeeId(Long employeeId) {
-        return salaryStructureRepository.existsByEmployeeId(employeeId);
+    public boolean existsByEmployeeProfileId(Long profileId) {
+        return salaryStructureRepo.existsByEmployeeProfileId(profileId);
     }
 }

@@ -1,36 +1,29 @@
+// SalaryStructureDTO.java
 package EmployeeManagementSystem.dto;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class SalaryStructureDTO {
-
-   private Long id;
-
-    private Long employeeId;
-
-    private BigDecimal basicSalary;
-    private BigDecimal hra;
-    private BigDecimal conveyance;
-    private BigDecimal medicalAllowance;
-    private BigDecimal specialAllowance;
-    private BigDecimal otherAllowance;
-
-    private BigDecimal pf;
-    private BigDecimal esi;
-    private BigDecimal professionalTax;
-    private BigDecimal tds;
-    private BigDecimal loanDeduction;
-    private LocalDate effectiveFrom;
-
+ private Long id;
+ private Long employeeProfileId;  // Changed from employeeId to employeeProfileId
+ private BigDecimal basicSalary = BigDecimal.ZERO;
+ private BigDecimal hra = BigDecimal.ZERO;
+ private BigDecimal conveyance = BigDecimal.ZERO;
+ private BigDecimal medicalAllowance = BigDecimal.ZERO;
+ private BigDecimal specialAllowance = BigDecimal.ZERO;
+ private BigDecimal otherAllowance = BigDecimal.ZERO;
+ private BigDecimal pf = BigDecimal.ZERO;
+ private BigDecimal esi = BigDecimal.ZERO;
+ private BigDecimal professionalTax = BigDecimal.ZERO;
+ private BigDecimal tds = BigDecimal.ZERO;
+ private BigDecimal loanDeduction = BigDecimal.ZERO;
+ private LocalDate effectiveFrom;
 }

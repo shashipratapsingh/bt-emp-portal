@@ -41,4 +41,29 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     // Count by onboarding date range
     long countByOnboardingDateBetween(LocalDate start, LocalDate end);
 
+    // Find projects by assigned employee ID and status
+    List<Project> findByAssignedEmployeeIdAndStatus(Long employeeId, ProjectStatus status);
+
+    // Find projects by assigned employee ID (any status)
+    List<Project> findByAssignedEmployeeId(Long employeeId);
+
+    // Find projects by employee ID in the many-to-many relationship
+    @Query("SELECT p FROM Project p JOIN p.assignedEmployees e WHERE e.id = :employeeId AND p.status = :status")
+    List<Project> findProjectsByEmployeeIdAndStatus(@Param("employeeId") Long employeeId,
+                                                    @Param("status") ProjectStatus status);
+
+    // Find active projects for an employee
+    @Query("SELECT p FROM Project p WHERE p.assignedEmployeeId = :employeeId AND p.status IN ('ACTIVE', 'IN_PROGRESS')")
+    List<Project> findActiveProjectsByEmployeeId(@Param("employeeId") Long employeeId);
+
+    // Find projects by employee profile ID
+    List<Project> findByEmployeeProfileId(Long employeeProfileId);
+
+    // Find projects by employee profile ID and status
+    List<Project> findByEmployeeProfileIdAndStatus(Long employeeProfileId, ProjectStatus status);
+
+    // Find active projects for an employee profile
+    @Query("SELECT p FROM Project p WHERE p.employeeProfileId = :profileId AND p.status IN ('ACTIVE', 'IN_PROGRESS')")
+    List<Project> findActiveProjectsByProfileId(@Param("profileId") Long profileId);
+
 }

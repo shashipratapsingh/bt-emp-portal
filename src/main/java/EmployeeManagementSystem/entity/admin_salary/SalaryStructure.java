@@ -1,6 +1,7 @@
+// SalaryStructure.java
 package EmployeeManagementSystem.entity.admin_salary;
 
-import EmployeeManagementSystem.entity.Employee;
+import EmployeeManagementSystem.entity.EmployeeProfile;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,9 +22,14 @@ public class SalaryStructure {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // Foreign key to EmployeeProfile
+    @Column(name = "employee_profile_id", nullable = false, unique = true)
+    private Long employeeProfileId;
+
+    // Relationship to EmployeeProfile
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "employee_id", nullable = false, unique = true)
-    private Employee employee;
+    @JoinColumn(name = "employee_profile_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private EmployeeProfile employeeProfile;
 
     // Earnings
     @Column(nullable = false, precision = 10, scale = 2)
@@ -60,17 +66,19 @@ public class SalaryStructure {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal loanDeduction = BigDecimal.ZERO;
 
+    @Column(name = "effective_from")
     private LocalDate effectiveFrom;
 
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     @PrePersist
     public void prePersist() {
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
-
         if (effectiveFrom == null) {
             effectiveFrom = LocalDate.now();
         }
