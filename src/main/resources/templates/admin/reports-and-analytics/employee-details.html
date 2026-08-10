@@ -16,7 +16,6 @@
     <link rel="stylesheet" th:href="@{/css/sidebar.css}">
 
     <style>
-        /* ---------- Global & layout ---------- */
         * {
             margin: 0;
             padding: 0;
@@ -47,7 +46,6 @@
             }
         }
 
-        /* ---------- Page header ---------- */
         .page-header {
             display: flex;
             justify-content: space-between;
@@ -105,7 +103,6 @@
             gap: 6px;
         }
 
-        /* ---------- Cards ---------- */
         .detail-card {
             background: #fff;
             border-radius: 16px;
@@ -115,7 +112,6 @@
             margin-bottom: 1.5rem;
         }
 
-        /* ----- Profile header card (three columns) ----- */
         .profile-header-card {
             background: #fff;
             border-radius: 16px;
@@ -145,7 +141,6 @@
             background: linear-gradient(135deg, #2a6df4, #6c5ce7);
         }
 
-        /* Compact basic details - small font, inline labels */
         .basic-detail-item {
             font-size: 0.75rem;
             padding: 0.15rem 0;
@@ -169,7 +164,6 @@
             border-radius: 12px;
         }
 
-        /* Chart container inside header card */
         .profile-header-card .chart-container {
             height: 160px;
             margin-top: 0.3rem;
@@ -194,22 +188,13 @@
             letter-spacing: 0.3px;
         }
 
-        /* ---------- Unified typography for all content ---------- */
-        /* All cards and their children inherit 0.75rem */
-        .detail-card,
-        .profile-header-card {
-            font-size: 0.75rem;
-        }
-
-        /* Headings inside cards remain larger */
-        .detail-card h5,
-        .profile-header-card h5 {
+        .detail-card h5 {
             font-size: 1rem;
             font-weight: 600;
             color: #1a2639;
+            margin-bottom: 1rem;
         }
 
-        /* Labels - fixed width for alignment, used in Education/Bank */
         .detail-label {
             font-weight: 500;
             color: #6b7a8f;
@@ -217,21 +202,11 @@
             display: inline-block;
         }
 
-        /* Values - matching personal details */
-        .value,
-        .detail-card p,
-        .info-row .value {
+        .value {
             font-weight: 500;
             color: #1a2639;
         }
 
-        /* Address paragraphs */
-        .detail-card p {
-            font-size: 0.75rem;
-            margin-bottom: 0;
-        }
-
-        /* Tables - salary & projects */
         .table th,
         .table td {
             font-size: 0.75rem;
@@ -248,7 +223,6 @@
             font-weight: 500;
         }
 
-        /* Info rows (used in Education/Bank) */
         .info-row {
             padding: 0.5rem 0;
             border-bottom: 1px solid #f1f5f9;
@@ -271,7 +245,10 @@
             color: #1a2639;
         }
 
-        /* Responsive */
+        .badge-status-active { background: #e2f3e4; color: #1a7a3a; }
+        .badge-status-inactive { background: #ffe8e8; color: #b13e3e; }
+        .badge-status-deleted { background: #eef0f2; color: #5e6f7e; }
+
         @media (max-width: 768px) {
             .page-header {
                 flex-direction: column;
@@ -326,81 +303,66 @@
     </div>
 
     <!-- ========================================================= -->
-    <!-- PROFILE HEADER CARD (single card, 3 columns)              -->
+    <!-- PROFILE HEADER CARD                                       -->
     <!-- ========================================================= -->
     <div class="profile-header-card">
         <div class="row align-items-center">
 
-            <!-- LEFT: Profile Photo + Name + User ID (reduced to col-md-2) -->
+            <!-- LEFT: Profile Photo + Name + User ID -->
             <div class="col-md-2 text-center">
-                <img th:if="${profile.photo != null}"
-                     th:src="'/uploads/' + ${profile.photo}"
+                <img th:if="${employee.photo != null}"
+                     th:src="'/uploads/' + ${employee.photo}"
                      class="profile-photo" alt="Profile">
-                <div th:unless="${profile.photo != null}"
+                <div th:unless="${employee.photo != null}"
                      class="profile-placeholder mx-auto"
-                     th:text="${#strings.substring(profile.fullName, 0, 1)}">E</div>
-                <h6 class="mt-2 mb-0 fw-semibold" th:text="${profile.fullName}">John Doe</h6>
-                <span class="user-id-badge" th:text="${profile.userId}">EMP-001</span>
+                     th:text="${#strings.substring(employee.fullName, 0, 1)}">E</div>
+                <h6 class="mt-2 mb-0 fw-semibold" th:text="${employee.fullName}">John Doe</h6>
+                <span class="user-id-badge" th:text="${employee.userId}">EMP-001</span>
+                <div class="mt-1">
+                    <span th:if="${employee.employeeStatus == 'ACTIVE'}" class="badge badge-status-active" th:text="${employee.employeeStatus}">ACTIVE</span>
+                    <span th:if="${employee.employeeStatus == 'INACTIVE'}" class="badge badge-status-inactive" th:text="${employee.employeeStatus}">INACTIVE</span>
+                    <span th:if="${employee.employeeStatus == 'DELETED'}" class="badge badge-status-deleted" th:text="${employee.employeeStatus}">DELETED</span>
+                    <span th:if="${employee.employeeStatus == null}" class="badge badge-status-active" th:text="'ACTIVE'">ACTIVE</span>
+                </div>
             </div>
 
-            <!-- MIDDLE: Basic details in compact grid (expanded to col-md-6) -->
+            <!-- MIDDLE: Basic details -->
             <div class="col-md-6">
                 <div class="row g-1">
-                    <!-- Row 1: Full Name, Email, Designation -->
                     <div class="col-4 basic-detail-item">
                         <span class="label">Full Name</span>
-                        <span class="value" th:text="${profile.fullName}"></span>
+                        <span class="value" th:text="${employee.fullName}"></span>
                     </div>
                     <div class="col-4 basic-detail-item">
                         <span class="label">Email</span>
-                        <span class="value" th:text="${profile.email}"></span>
+                        <span class="value" th:text="${employee.email}"></span>
                     </div>
                     <div class="col-4 basic-detail-item">
                         <span class="label">Designation</span>
-                        <span class="value" th:text="${profile.designation}"></span>
+                        <span class="value" th:text="${employee.designation}"></span>
                     </div>
-                    <!-- Row 2: Phone, DOB, Department -->
                     <div class="col-4 basic-detail-item">
                         <span class="label">Phone</span>
-                        <span class="value" th:text="${profile.phoneNumber}"></span>
-                    </div>
-                    <div class="col-4 basic-detail-item">
-                        <span class="label">DOB</span>
-                        <span class="value" th:text="${profile.dob != null ? #temporals.format(profile.dob, 'dd-MM-yyyy') : 'N/A'}"></span>
+                        <span class="value" th:text="${employee.phoneNumber}"></span>
                     </div>
                     <div class="col-4 basic-detail-item">
                         <span class="label">Department</span>
-                        <span class="value" th:text="${profile.department}"></span>
-                    </div>
-                    <!-- Row 3: Gender, Blood Group, Marital Status -->
-                    <div class="col-4 basic-detail-item">
-                        <span class="label">Gender</span>
-                        <span class="value" th:text="${profile.gender}"></span>
+                        <span class="value" th:text="${employee.departmentName}"></span>
                     </div>
                     <div class="col-4 basic-detail-item">
-                        <span class="label">Blood</span>
-                        <span class="value" th:text="${profile.bloodGroup}"></span>
-                    </div>
-                    <div class="col-4 basic-detail-item">
-                        <span class="label">Marital</span>
-                        <span class="value" th:text="${profile.maritalStatus}"></span>
-                    </div>
-                    <!-- Row 4: Status (full width) -->
-                    <div class="col-12 basic-detail-item">
                         <span class="label">Status</span>
-                        <span class="value" th:text="${profile.status}"></span>
+                        <span class="value" th:text="${employee.employeeStatus}"></span>
                     </div>
                 </div>
             </div>
 
-            <!-- RIGHT: Chart with dummy data + summary stats (unchanged, col-md-4) -->
+            <!-- RIGHT: Chart -->
             <div class="col-md-4">
                 <div class="d-flex justify-content-between mb-1">
                     <span class="fw-semibold" style="font-size:0.8rem;">
                         <i class="fa-solid fa-chart-bar me-1" style="color:#2a6df4;"></i> Monthly Net Salary
                     </span>
                 </div>
-                <!-- Summary stats -->
                 <div class="row g-1 mb-2">
                     <div class="col-3">
                         <div class="stat-box">
@@ -427,7 +389,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- Chart canvas (dummy data) -->
                 <div class="chart-container">
                     <canvas id="dummySalaryChart"></canvas>
                 </div>
@@ -435,116 +396,66 @@
 
         </div>
     </div>
+
     <!-- ========================================================= -->
-    <!-- END PROFILE HEADER CARD                                   -->
+    <!-- SALARY DETAILS (Using DTO fields)                         -->
     <!-- ========================================================= -->
-
-    <!-- ===== Education & Bank Details (two columns) ===== -->
-    <div class="row">
-        <div class="col-md-6">
-            <div class="detail-card">
-                <h5><i class="fa-solid fa-graduation-cap"></i> Education</h5>
-                <div class="info-row"><span class="detail-label">Field of Study</span> <span class="value" th:text="${profile.fieldOfStudy}"></span></div>
-                <div class="info-row"><span class="detail-label">Highest Qualification</span> <span class="value" th:text="${profile.highestQualification}"></span></div>
-                <div class="info-row"><span class="detail-label">University</span> <span class="value" th:text="${profile.university}"></span></div>
-                <div class="info-row"><span class="detail-label">Passing Year</span> <span class="value" th:text="${profile.passingYear}"></span></div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="detail-card">
-                <h5><i class="fa-solid fa-building-columns"></i> Bank Details</h5>
-                <div class="info-row"><span class="detail-label">Bank Name</span> <span class="value" th:text="${profile.bankName}"></span></div>
-                <div class="info-row"><span class="detail-label">Account Holder</span> <span class="value" th:text="${profile.accountHolderName}"></span></div>
-                <div class="info-row"><span class="detail-label">Account Number</span> <span class="value" th:text="${profile.accountNumber}"></span></div>
-                <div class="info-row"><span class="detail-label">IFSC Code</span> <span class="value" th:text="${profile.ifscCode}"></span></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ===== Salary History ===== -->
     <div class="detail-card">
-        <h5><i class="fa-solid fa-money-bill-wave"></i> Salary History</h5>
-        <div th:if="${details.salaries != null && !details.salaries.isEmpty()}">
-            <div class="table-responsive">
-                <table class="table table-sm table-striped">
-                    <thead>
-                    <tr>
-                        <th>Month</th><th>Year</th><th>Basic</th><th>HRA</th>
-                        <th>Allowance</th><th>Bonus</th><th>Deductions</th>
-                        <th>Gross</th><th>Net</th><th>Status</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="sal : ${details.salaries}">
-                        <td th:text="${sal.month}">Jan</td>
-                        <td th:text="${sal.year}">2025</td>
-                        <td th:text="${#numbers.formatDecimal(sal.basicSalary, 0, 2)}">0</td>
-                        <td th:text="${#numbers.formatDecimal(sal.hra, 0, 2)}">0</td>
-                        <td th:text="${#numbers.formatDecimal(sal.allowance, 0, 2)}">0</td>
-                        <td th:text="${#numbers.formatDecimal(sal.bonus, 0, 2)}">0</td>
-                        <td th:text="${#numbers.formatDecimal(sal.deductions, 0, 2)}">0</td>
-                        <td th:text="${#numbers.formatDecimal(sal.grossSalary, 0, 2)}">0</td>
-                        <td th:text="${#numbers.formatDecimal(sal.netSalary, 0, 2)}">0</td>
-                        <td>
-                            <span class="badge" th:classappend="${sal.paymentStatus == 'Paid' ? 'bg-success' : 'bg-warning'}"
-                                  th:text="${sal.paymentStatus}">Paid</span>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div th:unless="${details.salaries != null && !details.salaries.isEmpty()}">
-            <p class="text-muted">No salary records found.</p>
+        <h5><i class="fa-solid fa-money-bill-wave"></i> Salary Details</h5>
+        <div class="table-responsive">
+            <table class="table table-sm table-striped">
+                <thead>
+                <tr>
+                    <th>Component</th>
+                    <th>Amount</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td><strong>Basic Salary</strong></td>
+                    <td th:text="'₹ ' + ${#numbers.formatDecimal(employee.basicSalary, 0, 2)}">₹ 0.00</td>
+                </tr>
+                <tr>
+                    <td><strong>Net Salary</strong></td>
+                    <td th:text="'₹ ' + ${#numbers.formatDecimal(employee.netSalary, 0, 2)}">₹ 0.00</td>
+                </tr>
+                <tr>
+                    <td><strong>Salary Status</strong></td>
+                    <td>
+                        <span th:if="${employee.salaryStatus == 'PAID'}" class="badge bg-success" th:text="${employee.salaryStatus}">PAID</span>
+                        <span th:if="${employee.salaryStatus == 'UNPAID'}" class="badge bg-warning" th:text="${employee.salaryStatus}">UNPAID</span>
+                        <span th:if="${employee.salaryStatus == 'PENDING'}" class="badge bg-info" th:text="${employee.salaryStatus}">PENDING</span>
+                        <span th:if="${employee.salaryStatus == null}" class="badge bg-secondary" th:text="'N/A'">N/A</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 
-    <!-- ===== Projects ===== -->
+    <!-- ========================================================= -->
+    <!-- CURRENT PROJECT (Using DTO fields)                        -->
+    <!-- ========================================================= -->
     <div class="detail-card">
-        <h5><i class="fa-solid fa-folder-open"></i> Assigned Projects</h5>
-        <div th:if="${details.projects != null && !details.projects.isEmpty()}">
-            <div class="table-responsive">
-                <table class="table table-sm table-striped">
-                    <thead>
-                    <tr>
-                        <th>Project Name</th><th>Client</th><th>Type</th>
-                        <th>Total Cost</th><th>Onboarding Date</th><th>Status</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="proj : ${details.projects}">
-                        <td th:text="${proj.projectName}">Project X</td>
-                        <td th:text="${proj.clientName}">Client</td>
-                        <td th:text="${proj.projectType}">Type</td>
-                        <td th:text="${#numbers.formatDecimal(proj.totalCost, 0, 2)}">0.0</td>
-                        <td th:text="${proj.onboardingDate != null ? #temporals.format(proj.onboardingDate, 'dd-MM-yyyy') : 'N/A'}">N/A</td>
-                        <td>
-                            <span class="badge" th:classappend="${proj.status.name()} == 'ACTIVE' ? 'bg-success' : 'bg-secondary'"
-                                  th:text="${proj.status}">ACTIVE</span>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div th:unless="${details.projects != null && !details.projects.isEmpty()}">
-            <p class="text-muted">No projects assigned.</p>
-        </div>
-    </div>
-
-    <!-- ===== Addresses ===== -->
-    <div class="row">
-        <div class="col-md-6">
-            <div class="detail-card">
-                <h5><i class="fa-solid fa-location-dot"></i> Current Address</h5>
-                <p th:text="${profile.currentAddress}">Address here</p>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="detail-card">
-                <h5><i class="fa-solid fa-location-dot"></i> Permanent Address</h5>
-                <p th:text="${profile.permanentAddress}">Address here</p>
-            </div>
+        <h5><i class="fa-solid fa-folder-open"></i> Current Project</h5>
+        <div class="table-responsive">
+            <table class="table table-sm table-striped">
+                <thead>
+                <tr>
+                    <th>Project Name</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td th:text="${employee.currentProject}">Active Project</td>
+                    <td>
+                        <span th:if="${employee.currentProject != null && employee.currentProject != 'No Active Project'}" class="badge bg-success">ACTIVE</span>
+                        <span th:if="${employee.currentProject == null || employee.currentProject == 'No Active Project'}" class="badge bg-secondary">N/A</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 
