@@ -106,11 +106,11 @@ public class AdminTimesheetController {
 
         // Get all employees with their timesheet status
         List<EmployeeTimesheetDTO> allEmployees = timesheetService.getAllEmployeesWithZeroIncluded();
-
+        List<EmployeeTimesheetDTO> all_employee=timesheetService.getAllEmployees();
         System.out.println("Total Employees : " + allEmployees.size());
 
         // Split employees into two lists
-        List<EmployeeTimesheetDTO> submittedEmployees = allEmployees.stream()
+        List<EmployeeTimesheetDTO> submittedEmployees = all_employee.stream()
                 .filter(emp -> emp.getTimesheetCount() > 0)
                 .collect(Collectors.toList());
 
