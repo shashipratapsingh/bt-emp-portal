@@ -8,10 +8,12 @@ import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.List;
 
 @Entity
@@ -24,6 +26,7 @@ public class EmployeeProfile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
 
     @Column(name = "user_id", unique = true, nullable = false)
     private String userId;
@@ -56,6 +59,8 @@ public class EmployeeProfile {
     private LocalDate dob;
 
     private String gender;
+
+    @Column(name = "blood_group")
     private String bloodGroup;
 
     @NotBlank(message = "Email is required")
@@ -142,4 +147,7 @@ public class EmployeeProfile {
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
+    // Relationship with Timesheet (One-to-Many)
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
+    private List<Timesheet> timesheets;
 }

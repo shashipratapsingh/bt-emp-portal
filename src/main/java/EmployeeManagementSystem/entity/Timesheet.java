@@ -62,4 +62,8 @@ public class Timesheet {
 
     @Column(name = "project_name")
     private String projectName;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "employee_profile_id")
+    private EmployeeProfile employee;
 }

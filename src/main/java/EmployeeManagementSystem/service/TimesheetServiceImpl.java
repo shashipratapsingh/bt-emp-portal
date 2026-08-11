@@ -62,18 +62,24 @@
 package EmployeeManagementSystem.service;
 
 import EmployeeManagementSystem.dto.EmployeeTimesheetDTO;
+import EmployeeManagementSystem.entity.EmployeeProfile;
 import EmployeeManagementSystem.entity.Timesheet;
+import EmployeeManagementSystem.repository.EmployeeProfileRepository;
 import EmployeeManagementSystem.repository.TimesheetRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class TimesheetServiceImpl implements TimesheetService {
 
     private final TimesheetRepository repository;
+    private final EmployeeProfileRepository employeeProfileRepository;
 
     @Override
     public Timesheet saveTimesheet(Timesheet timesheet) {
@@ -94,9 +100,82 @@ public class TimesheetServiceImpl implements TimesheetService {
      * Returns one record per employee
      * (Used in Admin Employee List Page)
      */
-    @Override
+    // Get all employees with their timesheet count
     public List<EmployeeTimesheetDTO> getAllEmployees() {
-        return repository.getAllEmployees();
+        List<Timesheet> allTimesheets = repository.findAll();
+
+        // Group by employeeId and count
+        Map<String, Long> employeeTimesheetCount = allTimesheets.stream()
+                .collect(Collectors.groupingBy(
+                        Timesheet::getEmployeeId,
+                        Collectors.counting()
+                ));
+
+        // Get unique employees with their count
+        List<EmployeeTimesheetDTO> employees = new ArrayList<>();
+
+        // Get all unique employee IDs from timesheets
+        allTimesheets.stream()
+                .map(Timesheet::getEmployeeId)
+                .distinct()
+                .forEach(empId -> {
+                    // Get first timesheet for employee name
+                    Timesheet sample = allTimesheets.stream()
+                            .filter(t -> t.getEmployeeId().equals(empId))
+                            .findFirst()
+                            .orElse(null);
+
+                    if (sample != null) {
+                        EmployeeTimesheetDTO dto = new EmployeeTimesheetDTO();
+                        dto.setEmployeeId(empId);
+                        dto.setEmployeeName(sample.getEmployeeName());
+                        dto.setTimesheetCount(employeeTimesheetCount.get(empId).intValue());
+                        employees.add(dto);
+                    }
+                });
+
+        // Note: This only includes employees who have at least one timesheet.
+        // For employees with zero timesheets, you need to get from Employee table.
+        // See alternative approach below.
+
+        return employees;
+    }
+
+    // =====================================================
+    // METHOD 2: Saare employees (including zero timesheet wale)
+    // Yeh "Alternative Approach" hai
+    // =====================================================
+    public List<EmployeeTimesheetDTO> getAllEmployeesWithZeroIncluded() {
+
+        List<EmployeeProfile> allEmployees = employeeProfileRepository.findAll();
+        List<Timesheet> allTimesheets = repository.findAll();
+
+        // Timesheet count by employeeId
+        Map<String, Long> timesheetCountMap = allTimesheets.stream()
+                .filter(t -> t.getEmployeeId() != null)
+                .collect(Collectors.groupingBy(
+                        t -> t.getEmployeeId().trim().toUpperCase(),
+                        Collectors.counting()
+                ));
+
+        List<EmployeeTimesheetDTO> result = new ArrayList<>();
+
+        for (EmployeeProfile emp : allEmployees) {
+            EmployeeTimesheetDTO dto = new EmployeeTimesheetDTO();
+            dto.setEmployeeId(emp.getUserId());
+            dto.setEmployeeName(emp.getFullName());
+
+            String key = emp.getUserId() == null
+                    ? ""
+                    : emp.getUserId().trim().toUpperCase();
+
+            int count = timesheetCountMap.getOrDefault(key, 0L).intValue();
+            dto.setTimesheetCount(count);
+
+            result.add(dto);
+        }
+
+        return result;
     }
 
     @Override
