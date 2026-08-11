@@ -67,6 +67,7 @@ import EmployeeManagementSystem.entity.Timesheet;
 import EmployeeManagementSystem.repository.EmployeeProfileRepository;
 import EmployeeManagementSystem.repository.TimesheetRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -76,6 +77,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TimesheetServiceImpl implements TimesheetService {
 
     private final TimesheetRepository repository;
@@ -147,10 +149,12 @@ public class TimesheetServiceImpl implements TimesheetService {
     // Yeh "Alternative Approach" hai
     // =====================================================
     public List<EmployeeTimesheetDTO> getAllEmployeesWithZeroIncluded() {
-
+        log.info("Fetching all employee and Timesheet");
         List<EmployeeProfile> allEmployees = employeeProfileRepository.findAll();
         List<Timesheet> allTimesheets = repository.findAll();
 
+        log.info("Total Employees found: {}",allEmployees.size());
+        log.info("Total Timesheets found: {}",allTimesheets.size());
         // Timesheet count by employeeId
         Map<String, Long> timesheetCountMap = allTimesheets.stream()
                 .filter(t -> t.getEmployeeId() != null)
@@ -158,6 +162,7 @@ public class TimesheetServiceImpl implements TimesheetService {
                         t -> t.getEmployeeId().trim().toUpperCase(),
                         Collectors.counting()
                 ));
+        log.info("Total Timesheet count: {}",timesheetCountMap);
 
         List<EmployeeTimesheetDTO> result = new ArrayList<>();
 
