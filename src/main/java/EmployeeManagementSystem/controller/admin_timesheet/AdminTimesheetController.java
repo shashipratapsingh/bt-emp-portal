@@ -76,6 +76,7 @@
 package EmployeeManagementSystem.controller.admin_timesheet;
 
 import EmployeeManagementSystem.dto.EmployeeTimesheetDTO;
+import EmployeeManagementSystem.entity.Employee;
 import EmployeeManagementSystem.entity.Timesheet;
 import EmployeeManagementSystem.service.TimesheetService;
 import lombok.RequiredArgsConstructor;
@@ -124,6 +125,15 @@ public class AdminTimesheetController {
         model.addAttribute("pendingEmployees", pendingEmployees);
 
         return "admin/timesheet-management/all-timesheet";
+    }
+    @GetMapping("/view")
+    public String viewTimesheet(Model model){
+        List<EmployeeTimesheetDTO> allTimesheet=timesheetService.getAllEmployees();
+        List<EmployeeTimesheetDTO> submittedEmployees=allTimesheet.stream()
+                .filter(emp -> emp.getTimesheetCount() > 0)
+                .collect(Collectors.toList());
+        model.addAttribute("submittedEmployees",submittedEmployees);
+        return "admin/timesheet-management/view-employeeTimesheet";
     }
     // =====================================================
     // Display All Timesheets of Selected Employee
