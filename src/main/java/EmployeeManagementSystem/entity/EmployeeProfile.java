@@ -9,6 +9,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "employee_profiles")
@@ -132,4 +133,7 @@ public class EmployeeProfile {
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
+    // Relationship with Timesheet (One-to-Many)
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
+    private List<Timesheet> timesheets;
 }

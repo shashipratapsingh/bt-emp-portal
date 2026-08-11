@@ -85,6 +85,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin/timesheets")
@@ -100,17 +101,30 @@ public class AdminTimesheetController {
     @GetMapping("/all")
     public String showAllEmployees(Model model) {
 
-        System.out.println("========== Employee List ==========");
+        System.out.println("========== Employee Timesheet Status ==========");
 
-        List<EmployeeTimesheetDTO> employees = timesheetService.getAllEmployees();
+        // Get all employees with their timesheet status
+        List<EmployeeTimesheetDTO> allEmployees = timesheetService.getAllEmployeesWithZeroIncluded();
 
-        System.out.println("Total Employees : " + employees.size());
+        System.out.println("Total Employees : " + allEmployees.size());
 
-        model.addAttribute("employees", employees);
+        // Split employees into two lists
+        List<EmployeeTimesheetDTO> submittedEmployees = allEmployees.stream()
+                .filter(emp -> emp.getTimesheetCount() > 0)
+                .collect(Collectors.toList());
+
+        List<EmployeeTimesheetDTO> pendingEmployees = allEmployees.stream()
+                .filter(emp -> emp.getTimesheetCount() == 0)
+                .collect(Collectors.toList());
+
+        System.out.println("Employees with Timesheet : " + submittedEmployees.size());
+        System.out.println("Employees without Timesheet : " + pendingEmployees.size());
+
+        model.addAttribute("submittedEmployees", submittedEmployees);
+        model.addAttribute("pendingEmployees", pendingEmployees);
 
         return "admin/timesheet-management/all-timesheet";
     }
-
     // =====================================================
     // Display All Timesheets of Selected Employee
     // URL : /admin/timesheets/view/EMP0004

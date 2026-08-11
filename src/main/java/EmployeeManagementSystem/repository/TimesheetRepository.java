@@ -144,14 +144,15 @@ public interface TimesheetRepository extends JpaRepository<Timesheet, Long> {
      * Display One Employee Only (No Duplicate Employee IDs)
      */
     @Query("""
-        SELECT new EmployeeManagementSystem.dto.EmployeeTimesheetDTO(
-            t.employeeId,
-            t.employeeName
-        )
-        FROM Timesheet t
-        GROUP BY t.employeeId, t.employeeName
-        ORDER BY t.employeeName
-    """)
+    SELECT new EmployeeManagementSystem.dto.EmployeeTimesheetDTO(
+        t.employeeId,
+        t.employeeName,
+        COUNT(t)
+    )
+    FROM Timesheet t
+    GROUP BY t.employeeId, t.employeeName
+    ORDER BY t.employeeName
+""")
     List<EmployeeTimesheetDTO> getAllEmployees();
 
     Optional<Timesheet> findById(Long id);

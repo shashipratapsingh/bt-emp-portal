@@ -70,4 +70,5 @@ public interface TimesheetService {
       * Get All Timesheets of Selected Employee
       */
      List<Timesheet> getTimesheetsByEmployeeId(String employeeId);
+     List<EmployeeTimesheetDTO> getAllEmployeesWithZeroIncluded();
 }
