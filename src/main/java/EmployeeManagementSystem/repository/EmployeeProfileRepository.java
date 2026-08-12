@@ -79,4 +79,59 @@ public interface EmployeeProfileRepository extends JpaRepository<EmployeeProfile
     Page<EmployeeProfile> findByFilters(@Param("department") String department,
                                         @Param("status") String status,
                                         Pageable pageable);
+
+
+    @Query("SELECT DISTINCT ep.department FROM EmployeeProfile ep WHERE ep.department IS NOT NULL AND ep.department != ''")
+    List<String> findAllDepartments();
+
+
+    @Query("""
+    SELECT ep
+    FROM EmployeeProfile ep
+    WHERE ep.department = :department
+    AND ep.designation IN :designations
+    """)
+    List<EmployeeProfile> findReportingManagers(
+            @Param("department") String department,
+            @Param("designations") List<String> designations
+    );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//    @Query("SELECT DISTINCT ep FROM EmployeeProfile ep " +
+//            "LEFT JOIN FETCH ep.salaryStructure ss " +
+//            "LEFT JOIN FETCH ep.projects p " +
+//            "LEFT JOIN FETCH ep.employee e " +
+//            "LEFT JOIN FETCH e.department d " +
+//            "WHERE ep.id = :id")
+//    Optional<EmployeeProfile> findByIdWithAllDetails(@Param("id") Long id);
+//
+//    @Query("SELECT DISTINCT ep FROM EmployeeProfile ep " +
+//            "LEFT JOIN ep.salaryStructure ss " +
+//            "LEFT JOIN ep.projects p " +
+//            "LEFT JOIN ep.employee e " +
+//            "LEFT JOIN e.department d " +
+//            "WHERE (:keyword IS NULL OR LOWER(ep.fullName) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+//            "OR LOWER(ep.email) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+//            "OR LOWER(ep.userId) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
+//            "AND (:departmentId IS NULL OR e.department.id = :departmentId) " +
+//            "AND (:status IS NULL OR ep.status = :status)")
+//    Page<EmployeeProfile> searchEmployeeProfiles(@Param("keyword") String keyword,
+//                                                 @Param("departmentId") Long departmentId,
+//                                                 @Param("status") String status,
+//                                                 Pageable pageable);

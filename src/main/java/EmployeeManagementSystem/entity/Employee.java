@@ -88,6 +88,12 @@ public class Employee {
 
 
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reporting_manager_id")
+    private Employee reportingManager;
+
+
+
     public Employee(){
 
     }
