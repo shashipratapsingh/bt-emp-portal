@@ -1,13 +1,20 @@
 package EmployeeManagementSystem.controller;
 
 import EmployeeManagementSystem.dto.EmployeeCredentialsDTO;
+//import EmployeeManagementSystem.dto.EmployeeHierarchyDTO;
+import EmployeeManagementSystem.dto.EmployeeHierarchyDTO;
 import EmployeeManagementSystem.entity.Department;
 import EmployeeManagementSystem.entity.Employee;
 import EmployeeManagementSystem.entity.EmployeeProfile;
+import EmployeeManagementSystem.entity.RegisterEmployee;
 import EmployeeManagementSystem.kafkaConfig.EmployeeEvent;
 import EmployeeManagementSystem.kafkaConfig.EmployeeProducer;
+import EmployeeManagementSystem.repository.EmployeeProfileRepository;
 import EmployeeManagementSystem.repository.EmployeeRepository;
+import EmployeeManagementSystem.repository.RegisterEmployeeRepository;
 import EmployeeManagementSystem.service.DepartmentService;
+//import EmployeeManagementSystem.service.EmployeeHierarchyService;
+import EmployeeManagementSystem.service.EmployeeHierarchyService;
 import EmployeeManagementSystem.service.EmployeeProfileServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +34,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -38,6 +46,9 @@ public class EmployeeProfileController {
     private final EmployeeProfileServiceImpl employeeProfileService;
     private final DepartmentService departmentService;
     private final EmployeeRepository employeeRepository;
+    private final EmployeeHierarchyService hierarchyService;
+    private final EmployeeProfileRepository employeeProfileRepository;
+    private  final RegisterEmployeeRepository registerEmployeeRepository;
 
     @Autowired
     private EmployeeProducer employeeProducer;
@@ -286,41 +297,91 @@ public class EmployeeProfileController {
      * Helper method to create an Employee entity from an EmployeeProfile.
      */
     private Employee createAndSaveEmployee(EmployeeProfile profile) {
+
         Employee employee = new Employee();
 
-        // Link the profile
         employee.setProfile(profile);
 
-        // Copy basic fields
-//        String fullName = profile.getFullName();
-        employee.setFullName(profile.getFullName());
-        employee.setEmail(profile.getEmail());
 
-        // Parse date of birth (profile stores as String)
-//        if (profile.getDob() != null && !(profile.getDob() != null)) {
-//            try {
-//                LocalDate dob = profile.getDob();
-//                employee.setDateOfBirth(dob);
-//            } catch (DateTimeParseException e) {
-//                // fallback: try other formats if needed, or set to null
-//                employee.setDateOfBirth(null);
-//            }
-//        }
-        employee.setDateOfBirth(profile.getDob());
+        employee.setFullName(
+                profile.getFullName()
+        );
 
-        // Set joining date to today (or you can use a default)
-        employee.setJoiningDate(LocalDate.now());
+        employee.setEmail(
+                profile.getEmail()
+        );
 
-        // Map department string to Department entity
-        if (profile.getDepartment() != null && !profile.getDepartment().isEmpty()) {
-            Department dept = departmentService.findByDepartmentName(profile.getDepartment());
-            employee.setDepartment(dept); // may be null if not found
+        employee.setPhone(
+                profile.getPhoneNumber()
+        );
+
+
+        employee.setDateOfBirth(
+                profile.getDob()
+        );
+
+        employee.setJoiningDate(
+                LocalDate.now()
+        );
+
+
+        // ============================================================
+        // DEPARTMENT
+        // ============================================================
+
+        if (
+                profile.getDepartment() != null &&
+                        !profile.getDepartment().isBlank()
+        ) {
+
+            Department department =
+                    departmentService.findByDepartmentName(
+                            profile.getDepartment()
+                    );
+
+            if (department == null) {
+
+                throw new RuntimeException(
+                        "Department not found: "
+                                + profile.getDepartment()
+                );
+            }
+
+            employee.setDepartment(
+                    department
+            );
         }
 
-        // Set other fields as needed (workMode, phone, etc.)
-        employee.setPhone(profile.getPhoneNumber());
 
-        // Save and return
+        // ============================================================
+        // REPORTING MANAGER
+        // ============================================================
+
+        if (
+                profile.getReportingManager() != null
+        ) {
+
+            Employee reportingManager =
+                    employeeRepository.findById(
+                                    profile.getReportingManager().getId()
+                            )
+                            .orElseThrow(() ->
+                                    new RuntimeException(
+                                            "Reporting Manager not found with ID: "
+                                                    + profile.getReportingManager()
+                                    )
+                            );
+
+            employee.setReportingManager(
+                    reportingManager
+            );
+        }
+
+
+        // ============================================================
+        // SAVE
+        // ============================================================
+
         return employeeRepository.save(employee);
     }
 
@@ -451,4 +512,40 @@ public class EmployeeProfileController {
         }
         return "redirect:/admin/employees/list";
     }
+
+//    @GetMapping("/employee-hierarchy")
+//    public String employeeHierarchy() {
+//        return "admin/employee-hierarchy/employee-hierarchy";
+//    }
+
+
+    @GetMapping("/employee-hierarchy")
+    public String employeeHierarchy(Model model) {
+
+        List<EmployeeHierarchyDTO> hierarchy =
+                hierarchyService.getEmployeeHierarchy();
+
+        if (hierarchy == null) {
+            hierarchy = new ArrayList<>();
+        }
+
+        model.addAttribute("hierarchy", hierarchy);
+
+        return "admin/employee-hierarchy/employee-hierarchy";
+    }
+
+
+
+
+
+
+
+    @GetMapping("/reporting-managers")
+    @ResponseBody
+    public List<RegisterEmployee> getReportingManagers(@RequestParam String department) {
+
+        return registerEmployeeRepository.findReportingManagers(department);
+    }
+
+
 }
