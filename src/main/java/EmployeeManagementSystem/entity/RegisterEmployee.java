@@ -22,6 +22,7 @@ public class RegisterEmployee {
     private LocalDateTime otpExpiryTime;
     private String designation;
 
-
+    @OneToOne(mappedBy = "registerEmployee",cascade=CascadeType.ALL,fetch = FetchType.LAZY)
+    private Employee employee;
 
 }

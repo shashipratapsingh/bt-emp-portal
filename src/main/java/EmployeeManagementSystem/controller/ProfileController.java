@@ -23,6 +23,10 @@ public class ProfileController {
         Authentication auth=SecurityContextHolder.getContext().getAuthentication();
         String currentEmplId=auth. getName();
         EmployeeProfile profile = service.getProfileByUserId(currentEmplId);
+        if (profile == null) {
+            profile = new EmployeeProfile();
+            profile.setUserId(currentEmplId);
+        }
         model.addAttribute("profile",profile);
         return "profile-view";
     }

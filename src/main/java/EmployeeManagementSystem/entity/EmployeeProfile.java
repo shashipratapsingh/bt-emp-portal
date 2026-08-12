@@ -31,8 +31,12 @@ public class EmployeeProfile {
     @Column(name = "user_id", unique = true, nullable = false)
     private String userId;
 
-    // One-to-One with Employee (existing)
-    @OneToOne(mappedBy = "profile", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    // One-to-One with Employee (existing)
+//    @OneToOne(mappedBy = "profile", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    private Employee employee;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "employee_id", unique = true)
     private Employee employee;
 
     // ===== DIRECT MAPPING TO SALARY STRUCTURE =====

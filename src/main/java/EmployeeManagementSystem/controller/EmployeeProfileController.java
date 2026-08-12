@@ -289,7 +289,7 @@ public class EmployeeProfileController {
         Employee employee = new Employee();
 
         // Link the profile
-        employee.setProfile(profile);
+        employee.setEmployeeProfile(profile);
 
         // Copy basic fields
 //        String fullName = profile.getFullName();
