@@ -1,0 +1,1399 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en"-->
+<!--      xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">-->
+
+<!--<head>-->
+
+<!--    <meta charset="UTF-8">-->
+
+<!--    <meta name="viewport"-->
+<!--          content="width=device-width, initial-scale=1.0">-->
+
+<!--    <title>Employee Hierarchy</title>-->
+
+<!--    <style>-->
+
+<!--        /* =====================================================-->
+<!--    RESET-->
+<!--    ===================================================== */-->
+
+<!-- * {-->
+<!--   margin: 0;-->
+<!--   padding: 0;-->
+<!--   box-sizing: border-box;-->
+<!-- }-->
+
+
+<!-- /* =====================================================-->
+<!--    BODY-->
+<!--    ===================================================== */-->
+
+<!-- body {-->
+<!--   font-family: Arial, sans-serif;-->
+<!--   background: #f5f7fa;-->
+<!--   min-height: 100vh;-->
+<!-- }-->
+
+
+<!-- /* =====================================================-->
+<!--    THEME VARIABLES-->
+<!--    ===================================================== */-->
+
+<!-- .hierarchy-container {-->
+<!--   &#45;&#45;line-color: #6b7785;-->
+<!--   &#45;&#45;line-width: 2px;-->
+<!--   &#45;&#45;gap: 42px;      /* vertical distance between a card and the row below it */-->
+<!--   &#45;&#45;card-w: 150px;-->
+<!--   &#45;&#45;card-h: 46px;-->
+
+<!--   width: 100%;-->
+<!--   min-height: 100vh;-->
+
+<!--   padding: 70px 30px 50px;-->
+
+<!--   overflow-x: auto;-->
+<!--   overflow-y: hidden;-->
+
+<!--   text-align: center;-->
+<!-- }-->
+
+
+<!-- /* =====================================================-->
+<!--    TREE (root list)-->
+<!--    ===================================================== */-->
+
+<!-- .employee-tree {-->
+<!--   display: inline-flex;-->
+<!--   justify-content: center;-->
+
+<!--   position: relative;-->
+
+<!--   min-width: max-content;-->
+
+<!--   margin: 0 auto;-->
+<!--   padding: 0 0 50px;-->
+
+<!--   list-style: none;-->
+<!-- }-->
+
+
+<!-- /* =====================================================-->
+<!--    ALL UL (any nested child list)-->
+<!--    ===================================================== */-->
+
+<!-- .employee-tree ul {-->
+<!--   position: relative;-->
+
+<!--   display: flex;-->
+<!--   justify-content: center;-->
+<!--   align-items: flex-start;-->
+
+<!--   margin: 0;-->
+<!--   padding: var(&#45;&#45;gap) 0 0;   /* space the parent -> bar vertical line lives in */-->
+
+<!--   list-style: none;-->
+<!-- }-->
+
+
+<!-- /* =====================================================-->
+<!--    ALL LI-->
+<!--    ===================================================== */-->
+
+<!-- .employee-tree li {-->
+<!--   position: relative;-->
+
+<!--   display: flex;-->
+<!--   flex-direction: column;-->
+<!--   align-items: center;-->
+
+<!--   padding: var(&#45;&#45;gap) 14px 0;-->
+
+<!--   text-align: center;-->
+
+<!--   list-style: none;-->
+<!-- }-->
+
+<!-- /* Root-level li needs no incoming connector */-->
+<!-- .employee-tree > li {-->
+<!--   padding-top: 0;-->
+<!-- }-->
+
+
+<!-- /* =====================================================-->
+<!--    EMPLOYEE CARD-->
+<!--    ===================================================== */-->
+
+<!-- .employee-card {-->
+<!--   position: relative;-->
+<!--   z-index: 10;-->
+
+<!--   display: flex;-->
+<!--   align-items: center;-->
+<!--   justify-content: center;-->
+<!--   gap: 8px;-->
+
+<!--   width: var(&#45;&#45;card-w);-->
+<!--   height: var(&#45;&#45;card-h);-->
+
+<!--   padding: 0 12px;-->
+
+<!--   background: #0d6efd;-->
+<!--   color: #ffffff;-->
+
+<!--   border: 1px solid rgba(0, 0, 0, 0.06);-->
+<!--   border-radius: 8px;-->
+
+<!--   font-size: 16px;-->
+<!--   font-weight: 600;-->
+<!--   line-height: 1;-->
+<!--   white-space: nowrap;-->
+
+<!--   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);-->
+
+<!--   transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;-->
+<!-- }-->
+
+<!-- .employee-card:hover {-->
+<!--   transform: translateY(-2px);-->
+<!--   box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);-->
+<!-- }-->
+
+<!-- .employee-name {-->
+<!--   display: block;-->
+<!--   color: inherit;-->
+<!--   font-size: 16px;-->
+<!--   font-weight: 600;-->
+<!--   line-height: 1;-->
+<!--   white-space: nowrap;-->
+<!-- }-->
+
+<!-- .employee-designation {-->
+<!--   display: none;-->
+<!-- }-->
+
+
+<!-- /* =====================================================-->
+<!--    LEVEL / DEPARTMENT COLOURS-->
+<!--    ===================================================== */-->
+
+<!-- .employee-tree > li > .employee-card {                          /* Level 0: CEO */-->
+<!--   background: #0f172a;-->
+<!--   color: #ffffff;-->
+<!-- }-->
+
+<!-- .employee-tree > li > ul > li > .employee-card {                 /* Level 1 */-->
+<!--   background: #cfe6fb;-->
+<!--   color: #0b3556;-->
+<!-- }-->
+
+<!-- .employee-tree > li > ul > li > ul > li > .employee-card {       /* Level 2 */-->
+<!--   background: #ffe08a;-->
+<!--   color: #5c4400;-->
+<!-- }-->
+
+<!-- .employee-tree > li > ul > li > ul > li > ul > li > .employee-card {    /* Level 3 */-->
+<!--   background: #b9e6c4;-->
+<!--   color: #14532d;-->
+<!-- }-->
+
+<!-- .employee-tree > li > ul > li > ul > li > ul > li > ul > li > .employee-card { /* Level 4 */-->
+<!--   background: #dcc7f7;-->
+<!--   color: #3b0764;-->
+<!-- }-->
+
+<!-- .card-navy   { background: #0f172a !important; color: #ffffff !important; }-->
+<!-- .card-blue   { background: #cfe6fb !important; color: #0b3556 !important; }-->
+<!-- .card-green  { background: #b9e6c4 !important; color: #14532d !important; }-->
+<!-- .card-yellow { background: #ffe08a !important; color: #5c4400 !important; }-->
+<!-- .card-pink   { background: #fbc9cf !important; color: #7a1f2b !important; }-->
+<!-- .card-purple { background: #dcc7f7 !important; color: #3b0764 !important; }-->
+
+
+<!-- /* =====================================================-->
+<!--    CONNECTOR LINES-->
+<!--    -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;-->
+<!--    IMPORTANT: every single line below is drawn with-->
+<!--    `background` (a solid-colour block), never `border`.-->
+<!--    Border-based pseudo-elements were getting silently-->
+<!--    stripped somewhere in this page's stylesheet chain-->
+<!--    (theme/Bootstrap loaded after this block), which is-->
+<!--    why only the background-based stub lines were showing-->
+<!--    up before. Background fills don't have that problem.-->
+
+<!--      P-->
+<!--      |             <- (1) li > ul::before   (parent -> bar)-->
+<!--    ──┼──┬──         <- (2) li::before / li::after (bar halves)-->
+<!--    A    B    C-->
+<!--    |    |    |      <- (3) .employee-card::before (drop to card)-->
+<!--                     <- (4) .employee-card::after  (arrowhead, via clip-path)-->
+<!--    ===================================================== */-->
+
+
+<!-- /* -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;-->
+<!--    (1) PARENT -> BAR vertical line-->
+<!--    Drawn on the <ul> that holds the children.-->
+<!--    -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45; */-->
+
+<!-- .employee-tree li > ul::before {-->
+<!--   content: "";-->
+<!--   position: absolute;-->
+
+<!--   top: 0;-->
+<!--   left: 50%;-->
+
+<!--   width: var(&#45;&#45;line-width);-->
+<!--   height: var(&#45;&#45;gap);-->
+
+<!--   background: var(&#45;&#45;line-color);-->
+
+<!--   transform: translateX(-50%);-->
+<!--   z-index: 1;-->
+<!-- }-->
+
+
+<!-- /* -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;-->
+<!--    (2) HORIZONTAL BAR — each child draws its own half-->
+<!--    -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45; */-->
+
+<!-- .employee-tree li > ul > li::before,-->
+<!-- .employee-tree li > ul > li::after {-->
+<!--   content: "";-->
+<!--   position: absolute;-->
+
+<!--   top: 0;-->
+<!--   height: var(&#45;&#45;line-width);-->
+
+<!--   background: var(&#45;&#45;line-color);-->
+
+<!--   z-index: 1;-->
+<!-- }-->
+
+<!-- /* Left half: from the li's left edge to its own center */-->
+<!-- .employee-tree li > ul > li::before {-->
+<!--   left: 0;-->
+<!--   right: 50%;-->
+<!-- }-->
+
+<!-- /* Right half: from the li's own center to its right edge */-->
+<!-- .employee-tree li > ul > li::after {-->
+<!--   left: 50%;-->
+<!--   right: 0;-->
+<!-- }-->
+
+<!-- /* First child: nothing coming in from the left */-->
+<!-- .employee-tree li > ul > li:first-child::before {-->
+<!--   display: none;-->
+<!-- }-->
+
+<!-- /* Last child: nothing going out to the right */-->
+<!-- .employee-tree li > ul > li:last-child::after {-->
+<!--   display: none;-->
+<!-- }-->
+
+<!-- /* Only child: no horizontal bar at all (both rules above already-->
+<!--    cover this since an only-child is both first AND last, this is-->
+<!--    just an explicit safety net) */-->
+<!-- .employee-tree li > ul > li:only-child::before,-->
+<!-- .employee-tree li > ul > li:only-child::after {-->
+<!--   display: none;-->
+<!-- }-->
+
+
+<!-- /* -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;-->
+<!--    (3) DROP LINE — vertical line from the bar down to-->
+<!--    this child's own card. Applies to every child card,-->
+<!--    including only-children, which gives the "single-->
+<!--    straight line, parent to child" edge case for free.-->
+<!--    -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45; */-->
+
+<!-- .employee-tree li > ul > li > .employee-card::before {-->
+<!--   content: "";-->
+<!--   position: absolute;-->
+
+<!--   top: calc(-1 * var(&#45;&#45;gap));-->
+<!--   left: 50%;-->
+
+<!--   width: var(&#45;&#45;line-width);-->
+<!--   height: var(&#45;&#45;gap);-->
+
+<!--   background: var(&#45;&#45;line-color);-->
+
+<!--   transform: translateX(-50%);-->
+<!--   z-index: 1;-->
+<!-- }-->
+
+
+<!-- /* -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;-->
+<!--    (4) ARROWHEAD-->
+<!--    Built with clip-path + background (not border), so it-->
+<!--    isn't exposed to the same border-stripping issue.-->
+<!--    -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45; */-->
+
+<!-- .employee-tree li > ul > li > .employee-card::after {-->
+<!--   content: "";-->
+<!--   position: absolute;-->
+
+<!--   top: -7px;-->
+<!--   left: 50%;-->
+<!--   transform: translateX(-50%);-->
+
+<!--   width: 14px;-->
+<!--   height: 8px;-->
+
+<!--   background: var(&#45;&#45;line-color);-->
+<!--   clip-path: polygon(0 0, 100% 0, 50% 100%);-->
+
+<!--   z-index: 2;-->
+<!-- }-->
+
+<!-- /* Root card(s) have nothing pointing into them: no stub, no arrow */-->
+<!-- .employee-tree > li > .employee-card::before,-->
+<!-- .employee-tree > li > .employee-card::after {-->
+<!--   content: none;-->
+<!-- }-->
+
+
+<!-- /* =====================================================-->
+<!--    RESPONSIVE-->
+<!--    ===================================================== */-->
+
+<!-- @media (max-width: 768px) {-->
+
+<!--   .hierarchy-container {-->
+<!--     &#45;&#45;gap: 32px;-->
+<!--     &#45;&#45;card-w: 120px;-->
+<!--     &#45;&#45;card-h: 38px;-->
+
+<!--     padding: 40px 15px;-->
+<!--   }-->
+
+<!--   .employee-tree {-->
+<!--     padding-bottom: 30px;-->
+<!--   }-->
+
+<!--   .employee-card,-->
+<!--   .employee-name {-->
+<!--     font-size: 14px;-->
+<!--   }-->
+<!-- }-->
+
+
+<!-- @media (max-width: 480px) {-->
+
+<!--   .hierarchy-container {-->
+<!--     &#45;&#45;gap: 26px;-->
+<!--     &#45;&#45;card-w: 100px;-->
+<!--     &#45;&#45;card-h: 34px;-->
+
+<!--     padding: 25px 10px;-->
+<!--   }-->
+
+<!--   .employee-card,-->
+<!--   .employee-name {-->
+<!--     font-size: 13px;-->
+<!--   }-->
+
+<!--   .employee-tree li {-->
+<!--     padding-left: 6px;-->
+<!--     padding-right: 6px;-->
+<!--   }-->
+<!-- }-->
+
+
+<!--    </style>-->
+
+<!--</head>-->
+
+
+<!--<body>-->
+
+
+<!--&lt;!&ndash; =========================================================-->
+<!--     SIDEBAR-->
+<!--     Keep sidebar OUTSIDE hierarchy container-->
+<!--     ========================================================= &ndash;&gt;-->
+
+<!--<div th:replace="~{fragments/sidebar-admin :: sidebar-component}">-->
+<!--</div>-->
+
+
+
+<!--&lt;!&ndash; =========================================================-->
+<!--     EMPLOYEE HIERARCHY-->
+<!--     ========================================================= &ndash;&gt;-->
+
+<!--<div class="hierarchy-container">-->
+
+
+<!--    &lt;!&ndash; =====================================================-->
+<!--         DATABASE HIERARCHY-->
+<!--         ===================================================== &ndash;&gt;-->
+
+<!--    <ul class="employee-tree"-->
+<!--        th:if="${hierarchy != null and !hierarchy.isEmpty()}">-->
+
+
+<!--        &lt;!&ndash; =================================================-->
+<!--             ROOT EMPLOYEES-->
+<!--             ================================================= &ndash;&gt;-->
+
+<!--        <th:block th:each="employee : ${hierarchy}">-->
+
+
+<!--            <th:block-->
+<!--                    th:if="${employee != null}"-->
+<!--                    th:replace="~{fragments/hierarchy-node :: hierarchy-node(employee=${employee})}">-->
+<!--            </th:block>-->
+
+
+<!--        </th:block>-->
+
+
+<!--    </ul>-->
+
+
+
+<!--    &lt;!&ndash; =====================================================-->
+<!--         EMPTY HIERARCHY-->
+<!--         ===================================================== &ndash;&gt;-->
+
+<!--    <div th:if="${hierarchy == null or hierarchy.isEmpty()}">-->
+
+<!--        <p>-->
+<!--            No employee hierarchy found.-->
+<!--        </p>-->
+
+<!--    </div>-->
+
+
+<!--</div>-->
+
+
+<!--</body>-->
+
+<!--</html>-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Employee Hierarchy</title>
+
+
+    <style>
+
+        /* ============================================================
+           EMPLOYEE HIERARCHY
+           RESPONSIVE VERSION
+           ============================================================ */
+
+
+        /* ============================================================
+           RESET
+           ============================================================ */
+
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+
+        /* ============================================================
+           ROOT VARIABLES
+           ============================================================ */
+
+        :root {
+
+            /* Sidebar */
+            --sidebar-width: 260px;
+
+            /* Tree connector */
+            --line-color: #6b7785;
+            --line-width: 2px;
+
+            /* Distance between levels */
+            --gap: 42px;
+
+            /* Employee card */
+            --card-w: 150px;
+            --card-h: 46px;
+
+            /* Tree spacing */
+            --tree-side-space: 30px;
+        }
+
+
+        /* ============================================================
+           HTML / BODY
+           ============================================================ */
+
+        html,
+        body {
+            width: 100%;
+            min-height: 100%;
+        }
+
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f7fa;
+            overflow-x: hidden;
+        }
+
+
+        /* ============================================================
+           HIERARCHY CONTAINER
+           ============================================================ */
+
+        .hierarchy-container {
+
+            /*
+             * Sidebar occupies approximately 260px
+             * on desktop.
+             */
+            margin-left: var(--sidebar-width);
+
+            width: calc(100% - var(--sidebar-width));
+
+            min-height: 100vh;
+
+            padding: 70px var(--tree-side-space) 60px;
+
+            /*
+             * Large organization trees can become
+             * wider than the screen.
+             */
+            overflow-x: auto;
+            overflow-y: hidden;
+
+            text-align: center;
+
+            overscroll-behavior-x: contain;
+
+            scrollbar-width: thin;
+        }
+
+
+        /* ============================================================
+           TREE
+           ============================================================ */
+
+        .employee-tree {
+
+            display: inline-flex;
+
+            justify-content: center;
+
+            position: relative;
+
+            /*
+             * Prevent the organization tree from
+             * shrinking when there are many employees.
+             */
+            min-width: max-content;
+
+            margin: 0 auto;
+
+            padding: 0 20px 50px;
+
+            list-style: none;
+
+            text-align: center;
+        }
+
+
+        /* ============================================================
+           ALL NESTED UL
+           ============================================================ */
+
+        .employee-tree ul {
+
+            position: relative;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: flex-start;
+
+            margin: 0;
+
+            padding: var(--gap) 0 0;
+
+            list-style: none;
+
+            flex-shrink: 0;
+        }
+
+
+        /* ============================================================
+           ALL LI
+           ============================================================ */
+
+        .employee-tree li {
+
+            position: relative;
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            /*
+             * Horizontal spacing between employees.
+             */
+            padding: var(--gap) 14px 0;
+
+            text-align: center;
+
+            list-style: none;
+
+            flex-shrink: 0;
+        }
+
+
+        /* ============================================================
+           ROOT LI
+           ============================================================ */
+
+        .employee-tree > li {
+            padding-top: 0;
+        }
+
+
+        /* ============================================================
+           EMPLOYEE CARD
+           ============================================================ */
+
+        .employee-card {
+
+            position: relative;
+
+            z-index: 10;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 8px;
+
+            width: var(--card-w);
+
+            min-width: var(--card-w);
+
+            height: var(--card-h);
+
+            padding: 0 12px;
+
+            background: #0d6efd;
+
+            color: #ffffff;
+
+            border: 1px solid rgba(0, 0, 0, 0.06);
+
+            border-radius: 8px;
+
+            font-size: 16px;
+
+            font-weight: 600;
+
+            line-height: 1;
+
+            white-space: nowrap;
+
+            box-shadow:
+                0 1px 3px rgba(0, 0, 0, 0.08);
+
+            transition:
+                background 0.2s ease,
+                transform 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+
+        /* ============================================================
+           CARD HOVER
+           ============================================================ */
+
+        .employee-card:hover {
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 6px 14px rgba(0, 0, 0, 0.12);
+        }
+
+
+        /* ============================================================
+           EMPLOYEE NAME
+           ============================================================ */
+
+        .employee-name {
+
+            display: block;
+
+            color: inherit;
+
+            font-size: 16px;
+
+            font-weight: 600;
+
+            line-height: 1;
+
+            white-space: nowrap;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+
+            max-width: 100%;
+        }
+
+
+        /* ============================================================
+           DESIGNATION
+           ============================================================ */
+
+        .employee-designation {
+            display: none;
+        }
+
+
+        /* ============================================================
+           LEVEL COLORS
+           ============================================================ */
+
+        /* LEVEL 0 - ROOT */
+
+        .employee-tree > li > .employee-card {
+
+            background: #0f172a;
+
+            color: #ffffff;
+        }
+
+
+        /* LEVEL 1 */
+
+        .employee-tree > li >
+        ul > li >
+        .employee-card {
+
+            background: #cfe6fb;
+
+            color: #0b3556;
+        }
+
+
+        /* LEVEL 2 */
+
+        .employee-tree > li >
+        ul > li >
+        ul > li >
+        .employee-card {
+
+            background: #ffe08a;
+
+            color: #5c4400;
+        }
+
+
+        /* LEVEL 3 */
+
+        .employee-tree > li >
+        ul > li >
+        ul > li >
+        ul > li >
+        .employee-card {
+
+            background: #b9e6c4;
+
+            color: #14532d;
+        }
+
+
+        /* LEVEL 4 */
+
+        .employee-tree > li >
+        ul > li >
+        ul > li >
+        ul > li >
+        ul > li >
+        .employee-card {
+
+            background: #dcc7f7;
+
+            color: #3b0764;
+        }
+
+
+        /* ============================================================
+           OPTIONAL CARD CLASSES
+           ============================================================ */
+
+        .card-navy {
+            background: #0f172a !important;
+            color: #ffffff !important;
+        }
+
+        .card-blue {
+            background: #cfe6fb !important;
+            color: #0b3556 !important;
+        }
+
+        .card-green {
+            background: #b9e6c4 !important;
+            color: #14532d !important;
+        }
+
+        .card-yellow {
+            background: #ffe08a !important;
+            color: #5c4400 !important;
+        }
+
+        .card-pink {
+            background: #fbc9cf !important;
+            color: #7a1f2b !important;
+        }
+
+        .card-purple {
+            background: #dcc7f7 !important;
+            color: #3b0764 !important;
+        }
+
+
+        /* ============================================================
+           CONNECTOR 1
+           PARENT -> VERTICAL LINE
+           ============================================================ */
+
+        .employee-tree li > ul::before {
+
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+
+            left: 50%;
+
+            width: var(--line-width);
+
+            height: var(--gap);
+
+            background: var(--line-color);
+
+            transform: translateX(-50%);
+
+            z-index: 1;
+        }
+
+
+        /* ============================================================
+           CONNECTOR 2
+           HORIZONTAL BAR
+           ============================================================ */
+
+        .employee-tree li > ul > li::before,
+        .employee-tree li > ul > li::after {
+
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+
+            height: var(--line-width);
+
+            background: var(--line-color);
+
+            z-index: 1;
+        }
+
+
+        /* LEFT HALF */
+
+        .employee-tree li > ul > li::before {
+
+            left: 0;
+
+            right: 50%;
+        }
+
+
+        /* RIGHT HALF */
+
+        .employee-tree li > ul > li::after {
+
+            left: 50%;
+
+            right: 0;
+        }
+
+
+        /* ============================================================
+           FIRST CHILD
+           ============================================================ */
+
+        .employee-tree li > ul > li:first-child::before {
+            display: none;
+        }
+
+
+        /* ============================================================
+           LAST CHILD
+           ============================================================ */
+
+        .employee-tree li > ul > li:last-child::after {
+            display: none;
+        }
+
+
+        /* ============================================================
+           ONLY CHILD
+           ============================================================ */
+
+        .employee-tree li > ul > li:only-child::before,
+        .employee-tree li > ul > li:only-child::after {
+
+            display: none;
+        }
+
+
+        /* ============================================================
+           CONNECTOR 3
+           CARD DROP LINE
+           ============================================================ */
+
+        .employee-tree li > ul > li > .employee-card::before {
+
+            content: "";
+
+            position: absolute;
+
+            top: calc(-1 * var(--gap));
+
+            left: 50%;
+
+            width: var(--line-width);
+
+            height: var(--gap);
+
+            background: var(--line-color);
+
+            transform: translateX(-50%);
+
+            z-index: 1;
+        }
+
+
+        /* ============================================================
+           CONNECTOR 4
+           ARROW
+           ============================================================ */
+
+        .employee-tree li > ul > li > .employee-card::after {
+
+            content: "";
+
+            position: absolute;
+
+            top: -7px;
+
+            left: 50%;
+
+            transform: translateX(-50%);
+
+            width: 14px;
+
+            height: 8px;
+
+            background: var(--line-color);
+
+            clip-path:
+                polygon(
+                    0 0,
+                    100% 0,
+                    50% 100%
+                );
+
+            z-index: 2;
+        }
+
+
+        /* ============================================================
+           ROOT CARD
+           NO CONNECTOR
+           ============================================================ */
+
+        .employee-tree > li > .employee-card::before,
+        .employee-tree > li > .employee-card::after {
+
+            content: none;
+        }
+
+
+        /* ============================================================
+           EMPTY MESSAGE
+           ============================================================ */
+
+        .hierarchy-empty {
+
+            padding: 60px 20px;
+
+            text-align: center;
+
+            color: #64748b;
+
+            font-size: 16px;
+        }
+
+
+        /* ============================================================
+           TABLET
+           769px - 1100px
+           ============================================================ */
+
+        @media (max-width: 1100px) {
+
+            .hierarchy-container {
+
+                --gap: 36px;
+
+                --card-w: 135px;
+
+                --card-h: 42px;
+
+                padding-top: 55px;
+
+                padding-left: 20px;
+
+                padding-right: 20px;
+            }
+
+
+            .employee-tree li {
+
+                padding-left: 10px;
+
+                padding-right: 10px;
+            }
+
+
+            .employee-card,
+            .employee-name {
+
+                font-size: 15px;
+            }
+        }
+
+
+        /* ============================================================
+           TABLET / SMALL LAPTOP
+           ============================================================ */
+
+        @media (max-width: 768px) {
+
+            .hierarchy-container {
+
+                /*
+                 * Sidebar becomes mobile/off-canvas,
+                 * therefore content uses full width.
+                 */
+
+                margin-left: 0;
+
+                width: 100%;
+
+                --gap: 32px;
+
+                --card-w: 120px;
+
+                --card-h: 40px;
+
+                padding: 45px 15px 40px;
+            }
+
+
+            .employee-tree {
+
+                padding-left: 10px;
+
+                padding-right: 10px;
+
+                padding-bottom: 35px;
+            }
+
+
+            .employee-tree li {
+
+                padding-left: 8px;
+
+                padding-right: 8px;
+            }
+
+
+            .employee-card {
+
+                border-radius: 7px;
+            }
+
+
+            .employee-card,
+            .employee-name {
+
+                font-size: 14px;
+            }
+
+
+            .employee-card:hover {
+
+                transform: none;
+            }
+        }
+
+
+        /* ============================================================
+           MOBILE
+           480px AND BELOW
+           ============================================================ */
+
+        @media (max-width: 480px) {
+
+            .hierarchy-container {
+
+                --gap: 27px;
+
+                --card-w: 105px;
+
+                --card-h: 36px;
+
+                padding: 30px 8px 30px;
+            }
+
+
+            .employee-tree {
+
+                padding-left: 5px;
+
+                padding-right: 5px;
+
+                padding-bottom: 25px;
+            }
+
+
+            .employee-tree li {
+
+                padding-left: 5px;
+
+                padding-right: 5px;
+            }
+
+
+            .employee-card {
+
+                border-radius: 6px;
+
+                padding-left: 7px;
+
+                padding-right: 7px;
+            }
+
+
+            .employee-card,
+            .employee-name {
+
+                font-size: 12px;
+            }
+
+
+            .employee-card::after {
+
+                width: 12px;
+
+                height: 7px;
+            }
+        }
+
+
+        /* ============================================================
+           VERY SMALL PHONES
+           360px AND BELOW
+           ============================================================ */
+
+        @media (max-width: 360px) {
+
+            .hierarchy-container {
+
+                --gap: 24px;
+
+                --card-w: 92px;
+
+                --card-h: 34px;
+
+                padding: 25px 5px 25px;
+            }
+
+
+            .employee-tree li {
+
+                padding-left: 4px;
+
+                padding-right: 4px;
+            }
+
+
+            .employee-card,
+            .employee-name {
+
+                font-size: 11px;
+            }
+        }
+
+
+        /* ============================================================
+           TOUCH DEVICES
+           ============================================================ */
+
+        @media (hover: none) {
+
+            .employee-card:hover {
+
+                transform: none;
+
+                box-shadow:
+                    0 1px 3px rgba(0, 0, 0, 0.08);
+            }
+        }
+
+    </style>
+
+
+</head>
+
+<body>
+
+<div th:replace="~{fragments/sidebar-admin :: sidebar-component}"></div>
+
+<!-- =========================================================
+     EMPLOYEE HIERARCHY CONTAINER
+     ========================================================= -->
+
+<div class="hierarchy-container">
+
+
+    <!-- =====================================================
+         DATABASE HIERARCHY
+         ===================================================== -->
+
+    <ul class="employee-tree"
+        th:if="${hierarchy != null and !hierarchy.isEmpty()}">
+
+        <!-- =================================================
+             ROOT EMPLOYEES
+             ================================================= -->
+
+        <th:block th:each="employee : ${hierarchy}">
+
+            <th:block
+                    th:if="${employee != null}"
+                    th:replace="~{fragments/hierarchy-node :: hierarchy-node(employee=${employee})}">
+            </th:block>
+
+        </th:block>
+
+    </ul>
+
+
+    <!-- =====================================================
+         EMPTY HIERARCHY
+         ===================================================== -->
+
+    <div class="hierarchy-empty"
+         th:if="${hierarchy == null or hierarchy.isEmpty()}">
+
+        <p>
+            No employee hierarchy found.
+        </p>
+
+    </div>
+
+</div>
+
+
+</body>
+
+</html>

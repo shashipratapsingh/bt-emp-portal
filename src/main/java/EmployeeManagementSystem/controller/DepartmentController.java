@@ -1,6 +1,8 @@
 package EmployeeManagementSystem.controller;
 
 import EmployeeManagementSystem.entity.Department;
+import EmployeeManagementSystem.entity.RegisterEmployee;
+import EmployeeManagementSystem.repository.RegisterEmployeeRepository;
 import EmployeeManagementSystem.service.DepartmentService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,7 @@ public class DepartmentController {
 
     @Autowired
     private DepartmentService departmentService;
+    private RegisterEmployeeRepository registerEmployeeRepository;
 
     @GetMapping("/add")
     public String showAddDepartmentForm(Model model) {

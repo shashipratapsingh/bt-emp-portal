@@ -61,7 +61,8 @@ public class SecurityConfig {
                                 "/js/**",
                                 "/images/**",
                                 "/favicon.ico",
-                                "/access-denied"
+                                "/access-denied",
+                                "/admin/employee/hierarchy"
                         ).permitAll()
 
                         .requestMatchers("/admin/**").hasRole("ADMIN")

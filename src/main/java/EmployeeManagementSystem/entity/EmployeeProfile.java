@@ -128,6 +128,18 @@ public class EmployeeProfile {
     @Column(name = "registered_at")
     private LocalDateTime registeredAt;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reporting_manager_id")
+    private Employee reportingManager;
+
+
+    @Column(name = "reporting_manager_name")
+    private String reportingManagerName;
+
+
+
+
+
     @Transient
     private String confirmEmail;
 

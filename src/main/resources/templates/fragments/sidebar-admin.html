@@ -3,7 +3,7 @@
 <!-- ============================================================ -->
 <aside th:fragment="sidebar-component" class="sidebar" xmlns:th="http://www.thymeleaf.org">
 
-    <Style>
+    <style>
         /* ===== SIDEBAR BASE STYLES ===== */
         .sidebar {
             width: 270px;
@@ -268,7 +268,132 @@
                 top: 0;
             }
         }
-    </Style>
+
+        /* =========================================================
+   EMPLOYEE HIERARCHY SIDEBAR ITEM
+   ========================================================= */
+
+.submenu li a.hierarchy-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    width: 100%;
+
+    padding: 0.5rem 1rem 0.5rem 0.5rem;
+
+    font-size: 0.7rem;
+    font-weight: 300;
+
+    color: #D1D5DB;
+
+    border-radius: 5px;
+
+    text-decoration: none;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease;
+}
+
+
+/* Icon */
+
+.submenu li a.hierarchy-link i {
+    width: 18px;
+    min-width: 18px;
+
+    font-size: 0.85rem;
+
+    color: #9CA3AF;
+
+    transition: color 0.2s ease;
+}
+
+
+/* Text */
+
+.submenu li a.hierarchy-link span {
+    flex: 1;
+
+    min-width: 0;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+
+/* Hover */
+
+.submenu li a.hierarchy-link:hover {
+    background: #1E40AF;
+
+    color: #FFFFFF;
+}
+
+.submenu li a.hierarchy-link:hover i {
+    color: #FFFFFF;
+}
+
+
+/* Active */
+
+.submenu li a.hierarchy-link.active {
+    background: #2563EB;
+
+    color: #FFFFFF;
+}
+
+.submenu li a.hierarchy-link.active i {
+    color: #FFFFFF;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .submenu li a.hierarchy-link {
+        padding: 0.55rem 0.75rem 0.55rem 0.5rem;
+
+        font-size: 0.68rem;
+
+        gap: 8px;
+    }
+
+    .submenu li a.hierarchy-link i {
+        width: 17px;
+        min-width: 17px;
+
+        font-size: 0.8rem;
+    }
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 480px) {
+
+    .submenu li a.hierarchy-link {
+        font-size: 0.66rem;
+    }
+
+    .submenu li a.hierarchy-link i {
+        width: 16px;
+        min-width: 16px;
+
+        font-size: 0.78rem;
+    }
+}
+
+    </style>
 
     <!-- ===== BRAND ===== -->
     <div class="sidebar-brand">
@@ -379,6 +504,12 @@
                     <li><a th:href="@{/admin/employees/add}">Add Employee</a></li>
                     <li><a th:href="@{/admin/employee-directory}">Employee Directory</a></li>
                     <li><a th:href="@{/admin/employee-status}">Employee Status</a></li>
+                    <li>
+                        <a th:href="@{/admin/employee-hierarchy}">
+                            <i class="fas fa-sitemap"></i>
+                            <span>Employee Hierarchy</span>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </li>

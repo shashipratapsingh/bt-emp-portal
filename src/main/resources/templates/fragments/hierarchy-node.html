@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!-- =========================================================
+     RECURSIVE EMPLOYEE NODE
+     ========================================================= -->
+
+<li th:fragment="hierarchy-node(employee)">
+
+    <!-- EMPLOYEE CARD -->
+    <div class="employee-card">
+        <span class="employee-name" th:text="${employee.name}">
+            Employee Name
+        </span>
+    </div>
+
+    <!-- CHILDREN (recursive) -->
+    <ul th:if="${employee.children != null and !employee.children.isEmpty()}">
+
+        <th:block th:each="child : ${employee.children}">
+
+            <th:block
+                    th:if="${child != null}"
+                    th:replace="~{fragments/hierarchy-node :: hierarchy-node(employee=${child})}">
+            </th:block>
+
+        </th:block>
+
+    </ul>
+
+</li>
+
+</body>
+</html>

@@ -21,7 +21,7 @@ public class RegisterEmployee {
     private String otp;
     private LocalDateTime otpExpiryTime;
     private String designation;
-
-
+    private Long departmentId;
+    private Long reportingManagerId;
 
 }
