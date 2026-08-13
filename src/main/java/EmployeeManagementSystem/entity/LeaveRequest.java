@@ -61,6 +61,7 @@ public class LeaveRequest {
 
     private LocalDate endDate;
 
+    @Column(name = "leave_type", nullable = false)
     private String leaveType;
 
     @Column(length = 1000)

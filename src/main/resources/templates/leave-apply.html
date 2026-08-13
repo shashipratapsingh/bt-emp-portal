@@ -58,14 +58,18 @@
                             <form th:action="@{/employee/leave/submit}" th:object="${leaveRequest}" method="post">
                                 <div class="mb-3">
                                     <label class="form-label" for="leaveType">Leave Type</label>
-                                    <select id="leaveType" th:field="*{leaveType}" class="form-select" required>
-                                        <option value="" disabled selected>Select Leave Type</option>
-                                        <option value="Project Off">Project Off</option>
-                                        <option value="Sick Leave">Sick Leave</option>
-                                        <option value="Casual Leave">Casual Leave</option>
-                                        <option value="Short Leave">Short Leave</option>
-                                        <option value="Half Day">Half Day</option>
-                                        <option value="Full Day">Full Day</option>
+                                    <select id="leaveType"
+                                            name="leaveTypeName"
+                                            class="form-control"
+                                            required>
+
+                                        <option value="">Select Leave Type</option>
+
+                                        <option th:each="leaveType : ${leaveTypes}"
+                                                th:value="${leaveType.name}"
+                                                th:text="${leaveType.name}">
+                                        </option>
+
                                     </select>
                                 </div>
                                 <div class="row g-2 g-sm-3">

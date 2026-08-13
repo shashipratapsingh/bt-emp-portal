@@ -58,6 +58,7 @@
 package EmployeeManagementSystem.controller;
 
 import EmployeeManagementSystem.entity.LeaveRequest;
+import EmployeeManagementSystem.entity.admin_leave.LeaveType;
 import EmployeeManagementSystem.service.LeaveService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -81,6 +82,7 @@ public class LeaveController {
         Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();
 
+        // Check authentication
         if (authentication == null ||
                 !authentication.isAuthenticated() ||
                 "anonymousUser".equals(authentication.getName())) {
@@ -90,14 +92,25 @@ public class LeaveController {
 
         String currentEmpId = authentication.getName();
 
-        System.out.println("Logged In Employee ID = " + currentEmpId);
+        System.out.println(
+                "Logged In Employee ID = " + currentEmpId
+        );
 
-        model.addAttribute("employeeId", currentEmpId);
+        // Employee ID
+        model.addAttribute(
+                "employeeId",
+                currentEmpId
+        );
 
+        // Empty leave request object
         model.addAttribute(
                 "leaveRequest",
                 new LeaveRequest()
         );
+
+        // =====================================================
+        // GET CURRENT EMPLOYEE LEAVE HISTORY
+        // =====================================================
 
         List<LeaveRequest> myLeaves =
                 leaveService.getLeavesByEmployeeId(currentEmpId);
@@ -105,6 +118,22 @@ public class LeaveController {
         model.addAttribute(
                 "myLeaves",
                 myLeaves
+        );
+
+        // =====================================================
+        // GET ACTIVE LEAVE TYPES FROM DATABASE
+        // =====================================================
+
+        List<LeaveType> leaveTypes =
+                leaveService.getActiveLeaveTypes();
+
+        model.addAttribute(
+                "leaveTypes",
+                leaveTypes
+        );
+
+        System.out.println(
+                "Active Leave Types = " + leaveTypes
         );
 
         return "leave-apply";

@@ -1,10 +1,12 @@
 package EmployeeManagementSystem.service;
 
 import EmployeeManagementSystem.entity.LeaveRequest;
+import EmployeeManagementSystem.entity.admin_leave.LeaveType;
 import EmployeeManagementSystem.enums.LeaveStatus;
 import EmployeeManagementSystem.entity.RegisterEmployee;
 import EmployeeManagementSystem.repository.LeaveRepository;
 import EmployeeManagementSystem.repository.RegisterEmployeeRepository;
+import EmployeeManagementSystem.repository.admin_leave.LeaveTypeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,6 +21,8 @@ import java.util.List;
 public class LeaveServiceImpl implements LeaveService{
     private final RegisterEmployeeRepository repository;
     private final LeaveRepository leaveRepository;
+    private final LeaveTypeRepository leaveTypeRepository;
+
 
     @Override
      public List<LeaveRequest> getLeavesByEmployeeId(String employeeId){
@@ -65,5 +69,13 @@ public class LeaveServiceImpl implements LeaveService{
     public List<LeaveRequest> getAllLeaves() {
         return leaveRepository.findAll();
     }
+
+
+    @Override
+    public List<LeaveType> getActiveLeaveTypes() {
+        return leaveTypeRepository
+                .findByIsActiveTrueOrderByNameAsc();
+    }
+
 
 }
