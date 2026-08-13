@@ -300,7 +300,9 @@ public class EmployeeProfileController {
 
         Employee employee = new Employee();
 
-        employee.setProfile(profile);
+        //employee.setProfile(profile);
+        // Link the profile
+        employee.setEmployeeProfile(profile);
 
 
         employee.setFullName(

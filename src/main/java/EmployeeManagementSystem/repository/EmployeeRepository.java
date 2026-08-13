@@ -34,14 +34,14 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     List<Employee> findByDepartmentId(Long departmentId);
 
     @Query("SELECT DISTINCT e FROM Employee e " +
-            "LEFT JOIN FETCH e.profile p " +
+            "LEFT JOIN FETCH e.employeeProfile p " +
             "LEFT JOIN FETCH e.department d " +
             "LEFT JOIN FETCH e.salaries s " +
             "WHERE e.id = :id")
     Optional<Employee> findByIdWithDetails(@Param("id") Long id);
 
     @Query("SELECT DISTINCT e FROM Employee e " +
-            "LEFT JOIN e.profile p " +
+            "LEFT JOIN e.employeeProfile p " +
             "LEFT JOIN e.department d " +
             "WHERE (:keyword IS NULL OR LOWER(e.fullName) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
             "OR LOWER(e.email) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
@@ -56,7 +56,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
 
     @Query("SELECT DISTINCT e FROM Employee e " +
-            "LEFT JOIN e.profile p " +
+            "LEFT JOIN e.employeeProfile p " +
             "WHERE p.status = 'ACTIVE'")
     List<Employee> findAllActiveEmployees();
 

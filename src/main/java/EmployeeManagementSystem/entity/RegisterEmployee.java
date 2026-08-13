@@ -24,4 +24,7 @@ public class RegisterEmployee {
     private Long departmentId;
     private Long reportingManagerId;
 
+    @OneToOne(mappedBy = "registerEmployee",cascade=CascadeType.ALL,fetch = FetchType.LAZY)
+    private Employee employee;
+
 }

@@ -21,9 +21,9 @@ public class Employee {
     private Long id;
 
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "profile_id")
-    private EmployeeProfile profile;
+//    @OneToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "profile_id")
+//    private EmployeeProfile profile;
 
 
     private String fullName;
@@ -104,5 +104,12 @@ public class Employee {
         this.lastName = lastName;
         this.email = email;
     }
+
+    @OneToOne
+    @JoinColumn(name="register_employee_id", referencedColumnName = "id")
+    private RegisterEmployee registerEmployee;
+
+    @OneToOne(mappedBy = "employee",cascade = CascadeType.ALL)
+    private EmployeeProfile employeeProfile;
 
 }
