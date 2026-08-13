@@ -58,8 +58,6 @@ public class SecurityConfig {
                         .requestMatchers(
 
                                 "/auth/**",
-                                "/auth/loginPage",
-                                "/error",
                                 "/css/**",
                                 "/js/**",
                                 "/images/**",
